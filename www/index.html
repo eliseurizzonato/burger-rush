@@ -24,9 +24,11 @@
   #btnMute{right:12px;top:calc(12px + env(safe-area-inset-top))}
   .side{right:14px;width:66px;height:66px;border-radius:20px;font:700 11px 'Fredoka',system-ui;color:var(--ink);line-height:1}
   .side b{font-size:26px;display:block;margin-bottom:2px}
-  #btnUp{bottom:calc(20px + env(safe-area-inset-bottom));background:#ffcf33}
-  #btnMis{bottom:calc(98px + env(safe-area-inset-bottom));background:#8fd8ff}
-  #btnRest{bottom:calc(176px + env(safe-area-inset-bottom));background:#ffb3c7}
+  :root{--ad:0px}
+  #btnUp{bottom:calc(20px + var(--ad) + env(safe-area-inset-bottom));background:#ffcf33}
+  #btnMis{bottom:calc(98px + var(--ad) + env(safe-area-inset-bottom));background:#8fd8ff}
+  #btnRest{bottom:calc(176px + var(--ad) + env(safe-area-inset-bottom));background:#ffb3c7}
+  #btnAd{bottom:calc(254px + var(--ad) + env(safe-area-inset-bottom));background:#c9b8ff;display:none}
   .badge{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#ff3b3b;border:3px solid #fff;display:none}
   #toast{top:calc(160px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-20px);background:#fff;color:var(--ink);font-weight:700;font-size:15px;padding:8px 16px;border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.15);opacity:0;transition:.25s;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
   #toast.show{opacity:1;transform:translate(-50%,0)}
@@ -79,6 +81,9 @@
   .pin.here .pi{box-shadow:0 0 0 4px var(--green),0 3px 0 rgba(0,0,0,.25)}
   .pin.sel .pi{transform:scale(1.18)}
   .btn.gold{background:#ff9a1a;border-bottom-color:#c56a00}
+  .btn.ad{background:#7b5cff;border-bottom-color:#5536d6}
+  .btn.ad:disabled{background:#c9c1d3;border-bottom-color:#a69db2}
+  .chip.boost{background:#7b5cff}
   .link{display:inline-block;margin-top:12px;color:#a397b3;font-size:13px;text-decoration:underline;cursor:pointer;background:none;border:0;font-family:inherit}
 </style>
 <script src="vendor/capacitor.js"></script>
@@ -87,10 +92,11 @@
 <body>
 <div id="cash" class="ui"><div class="coin"></div><span id="money">0</span></div>
 <div id="prog" class="ui"><div id="progTxt"></div><div class="bar"><i id="progBar"></i></div></div>
-<div id="stat" class="ui"><span class="chip" id="rep"></span><span class="chip" id="combo"></span></div>
+<div id="stat" class="ui"><span class="chip" id="rep"></span><span class="chip" id="combo"></span><span class="chip boost" id="boost" style="display:none"></span></div>
 <div id="rush" class="ui"></div>
 <div id="toast" class="ui"></div>
 <button id="btnMute" class="ui round" aria-label="Som">🔊</button>
+<button id="btnAd" class="ui round side" aria-label="Prêmios grátis"><span><b>🎬</b>Grátis</span><i class="badge" id="bAd"></i></button>
 <button id="btnRest" class="ui round side" aria-label="Mapa"><span><b>🗺️</b>Mapa</span><i class="badge" id="bRest"></i></button>
 <button id="btnMis" class="ui round side" aria-label="Missões"><span><b>📋</b>Missões</span><i class="badge" id="bMis"></i></button>
 <button id="btnUp" class="ui round side" aria-label="Melhorias"><span><b>⬆</b>Melhorias</span><i class="badge" id="bUp"></i></button>
@@ -99,7 +105,8 @@
 <div id="panel" class="modal"><div class="card"><h2>Melhorias</h2><p id="upSub">Valem só para este restaurante</p><div id="ups"></div><div class="up" id="cloudRow"></div><button class="btn big" data-close>Fechar</button><br><button class="link" id="reset">Recomeçar do zero</button></div></div>
 <div id="missions" class="modal"><div class="card"><h2>Missões do dia</h2><p id="mSub"></p><div id="mList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="rests" class="modal"><div class="card"><h2 id="cityT">🗺️ Mapa da cidade</h2><p id="rSub"></p><div class="map" id="map"></div><div id="rList"></div><div id="cityBox"></div><button class="btn big" data-close>Fechar</button></div></div>
-<div id="welcome" class="modal"><div class="card"><h2>Bem-vindo de volta!</h2><div id="wRows"></div><div class="big-num">+<span id="offAmt">0</span></div><button class="btn big" id="collect">Coletar</button></div></div>
+<div id="welcome" class="modal"><div class="card"><h2>Bem-vindo de volta!</h2><div id="wRows"></div><div class="big-num">+<span id="offAmt">0</span></div><button class="btn big ad" id="collect2" style="display:none">📺 Coletar 2x</button><br><button class="btn big" id="collect">Coletar</button></div></div>
+<div id="adShop" class="modal"><div class="card"><h2>🎬 Prêmios grátis</h2><p id="adSub"></p><div id="adList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="cloudPick" class="modal"><div class="card"><h2>☁️ Progresso na nuvem</h2><p>Achamos um progresso maior salvo na sua conta.</p><div class="row" style="flex-direction:column;text-align:left" id="cpTxt"></div><button class="btn big" id="cpLoad">Carregar da nuvem</button><br><button class="link" id="cpKeep">Manter o deste aparelho</button></div></div>
 <div id="fade"></div>
 <script>
@@ -802,7 +809,7 @@ function updateCustomer(c, dt) {
         setCombo(combo + 1); addRep(fast ? .08 : .03);
         let total = 0, items = 0;
         for (const [k, n] of Object.entries(c.order)) { total += n * value(k); items += n; track('item', n); }
-        total *= payMult() * comboMult() * (rush > 0 ? 2 : 1) * (c.vip ? 5 : 1);
+        total *= payMult() * comboMult() * (rush > 0 ? 2 : 1) * (c.vip ? 5 : 1) * boostMult();
         track('serve', 1); if (c.vip) { track('vip', 1); floatText(`👑 VIP +$${fmt(total)}`, c.g.position, 'rgba(224,154,0,.95)'); burst(c.g.position.clone().add(new V3(0, 1.5, 0)), 24, COINS, {speed: 3, up: 6, size: .14}); }
         c.pay = Math.min(15, items * 3); c.billVal = total / c.pay;
         if (Math.hypot(player.g.position.x - c.g.position.x, player.g.position.z - c.g.position.z) < 9) sfx.pay();
@@ -838,10 +845,11 @@ function updateRush(dt) {
   if (rush > 0) {
     rush -= dt; el.textContent = `🔥 HORA DO RUSH · pagam 2x · ${Math.ceil(rush)}s`;
     if (rush <= 0) { el.style.display = 'none'; track('rush', 1); toast('Rush encerrado! 💪'); rushNext = 140 + Math.random() * 100; }
-  } else if ((rushNext -= dt) <= 0) {
-    rush = 25; el.style.display = 'block'; sfx.done(); spawnT = 0;
-    floatText('🔥 HORA DO RUSH!', player.g.position, 'rgba(255,59,59,.95)');
-  }
+  } else if ((rushNext -= dt) <= 0) startRush();
+}
+function startRush() {
+  rush = 25; $('rush').style.display = 'block'; sfx.done(); spawnT = 0;
+  floatText('🔥 HORA DO RUSH!', player.g.position, 'rgba(255,59,59,.95)');
 }
 // presente surpresa: aparece no salão de vez em quando; passe por cima para pegar
 let gift = null, giftNext = 50;
@@ -1090,6 +1098,84 @@ $('cloudRow').addEventListener('click', e => {
 $('cpLoad').addEventListener('click', () => { closeModal('cloudPick'); Cloud.adopt(Cloud.st.pending); });
 $('cpKeep').addEventListener('click', () => { closeModal('cloudPick'); Cloud.st.pending = null; Cloud.push(true); });
 
+// ---------- anúncios (AdMob; só no app Android) ----------
+// IDs de TESTE do Google: antes de lançar, trocar pelos IDs reais do AdMob (e o APPLICATION_ID no AndroidManifest) e pôr AD_TEST = false
+const AD_IDS = {banner: 'ca-app-pub-3940256099942544/9214589741', reward: 'ca-app-pub-3940256099942544/5224354917'};
+const AD_TEST = true, AD_DAY_MAX = 20;
+const Ads = (() => {
+  const C = window.Capacitor;
+  const P = C && C.isNativePlatform && C.isNativePlatform() && C.registerPlugin ? C.registerPlugin('AdMob') : null;
+  const fake = !P && Q.has('fakeads'); // simula os anúncios no navegador (testes)
+  const st = {available: !!P || fake, ready: fake, banner: false, busy: false};
+  let earned = false, done = null;
+  async function load() {
+    st.ready = false;
+    try { await P.prepareRewardVideoAd({adId: AD_IDS.reward, isTesting: AD_TEST}); st.ready = true; } catch (e) { setTimeout(load, 30000); }
+  }
+  function finish(ok) { if (done) { const f = done; done = null; f(ok); } }
+  async function start() {
+    if (!P) return;
+    try { await P.initialize({initializeForTesting: AD_TEST}); } catch (e) { st.available = false; return; }
+    P.addListener('bannerAdSizeChanged', s => document.documentElement.style.setProperty('--ad', ((s && s.height) || 0) + 'px'));
+    P.addListener('onRewardedVideoAdReward', () => { earned = true; });
+    P.addListener('onRewardedVideoAdDismissed', () => { finish(earned); load(); });
+    P.addListener('onRewardedVideoAdFailedToShow', () => { finish(false); load(); });
+    load(); banner();
+  }
+  // banner só depois do tutorial, para não atrapalhar o começo
+  function banner() {
+    if (!P || st.banner || !S.tut) return;
+    st.banner = true;
+    P.showBanner({adId: AD_IDS.banner, adSize: 'ADAPTIVE_BANNER', position: 'BOTTOM_CENTER', margin: 0, isTesting: AD_TEST}).catch(() => { st.banner = false; });
+  }
+  function show(onReward) {
+    if (st.busy) return;
+    if (!st.ready) { toast('📺 Anúncio carregando, tente em instantes'); return; }
+    st.busy = true; earned = false;
+    done = ok => { st.busy = false; if (ok) onReward(); else toast('Assista até o fim para ganhar o prêmio'); renderAds(); };
+    if (fake) { setTimeout(() => finish(true), 600); return; }
+    P.showRewardVideoAd().then(() => { earned = true; }).catch(() => { finish(false); load(); });
+  }
+  return {st, start, banner, show};
+})();
+const boostMult = () => (S.boostUntil || 0) > Date.now() ? 2 : 1;
+const clock = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+function adDay() { const d = dayKey(); if (!S.ads || S.ads.day !== d) S.ads = {day: d, n: 0, cd: {}}; return S.ads; }
+const adCash = () => Math.round(Math.max(50 * RESTS[S.cur].val * (1 + S.city), 3 * (currentRate() + passiveRate(false))));
+// prêmios por anúncio; cd = espera em minutos até poder pegar o mesmo prêmio de novo
+const AD_REWARDS = [
+  {k: 'cash', icon: '💰', name: 'Caixa de dinheiro', desc: () => `Ganhe $${fmt(adCash())} na hora`, cd: 4,
+    go: () => { const v = adCash(); addMoney(v); floatText(`💰 +$${fmt(v)}`, player.g.position, 'rgba(224,154,0,.95)'); burst(player.g.position.clone().add(new V3(0, 1.2, 0)), 30, COINS, {speed: 3.5, up: 7, size: .16}); }},
+  {k: 'boost', icon: '⚡', name: 'Turbo 2x', desc: () => 'Tudo rende o dobro por 3 minutos', cd: 10,
+    go: () => { S.boostUntil = Math.max(Date.now(), S.boostUntil || 0) + 180000; }},
+  {k: 'rush', icon: '🔥', name: 'Hora do rush agora', desc: () => 'Fila cheia pagando 2x por 25s', cd: 8, off: () => rush > 0 || bought.size < 2, go: startRush},
+  {k: 'rep', icon: '⭐', name: 'Fama máxima', desc: () => 'Reputação sobe para 5 estrelas', cd: 6, off: () => R.rep >= 5, go: () => addRep(5)},
+];
+const adWait = r => Math.max(0, Math.ceil(((adDay().cd[r.k] || 0) - Date.now()) / 1000));
+const adOk = r => adDay().n < AD_DAY_MAX && !adWait(r) && !(r.off && r.off());
+function renderAds() {
+  const left = AD_DAY_MAX - adDay().n;
+  $('adSub').textContent = left > 0 ? `Assista a um anúncio curto e ganhe um prêmio · ${left} hoje` : 'Você pegou todos os prêmios de hoje. Volte amanhã!';
+  $('adList').innerHTML = AD_REWARDS.map(r => { const w = adWait(r);
+    return `<div class="up"><div class="ic">${r.icon}</div><div class="tx"><b>${r.name}</b><span>${r.desc()}</span></div><button class="btn ad" data-ad="${r.k}" ${adOk(r) && !Ads.st.busy ? '' : 'disabled'}>${w ? '⏳ ' + clock(w) : '📺 Ver'}</button></div>`; }).join('');
+}
+function claimAd(r) { const a = adDay(); a.n++; if (r) a.cd[r.k] = Date.now() + r.cd * 60000; dirty = true; }
+$('adList').addEventListener('click', e => {
+  const b = e.target.closest('[data-ad]'); if (!b || b.disabled) return;
+  const r = AD_REWARDS.find(x => x.k === b.dataset.ad);
+  Ads.show(() => { claimAd(r); closeModal('adShop'); r.go(); sfx.buy(); toast(`${r.icon} ${r.name}!`); });
+});
+// a cada segundo: botão, aviso, contagem do turbo e banner
+setInterval(() => {
+  const on = Ads.st.available && S.tut;
+  $('btnAd').style.display = on ? 'grid' : 'none';
+  $('bAd').style.display = on && AD_REWARDS.some(adOk) ? 'block' : 'none';
+  const s = Math.ceil(((S.boostUntil || 0) - Date.now()) / 1000), bo = $('boost');
+  bo.style.display = s > 0 && S.tut ? '' : 'none'; if (s > 0) bo.textContent = `⚡ 2x ${clock(s)}`;
+  if ($('adShop').classList.contains('open')) renderAds();
+  Ads.banner();
+}, 1000);
+
 // ---------- avisos, painéis e ganhos enquanto fora ----------
 function refreshBadges() {
   let up = false;
@@ -1106,6 +1192,7 @@ const openModal = id => { $(id).classList.add('open'); release(); };
 const closeModal = id => $(id).classList.remove('open');
 $('btnUp').addEventListener('click', () => { initAudio(); renderUps(); openModal('panel'); });
 $('btnMis').addEventListener('click', () => { initAudio(); renderMissions(); openModal('missions'); });
+$('btnAd').addEventListener('click', () => { initAudio(); renderAds(); openModal('adShop'); });
 $('btnRest').addEventListener('click', () => { initAudio(); R.rate = currentRate(); sel = S.cur; renderRests(); openModal('rests'); });
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(b.closest('.modal').id)));
 document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m && m.id !== 'welcome' && m.id !== 'cloudPick') closeModal(m.id); }));
@@ -1129,8 +1216,11 @@ function showWelcome(offline, bonus) {
   if (offline >= 5) rows.push(`<div class="row"><span>🕒 Faturou enquanto você estava fora</span><b>$${fmt(offline)}</b></div>`);
   if (bonus > 0) rows.push(`<div class="row"><span>🔥 Bônus diário · dia ${S.streak}</span><b>$${fmt(bonus)}</b></div>`);
   pendingGift += Math.max(0, offline >= 5 ? offline : 0) + bonus;
-  $('wRows').innerHTML = rows.join(''); $('offAmt').textContent = '$' + fmt(pendingGift); openModal('welcome');
+  $('wRows').innerHTML = rows.join(''); $('offAmt').textContent = '$' + fmt(pendingGift);
+  $('collect2').style.display = Ads.st.available && adDay().n < AD_DAY_MAX ? '' : 'none';
+  openModal('welcome');
 }
+$('collect2').addEventListener('click', () => { initAudio(); Ads.show(() => { claimAd(); pendingGift *= 2; $('collect').click(); toast('📺 Ganhos dobrados!'); }); });
 $('collect').addEventListener('click', () => {
   initAudio(); closeModal('welcome'); addMoney(pendingGift); pendingGift = 0; sfx.buy();
   burst(player.g.position.clone().add(new V3(0, 1.2, 0)), 30, COINS, {speed: 3.5, up: 7, size: .16});
@@ -1266,7 +1356,7 @@ function step(dt) {
   if ((passiveT += dt) >= 1) {
     passiveT = 0; R.rate = currentRate();
     const others = passiveRate(false);
-    if (others > 0) addMoney(others / 60, true);
+    if (others > 0) addMoney(others / 60 * boostMult(), true);
   }
 
   // animações
@@ -1313,7 +1403,8 @@ if (firstRun) { loginBonus(); addMoney(0); } else { addMoney(0); showWelcome(FRE
 setInterval(() => { if (ensureDaily()) { toast('📋 Novas missões do dia!'); refreshBadges(); const b = loginBonus(); if (b) showWelcome(0, b); } }, 30000);
 requestAnimationFrame(frame);
 Cloud.start();
-window.__game = {S, R, P, Cloud, seats, cleaners, queue, get rush() { return rush; }, set rush(v) { rush = v; }, get combo() { return combo; }, renderRests, progressOf, migrate, bought, ZONES, stations, customers, helpers, counters, moneyPile, player, get elapsed() { return elapsed; },
+Ads.start();
+window.__game = {S, R, P, Cloud, Ads, renderAds, adDay, seats, cleaners, queue, get rush() { return rush; }, set rush(v) { rush = v; }, get combo() { return combo; }, renderRests, progressOf, migrate, bought, ZONES, stations, customers, helpers, counters, moneyPile, player, get elapsed() { return elapsed; },
   tick(n) { for (let i = 0; i < n; i++) step(1 / 30); renderer.render(scene, cam); }}; // usado nos testes
 </script>
 </body>
