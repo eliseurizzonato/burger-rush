@@ -28,7 +28,7 @@
   #btnMis{bottom:calc(98px + env(safe-area-inset-bottom));background:#8fd8ff}
   #btnRest{bottom:calc(176px + env(safe-area-inset-bottom));background:#ffb3c7}
   .badge{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#ff3b3b;border:3px solid #fff;display:none}
-  #toast{top:calc(100px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-20px);background:#fff;color:var(--ink);font-weight:700;font-size:15px;padding:8px 16px;border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.15);opacity:0;transition:.25s;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+  #toast{top:calc(160px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-20px);background:#fff;color:var(--ink);font-weight:700;font-size:15px;padding:8px 16px;border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.15);opacity:0;transition:.25s;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
   #toast.show{opacity:1;transform:translate(-50%,0)}
   #tut{left:0;right:0;bottom:18%;text-align:center;color:#fff;font-weight:700;font-size:26px;text-shadow:0 3px 0 #0006;pointer-events:none;display:none}
   #tut .hand{font-size:56px;display:inline-block;animation:sw 1.2s ease-in-out infinite}
@@ -58,6 +58,27 @@
   .btn:disabled{background:#c9c1d3;border-bottom-color:#a69db2;cursor:default;transform:none}
   .btn.big{font-size:22px;padding:12px 36px;margin-top:8px}
   .big-num{font-size:40px;font-weight:700;color:#e09a00;margin:6px 0}
+  #stat{top:calc(94px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;gap:6px;pointer-events:none}
+  .chip{background:rgba(43,33,64,.72);color:#fff;font-weight:700;font-size:13px;padding:3px 10px;border-radius:999px;white-space:nowrap;transition:background .2s}
+  #combo.hot{background:#ff7a1a}
+  #combo.pop{animation:pl2 .25s}
+  @keyframes pl2{50%{transform:scale(1.25)}}
+  #rush{top:calc(122px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#ff3b3b,#ff9a1a);color:#fff;font-weight:700;font-size:17px;padding:5px 16px;border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.2);display:none;pointer-events:none;white-space:nowrap;animation:sh .6s infinite}
+  @keyframes sh{50%{transform:translateX(-50%) scale(1.07)}}
+  .map{position:relative;width:100%;aspect-ratio:1/1.05;border-radius:18px;overflow:hidden;background:#8fd16a;margin:6px 0 8px}
+  .map .rd{position:absolute;background:#5d6470}
+  .map .rd.h{height:8%;left:0;right:0}.map .rd.v{width:8%;top:0;bottom:0}
+  .map .rd.h::after{content:'';position:absolute;left:0;right:0;top:50%;border-top:2px dashed rgba(246,241,222,.7)}
+  .map .rd.v::after{content:'';position:absolute;top:0;bottom:0;left:50%;border-left:2px dashed rgba(246,241,222,.7)}
+  .map .zone{position:absolute;border-radius:14px}
+  .pin{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;padding:0;font-family:inherit;cursor:pointer;z-index:1}
+  .pin .pi{width:44px;height:44px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:24px;box-shadow:0 3px 0 rgba(0,0,0,.25);transition:transform .15s}
+  .pin small{background:rgba(43,33,64,.85);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;white-space:nowrap}
+  .pin.lock .pi{background:#d9d3e0;filter:grayscale(1);opacity:.8}
+  .pin.buy .pi{background:#ffcf33;animation:pl2 1s infinite}
+  .pin.here .pi{box-shadow:0 0 0 4px var(--green),0 3px 0 rgba(0,0,0,.25)}
+  .pin.sel .pi{transform:scale(1.18)}
+  .btn.gold{background:#ff9a1a;border-bottom-color:#c56a00}
   .link{display:inline-block;margin-top:12px;color:#a397b3;font-size:13px;text-decoration:underline;cursor:pointer;background:none;border:0;font-family:inherit}
 </style>
 <script src="vendor/capacitor.js"></script>
@@ -66,16 +87,18 @@
 <body>
 <div id="cash" class="ui"><div class="coin"></div><span id="money">0</span></div>
 <div id="prog" class="ui"><div id="progTxt"></div><div class="bar"><i id="progBar"></i></div></div>
+<div id="stat" class="ui"><span class="chip" id="rep"></span><span class="chip" id="combo"></span></div>
+<div id="rush" class="ui"></div>
 <div id="toast" class="ui"></div>
 <button id="btnMute" class="ui round" aria-label="Som">🔊</button>
-<button id="btnRest" class="ui round side" aria-label="Restaurantes"><span><b>🏪</b>Lojas</span><i class="badge" id="bRest"></i></button>
+<button id="btnRest" class="ui round side" aria-label="Mapa"><span><b>🗺️</b>Mapa</span><i class="badge" id="bRest"></i></button>
 <button id="btnMis" class="ui round side" aria-label="Missões"><span><b>📋</b>Missões</span><i class="badge" id="bMis"></i></button>
 <button id="btnUp" class="ui round side" aria-label="Melhorias"><span><b>⬆</b>Melhorias</span><i class="badge" id="bUp"></i></button>
 <div id="tut" class="ui"><div class="hand">👆</div><div>ARRASTE PARA MOVER</div></div>
 <div id="joy" class="ui"><div id="knob"></div></div>
 <div id="panel" class="modal"><div class="card"><h2>Melhorias</h2><p id="upSub">Valem só para este restaurante</p><div id="ups"></div><div class="up" id="cloudRow"></div><button class="btn big" data-close>Fechar</button><br><button class="link" id="reset">Recomeçar do zero</button></div></div>
 <div id="missions" class="modal"><div class="card"><h2>Missões do dia</h2><p id="mSub"></p><div id="mList"></div><button class="btn big" data-close>Fechar</button></div></div>
-<div id="rests" class="modal"><div class="card"><h2>Seus restaurantes</h2><p id="rSub"></p><div id="rList"></div><button class="btn big" data-close>Fechar</button></div></div>
+<div id="rests" class="modal"><div class="card"><h2 id="cityT">🗺️ Mapa da cidade</h2><p id="rSub"></p><div class="map" id="map"></div><div id="rList"></div><div id="cityBox"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="welcome" class="modal"><div class="card"><h2>Bem-vindo de volta!</h2><div id="wRows"></div><div class="big-num">+<span id="offAmt">0</span></div><button class="btn big" id="collect">Coletar</button></div></div>
 <div id="cloudPick" class="modal"><div class="card"><h2>☁️ Progresso na nuvem</h2><p>Achamos um progresso maior salvo na sua conta.</p><div class="row" style="flex-direction:column;text-align:left" id="cpTxt"></div><button class="btn big" id="cpLoad">Carregar da nuvem</button><br><button class="link" id="cpKeep">Manter o deste aparelho</button></div></div>
 <div id="fade"></div>
@@ -86,20 +109,21 @@ const $ = id => document.getElementById(id);
 const Q = new URLSearchParams(location.search);
 const AUTO = Q.has('auto'), FRESH = AUTO || Q.has('fresh');
 const memo = f => { const c = new Map(); return k => { if (!c.has(k)) c.set(k, f(k)); return c.get(k); }; };
-const fmt = n => n < 10000 ? String(Math.floor(n)) : n < 1e6 ? (n / 1000).toFixed(n < 100000 ? 1 : 0) + 'k' : (n / 1e6).toFixed(1) + 'M';
+const fmt = n => { if (n < 10000) return String(Math.floor(n)); const u = ['k', 'M', 'B', 'T', 'Q'], e = Math.min(u.length, Math.floor(Math.log10(n) / 3)), v = n / Math.pow(1000, e); return (v < 100 ? v.toFixed(1) : Math.floor(v)) + u[e - 1]; };
 
 // ---------- progresso salvo ----------
 const SAVE_KEY = 'burger-rush-save-v1';
 function loadSave() { if (FRESH) return null; try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) { return null; } }
 // formato do save: ao mudar, suba SAVE_VERSION e acrescente um passo em MIGRATIONS (nunca apague os antigos)
-const SAVE_VERSION = 2;
+const SAVE_VERSION = 3;
 const MIGRATIONS = {
   1: s => { if (!s.r) { s.r = [{bought: s.bought || [], lv: s.lv || {}, rate: 0}]; delete s.bought; delete s.lv; } }, // 1 restaurante -> vários
+  2: s => { s.daily = null; s.city = 0; s.bonus = 0; for (const r of s.r) if (r) { r.rep = 3; r.fr = 0; } }, // reputação, franquias e cidades
 };
 function migrate(s) { s.v = s.v || 1; while (s.v < SAVE_VERSION) { if (MIGRATIONS[s.v]) MIGRATIONS[s.v](s); s.v++; } return s; }
-const S = migrate(Object.assign({money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: null, streak: 0, lastLogin: '', daily: null, has: {}}, loadSave() || {}));
-const LV0 = {cap: 0, speed: 0, price: 0, grill: 0};
-for (const r of S.r) if (r) r.lv = Object.assign({}, LV0, r.lv);
+const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}}, loadSave() || {}));
+const LV0 = {cap: 0, speed: 0, price: 0, grill: 0, pat: 0, mkt: 0};
+for (const r of S.r) if (r) { r.lv = Object.assign({}, LV0, r.lv); r.rep = r.rep || 3; r.fr = r.fr || 0; }
 if (!S.r[S.cur]) S.cur = 0;
 const R = S.r[S.cur];
 const firstRun = !S.tut;
@@ -108,21 +132,41 @@ function persist() { if (FRESH || lockSave) return; S.last = Date.now(); try { l
 setInterval(() => { if (dirty) { dirty = false; persist(); } }, 2000);
 addEventListener('pagehide', persist);
 
-// cada restaurante tem tema próprio; preços e valor dos lanches crescem
+// estabelecimentos do mapa: cada um é um negócio com 3 produtos, tema próprio e preços maiores
 const RESTS = [
-  {name: 'Lanchonete da Praça', icon: '🍔', mult: 1, val: 1, cost: 0, floor: ['#f8e6c4', '#efd3a3'], kitchen: ['#e8f0f4', '#d3e0e8'], wall: 0xfbe7c6, trim: 0xd9573b, ground: 0x8fd16a, sky: 0x9fdcff, tree: 'pine'},
-  {name: 'Quiosque da Praia', icon: '🏖️', mult: 6, val: 4, cost: 3000, floor: ['#fff3d6', '#ffe1a1'], kitchen: ['#e3f6f5', '#c4ebe8'], wall: 0xc4ecf3, trim: 0x2a9fb8, ground: 0xf2dc9b, sky: 0x8fe3ff, tree: 'palm'},
-  {name: 'Praça de Alimentação', icon: '🏬', mult: 36, val: 16, cost: 60000, floor: ['#efeaf6', '#dcd3ee'], kitchen: ['#eef0f3', '#dde2e8'], wall: 0xf1e2f6, trim: 0x7b4fd8, ground: 0xb7bec7, sky: 0xc9d6ff, tree: 'round'},
+  {name: 'Lanchonete da Praça', kind: 'Hamburgueria', icon: '🍔', p: ['burger', 'fries', 'soda'], mult: 1, val: 1, cost: 0, at: [27, 33], floor: ['#f8e6c4', '#efd3a3'], kitchen: ['#e8f0f4', '#d3e0e8'], wall: 0xfbe7c6, trim: 0xd9573b, ground: 0x8fd16a, sky: 0x9fdcff, tree: 'pine'},
+  {name: 'Quiosque da Praia', kind: 'Açaiteria', icon: '🍇', p: ['acai', 'coco', 'sorvete'], mult: 6, val: 4, cost: 15000, at: [80, 84], floor: ['#fff3d6', '#ffe1a1'], kitchen: ['#e3f6f5', '#c4ebe8'], wall: 0xc4ecf3, trim: 0x2a9fb8, ground: 0xf2dc9b, sky: 0x8fe3ff, tree: 'palm'},
+  {name: 'Pizzaria do Shopping', kind: 'Pizzaria', icon: '🍕', p: ['pizza', 'juice', 'soda'], mult: 36, val: 16, cost: 3e5, at: [74, 33], floor: ['#efeaf6', '#dcd3ee'], kitchen: ['#eef0f3', '#dde2e8'], wall: 0xf1e2f6, trim: 0x7b4fd8, ground: 0xb7bec7, sky: 0xc9d6ff, tree: 'round'},
+  {name: 'Pastelaria da Feira', kind: 'Pastelaria', icon: '🥟', p: ['pastel', 'caldo', 'hotdog'], mult: 216, val: 64, cost: 6e6, at: [24, 78], floor: ['#fbe9d0', '#f3d2a8'], kitchen: ['#f4ece4', '#e6d8c8'], wall: 0xffe3b0, trim: 0xe0603a, ground: 0xd9c6a0, sky: 0xffd9a8, tree: 'round'},
+  {name: 'Sorveteria do Parque', kind: 'Sorveteria', icon: '🍨', p: ['sundae', 'shake', 'donut'], mult: 1296, val: 256, cost: 1.2e8, at: [50, 56], floor: ['#fde8f1', '#f8cfe1'], kitchen: ['#eef6fb', '#d9eaf5'], wall: 0xffe0ef, trim: 0xe0578f, ground: 0x7cc96a, sky: 0xb8ecff, tree: 'pine'},
+  {name: 'Café do Centro', kind: 'Cafeteria', icon: '☕', p: ['coffee', 'cake', 'juice'], mult: 7776, val: 1024, cost: 2.4e9, at: [50, 11], floor: ['#efe4d6', '#e0cdb6'], kitchen: ['#eceff1', '#dadfe3'], wall: 0xece4da, trim: 0x6b3a1e, ground: 0xa9b0ba, sky: 0xd6e4f0, tree: 'round'},
 ];
 const T = RESTS[S.cur];
+// look = visual da estação de preparo
 const PRODUCTS = {
-  burger: {icon: '🍔', name: 'hambúrguer', base: 10, time: 1.1},
-  fries: {icon: '🍟', name: 'batata', base: 14, time: 1.5},
-  soda: {icon: '🥤', name: 'refri', base: 8, time: .9},
+  burger: {icon: '🍔', name: 'hambúrguer', base: 10, time: 1.1, st: '🔥 CHAPA', look: 'grill'},
+  fries: {icon: '🍟', name: 'batata', base: 14, time: 1.5, st: '🍟 FRITADEIRA', look: 'fryer'},
+  soda: {icon: '🥤', name: 'refri', base: 8, time: .9, st: '🥤 REFRI', look: 'machine', color: 0x2a9fe0},
+  acai: {icon: '🍇', name: 'açaí', base: 12, time: 1.2, st: '🍇 AÇAÍ', look: 'freezer', color: 0x7a3aa8},
+  coco: {icon: '🥥', name: 'coco', base: 9, time: .9, st: '🥥 COCOS', look: 'machine', color: 0x5aa832},
+  sorvete: {icon: '🍦', name: 'sorvete', base: 11, time: 1.1, st: '🍦 SORVETE', look: 'freezer', color: 0x3fb6e0},
+  pizza: {icon: '🍕', name: 'pizza', base: 20, time: 1.9, st: '🍕 FORNO', look: 'oven'},
+  juice: {icon: '🧃', name: 'suco', base: 9, time: 1, st: '🧃 SUCOS', look: 'machine', color: 0xff9a1a},
+  pastel: {icon: '🥟', name: 'pastel', base: 12, time: 1.3, st: '🥟 PASTEL', look: 'fryer'},
+  caldo: {icon: '🍹', name: 'caldo de cana', base: 8, time: .9, st: '🍹 MOENDA', look: 'machine', color: 0x8cbf3a},
+  hotdog: {icon: '🌭', name: 'cachorro-quente', base: 13, time: 1.3, st: '🌭 CHAPA', look: 'grill'},
+  sundae: {icon: '🍨', name: 'sundae', base: 14, time: 1.3, st: '🍨 SUNDAE', look: 'freezer', color: 0xff8cc0},
+  shake: {icon: '🥛', name: 'milkshake', base: 12, time: 1.1, st: '🥛 SHAKES', look: 'machine', color: 0xff7fb8},
+  donut: {icon: '🍩', name: 'rosquinha', base: 9, time: 1, st: '🍩 ROSQUINHAS', look: 'fryer'},
+  coffee: {icon: '☕', name: 'café', base: 7, time: .8, st: '☕ CAFETEIRA', look: 'machine', color: 0x6b3a1e},
+  cake: {icon: '🍰', name: 'bolo', base: 16, time: 1.6, st: '🍰 CONFEITARIA', look: 'oven'},
 };
+const P = T.p; // produtos deste estabelecimento
+const cityMult = () => 1 + (S.bonus || 0);
+const repOf = r => (r && r.rep) || 3;
 const cap = () => 5 + R.lv.cap;
 const speed = () => 5.5 * (1 + .1 * R.lv.speed);
-const value = type => PRODUCTS[type].base * T.val * (1 + .3 * R.lv.price);
+const value = type => PRODUCTS[type].base * T.val * (1 + .3 * R.lv.price) * cityMult();
 const prepTime = (type, l) => PRODUCTS[type].time * Math.pow(.88, l);
 
 // ---------- cena ----------
@@ -196,8 +240,8 @@ for (const z of [1.5, 5.5, 9.5]) {
 }
 const menuTex = canvasTex(512, 256, (g, w, h) => {
   g.fillStyle = '#2f4a3a'; g.fillRect(0, 0, w, h); g.strokeStyle = '#b5793f'; g.lineWidth = 18; g.strokeRect(0, 0, w, h);
-  g.fillStyle = '#ffe9a8'; g.font = '700 64px Fredoka, system-ui'; g.textAlign = 'center'; g.fillText('BURGER RUSH', w / 2, 100);
-  g.font = '80px system-ui'; g.fillText('🍔 🍟 🥤', w / 2, 200);
+  g.fillStyle = '#ffe9a8'; g.font = '700 64px Fredoka, system-ui'; g.textAlign = 'center'; g.fillText(T.kind.toUpperCase(), w / 2, 100);
+  g.font = '80px system-ui'; g.fillText(P.map(k => PRODUCTS[k].icon).join(' '), w / 2, 200);
 });
 at(new THREE.Mesh(new THREE.PlaneGeometry(3, 1.5), new THREE.MeshBasicMaterial({map: menuTex})), 3, 1.75, -6.98);
 
@@ -316,6 +360,14 @@ const BG = {
   carton: new THREE.CylinderGeometry(.2, .15, .26, 4), stick: new THREE.BoxGeometry(.05, .24, .05),
   cup: new THREE.CylinderGeometry(.15, .11, .3, 16), lid: new THREE.CylinderGeometry(.16, .16, .03, 16), straw: new THREE.CylinderGeometry(.018, .018, .22, 6),
   bill: new THREE.BoxGeometry(.5, .06, .28), band: new THREE.BoxGeometry(.12, .065, .29),
+  cream: new THREE.SphereGeometry(.14, 12, 8), mug: new THREE.CylinderGeometry(.14, .13, .22, 16), handle: new THREE.TorusGeometry(.06, .02, 6, 12),
+  bowl: new THREE.CylinderGeometry(.26, .16, .2, 16), slice: new THREE.CylinderGeometry(.04, .04, .02, 8), coco: new THREE.SphereGeometry(.2, 14, 10),
+  cone: new THREE.ConeGeometry(.12, .26, 12), scoop: new THREE.SphereGeometry(.13, 12, 8), glass: new THREE.CylinderGeometry(.18, .1, .16, 14),
+  cherry: new THREE.SphereGeometry(.05, 8, 6), pbox: new THREE.BoxGeometry(.66, .08, .66), crust: new THREE.CylinderGeometry(.3, .3, .05, 18),
+  sauce: new THREE.CylinderGeometry(.26, .26, .01, 18), pep: new THREE.CylinderGeometry(.04, .04, .015, 8), pastel: new THREE.SphereGeometry(.28, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2),
+  paper: new THREE.BoxGeometry(.5, .02, .4), hdbun: new THREE.BoxGeometry(.56, .14, .22), sausage: new THREE.CylinderGeometry(.06, .06, .62, 10),
+  mustard: new THREE.BoxGeometry(.48, .015, .04), donut: new THREE.TorusGeometry(.17, .08, 8, 16), icing: new THREE.TorusGeometry(.17, .065, 6, 16, Math.PI * 2),
+  plate: new THREE.CylinderGeometry(.28, .26, .02, 16), cake: new THREE.BoxGeometry(.34, .2, .3), layer: new THREE.BoxGeometry(.345, .04, .305), top2: new THREE.BoxGeometry(.35, .03, .31),
 };
 function part(g, geo, c, x, y, z) { const p = new THREE.Mesh(geo, mat(c)); p.position.set(x, y, z); p.castShadow = true; g.add(p); return p; }
 const MAKERS = {
@@ -333,13 +385,66 @@ const MAKERS = {
     for (let i = 0; i < 9; i++) part(g, BG.stick, i % 3 ? 0xffd45a : 0xf2b632, (i % 3 - 1) * .07, .3 + (i % 2) * .03, (Math.floor(i / 3) - 1) * .06).rotation.z = (i % 3 - 1) * .15;
     return g;
   },
-  soda() {
+  soda: () => cup(0x2a9fe0, 0xff4d6d), juice: () => cup(0xff9a1a, 0x2fbf4a), caldo: () => cup(0x9ccf45, 0xffd23f),
+  shake: () => { const g = cup(0xff8cc0, 0x7b4fd8); part(g, BG.cream, 0xfff8f0, 0, .33, 0).scale.y = .6; return g; },
+  coffee() {
     const g = new THREE.Group();
-    part(g, BG.cup, 0xffffff, 0, .15, 0); part(g, new THREE.CylinderGeometry(.152, .13, .12, 16), 0x2a9fe0, 0, .16, 0);
-    part(g, BG.lid, 0xf2f2f2, 0, .31, 0); part(g, BG.straw, 0xff4d6d, .04, .42, 0).rotation.z = -.2;
+    part(g, BG.mug, 0xffffff, 0, .12, 0); part(g, new THREE.CylinderGeometry(.13, .13, .01, 14), 0x5a2f14, 0, .235, 0);
+    part(g, BG.handle, 0xffffff, .16, .13, 0); part(g, new THREE.CylinderGeometry(.24, .24, .02, 16), 0xf2e6d8, 0, .01, 0);
     return g;
   },
+  acai() {
+    const g = new THREE.Group();
+    part(g, BG.bowl, 0x6a2c91, 0, .1, 0); part(g, new THREE.CylinderGeometry(.24, .24, .03, 16), 0x4a1868, 0, .2, 0);
+    for (let i = 0; i < 4; i++) part(g, BG.slice, 0xfff1a8, Math.cos(i * 1.6) * .12, .23, Math.sin(i * 1.6) * .12);
+    part(g, BG.cream, 0xd9a066, 0, .23, 0).scale.set(.6, .3, .6);
+    return g;
+  },
+  coco() {
+    const g = new THREE.Group(); part(g, BG.coco, 0x6cbf3a, 0, .19, 0);
+    part(g, BG.straw, 0xff4d6d, .04, .4, 0).rotation.z = -.25; return g;
+  },
+  sorvete() {
+    const g = new THREE.Group(); part(g, BG.cone, 0xd9a066, 0, .13, 0).rotation.x = Math.PI;
+    part(g, BG.scoop, 0xffe0ef, 0, .3, 0); return g;
+  },
+  sundae() {
+    const g = new THREE.Group(); part(g, BG.glass, 0xe8f4ff, 0, .08, 0);
+    part(g, BG.scoop, 0xffffff, -.07, .21, 0); part(g, BG.scoop, 0xff8cc0, .07, .21, 0); part(g, BG.cherry, 0xe0283a, 0, .34, 0);
+    return g;
+  },
+  pizza() {
+    const g = new THREE.Group(); part(g, BG.pbox, 0xd9a066, 0, .04, 0);
+    part(g, BG.crust, 0xe8b04a, 0, .1, 0); part(g, BG.sauce, 0xd8402a, 0, .125, 0);
+    for (let i = 0; i < 6; i++) part(g, BG.pep, i % 2 ? 0xffe066 : 0xa8231a, Math.cos(i) * .15, .14, Math.sin(i) * .15);
+    return g;
+  },
+  pastel() {
+    const g = new THREE.Group(); const b = part(g, BG.pastel, 0xf0c050, 0, .1, 0); b.scale.set(1, .35, 1); b.rotation.y = .3;
+    part(g, BG.paper, 0xffffff, 0, .02, 0); return g;
+  },
+  hotdog() {
+    const g = new THREE.Group(); part(g, BG.hdbun, 0xe8a64a, 0, .08, 0);
+    part(g, BG.sausage, 0xb5452a, 0, .18, 0).rotation.z = Math.PI / 2; part(g, BG.mustard, 0xffd23f, 0, .245, 0);
+    return g;
+  },
+  donut() {
+    const g = new THREE.Group();
+    part(g, BG.donut, 0xe8a64a, 0, .09, 0).rotation.x = Math.PI / 2; part(g, BG.icing, 0xff8cc0, 0, .14, 0).rotation.x = Math.PI / 2;
+    return g;
+  },
+  cake() {
+    const g = new THREE.Group(); part(g, BG.plate, 0xffffff, 0, .01, 0);
+    part(g, BG.cake, 0xf7e2b8, 0, .12, 0); part(g, BG.layer, 0xff8cc0, 0, .12, 0); part(g, BG.top2, 0xffffff, 0, .225, 0);
+    part(g, BG.cherry, 0xe0283a, 0, .29, 0); return g;
+  },
 };
+function cup(liquid, straw) {
+  const g = new THREE.Group();
+  part(g, BG.cup, 0xffffff, 0, .15, 0); part(g, new THREE.CylinderGeometry(.152, .13, .12, 16), liquid, 0, .16, 0);
+  part(g, BG.lid, 0xf2f2f2, 0, .31, 0); part(g, BG.straw, straw, .04, .42, 0).rotation.z = -.2;
+  return g;
+}
 function makeItem(type) { return {mesh: MAKERS[type](), arrived: true, type}; }
 function makeBill(value) {
   const m = new THREE.Mesh(BG.bill, mat(0x3fbf5f)); m.castShadow = true;
@@ -431,7 +536,7 @@ function animChar(ch, dt) {
 
 // ---------- balcão: uma seção por produto ----------
 const COUNTER_MAX = 12;
-const SECTIONS = {burger: -1.3, fries: -.15, soda: 1};
+const SECTIONS = {[P[0]]: -1.3, [P[1]]: -.15, [P[2]]: 1};
 at(box(4.2, .95, 1, T.trim), 0, .475, -1); at(box(4.4, .1, 1.2, 0xfaf6ee), 0, 1, -1);
 at(box(4.22, .12, 1.02, 0x3a2f45), 0, .06, -1);
 const reg = at(new THREE.Group(), 1.85, 1.05, -1.1);
@@ -470,16 +575,26 @@ function addStation(type, x, z, rot = 0) {
   at(box(1.6, .85, 1.2, 0x9aa7b4), 0, .425, 0, g); at(box(1.62, .1, 1.22, 0x5d6672), 0, .05, 0, g);
   at(box(1.5, .06, 1.1, 0x2b2f36), 0, .88, 0, g);
   let slot = i => new V3((i % 2) * .6 - .3, .92 + Math.floor(i / 2) * .38, 0);
-  if (type === 'burger') {
+  const D = PRODUCTS[type], look = D.look;
+  if (look === 'grill') {
     for (const s of [-1, 1]) at(mesh(new THREE.BoxGeometry(1.4, .03, .06), basic(0xff7a2a), false), 0, .915, s * .3, g);
     for (let i = 0; i < 3; i++) at(cyl(.06, .05, 0xff5a3a, 10), -.5 + i * .25, .5, .61, g).rotation.x = Math.PI / 2;
-  } else if (type === 'fries') {
+  } else if (look === 'fryer') {
     at(mesh(new THREE.PlaneGeometry(1.3, .4), basic(0xf2c14e), false), 0, .915, -.3, g).rotation.x = -Math.PI / 2;
     for (const s of [-1, 1]) { at(box(.5, .14, .32, 0x3a3f47), s * .35, .99, -.3, g); at(cyl(.025, .3, 0x222222, 6), s * .35, 1.05, -.05, g).rotation.x = Math.PI / 2; }
     at(box(1.6, .2, .05, 0xffd23f), 0, .6, .61, g);
     slot = i => new V3((i % 2) * .5 - .25, .92 + Math.floor(i / 2) * .38, .28);
+  } else if (look === 'oven') {
+    at(box(1.4, 1.1, .5, 0xb5452a), 0, 1.43, -.3, g); at(mesh(new THREE.CircleGeometry(.36, 16, 0, Math.PI), basic(0x2b1a12), false), 0, 1.15, -.04, g);
+    at(mesh(new THREE.CircleGeometry(.28, 16, 0, Math.PI), basic(0xff9a3a), false), 0, 1.15, -.03, g); at(cyl(.12, .5, 0x8a8f99), .45, 2.2, -.3, g);
+    slot = i => new V3((i % 2) * .5 - .25, .92 + Math.floor(i / 2) * .38, .3);
+  } else if (look === 'freezer') {
+    at(box(1.5, .1, 1.1, D.color), 0, .9, 0, g); at(mesh(new THREE.BoxGeometry(1.3, .02, .5), basic(0xd6f3ff), false), 0, .96, -.25, g);
+    for (let i = 0; i < 3; i++) at(box(.36, .08, .4, [0xffffff, 0xff8cc0, 0xffe066][i]), -.42 + i * .42, .99, -.25, g);
+    at(box(1.6, .2, .05, D.color), 0, .6, .61, g);
+    slot = i => new V3((i % 2) * .5 - .25, .92 + Math.floor(i / 2) * .38, .28);
   } else {
-    at(box(1.4, .9, .4, 0x2a9fe0), 0, 1.33, -.33, g); at(box(1.2, .3, .02, 0xffffff), 0, 1.5, -.12, g);
+    at(box(1.4, .9, .4, D.color), 0, 1.33, -.33, g); at(box(1.2, .3, .02, 0xffffff), 0, 1.5, -.12, g);
     for (let i = 0; i < 3; i++) { at(box(.12, .1, .12, 0x555c66), -.4 + i * .4, .97, -.08, g); at(box(.22, .1, .02, [0xff4d6d, 0xffb300, 0x7be36b][i]), -.4 + i * .4, 1.5, -.1, g); }
     slot = i => new V3((i % 2) * .5 - .25, .92 + Math.floor(i / 2) * .38, .3);
   }
@@ -488,10 +603,10 @@ function addStation(type, x, z, rot = 0) {
   const sideways = Math.abs(Math.sin(rot)) > .5;
   addCollider(x, z, sideways ? .6 : .8, sideways ? .8 : .6); popIn(g);
   stations.push({type, g, stack, t: 0, smokeT: Math.random(), max, pos: new V3(x, 0, z), front: new V3(x + Math.sin(rot) * 1.25, 0, z + Math.cos(rot) * 1.25)});
-  if (!S.has[type]) { S.has[type] = true; dirty = true; }
+  stations[stations.length - 1].smoky = look !== 'machine' && look !== 'freezer';
   drawSign();
 }
-addStation('burger', -3, -4.5);
+addStation(P[0], -3, -4.5);
 
 const seats = [];
 function addTable(x, z) {
@@ -501,10 +616,19 @@ function addTable(x, z) {
   at(cyl(.1, .14, 0xff6b6b, 12), .45, .89, .3, g); at(ball(.09, 0xfff1a8), .45, 1.0, .3, g);
   for (const side of [-1, 1]) {
     at(cyl(.3, .12, T.trim), side * .98, .45, 0, g); at(cyl(.06, .4, 0x6b4a2a), side * .98, .2, 0, g);
-    seats.push({x: x + side * .98, z, side, table: g, taken: false});
+    seats.push({x: x + side * .98, z, side, table: g, taken: false, dirty: false, trash: null, tb: {x, z}});
   }
   addCollider(x, z, 1.3, .55); popIn(g);
 }
+// mesa suja: o cliente deixa a bandeja; ela só volta a ser usada depois de limpa
+function soil(seat) {
+  seat.dirty = true; const t = new THREE.Group(); seat.table.add(t); t.position.set(seat.side * .38, .84, 0);
+  at(box(.5, .03, .36, 0x9aa7b4), 0, 0, 0, t); at(ball(.08, 0xf2f2f2), -.1, .07, .05, t); at(cyl(.06, .14, 0xff4d6d, 8), .12, .08, -.05, t).rotation.z = 1.3;
+  seat.trash = t;
+  if (!S.tips.dirt) { S.tips.dirt = true; dirty = true; toast('🧽 Mesa suja! Passe perto dela para limpar'); }
+}
+function cleanSeat(seat) { if (!seat.dirty) return; seat.dirty = false; drop(seat.trash); seat.trash = null; puff(new V3(seat.x, 1, seat.z)); track('clean', 1); }
+const dirtyTables = () => { const m = new Map(); for (const s of seats) if (s.dirty) m.set(s.table, s.tb); return [...m.entries()]; };
 
 // ---------- jogador ----------
 const player = makeChar({shirt: 0xffffff, skin: SKINS[0], chef: true, pants: 0x3b3f58});
@@ -541,40 +665,58 @@ function updateHelper(h, dt) {
   for (const s of stations) if (p.distanceTo(s.pos) < 1.9 && h.hand.count < hc && counters[s.type].count < COUNTER_MAX && h.pickT <= 0 && transfer(s.stack, h.hand)) h.pickT = .15;
   animChar(h, dt);
 }
-function currentRate() { return (seats.length / 2 + helpers.length * 3) * value('burger') * .8; } // $/min sem o jogador
+// faxineiro: vai até a mesa suja mais próxima e limpa
+const cleaners = [];
+function addCleaner(x, z) {
+  const c = makeChar({shirt: 0x2bb3a3, skin: SKINS[2], chef: true}); c.g.position.set(x, 0, z); c.home = new V3(x, 0, z); c.t = 0; cleaners.push(c); popIn(c.g);
+}
+function updateCleaner(c, dt) {
+  const d = dirtyTables(), p = c.g.position;
+  if (d.length) {
+    const [tbl, tb] = d.reduce((a, b) => (Math.hypot(b[1].x - p.x, b[1].z - p.z) < Math.hypot(a[1].x - p.x, a[1].z - p.z) ? b : a));
+    if (moveTo(c, tb.x, tb.z + .95, 3.2 * (1 + .1 * R.lv.speed), dt)) { turn(c, Math.PI, dt); if ((c.t += dt) > .7) { c.t = 0; for (const s of seats) if (s.table === tbl) cleanSeat(s); } }
+  } else moveTo(c, c.home.x, c.home.z, 3, dt);
+  animChar(c, dt);
+}
+// $/min sem o jogador (usado nos ganhos parados e nos outros estabelecimentos)
+function currentRate() { return (seats.length / 2 + helpers.length * 3 + cleaners.length * 2) * value(P[0]) * .8 * (.7 + .1 * R.rep); }
 
 // ---------- áreas de compra ----------
 const ZTEX = canvasTex(128, 128, g => { g.fillStyle = 'rgba(255,255,255,.3)'; roundRect(g, 6, 6, 116, 116, 18); g.fill(); g.setLineDash([16, 10]); g.lineWidth = 8; g.strokeStyle = '#fff'; g.stroke(); });
 const KINDS = {
   table: {name: '🪑 MESA', msg: 'Mesa nova!'},
-  burger: {name: '🔥 CHAPA', msg: 'Chapa nova!'},
-  fries: {name: '🍟 FRITADEIRA', msg: 'Batata frita liberada!'},
-  soda: {name: '🥤 REFRI', msg: 'Refri liberado!'},
   helper: {name: '🧑‍🍳 AJUDANTE', msg: 'Ajudante contratado!'},
+  cleaner: {name: '🧽 FAXINEIRO', msg: 'Faxineiro contratado!'},
 };
+P.forEach((k, i) => { KINDS['p' + i] = {name: PRODUCTS[k].st, msg: `${PRODUCTS[k].icon} ${PRODUCTS[k].name[0].toUpperCase() + PRODUCTS[k].name.slice(1)} liberado!`}; });
 const ZONES = [
   {id: 't1', kind: 'table', price: 10, x: -3.8, z: 4, req: []},
   {id: 't2', kind: 'table', price: 25, x: 3.8, z: 4, req: ['t1']},
-  {id: 'g2', kind: 'burger', price: 40, x: -5.6, z: -4.5, req: ['t1']},
-  {id: 'f1', kind: 'fries', price: 60, x: -5.9, z: -2.3, rot: Math.PI / 2, req: ['t2']},
+  {id: 'g2', kind: 'p0', price: 40, x: -5.6, z: -4.5, req: ['t1']},
+  {id: 'f1', kind: 'p1', price: 60, x: -5.9, z: -2.3, rot: Math.PI / 2, req: ['t2']},
   {id: 'h1', kind: 'helper', price: 80, x: 4.2, z: -4.4, req: ['t2', 'g2']},
   {id: 't3', kind: 'table', price: 60, x: -3.8, z: 7.3, req: ['f1']},
-  {id: 's1', kind: 'soda', price: 100, x: 5.9, z: -2.6, rot: -Math.PI / 2, req: ['h1', 't3']},
+  {id: 's1', kind: 'p2', price: 100, x: 5.9, z: -2.6, rot: -Math.PI / 2, req: ['h1', 't3']},
   {id: 't4', kind: 'table', price: 90, x: 3.8, z: 7.3, req: ['t3']},
-  {id: 'g3', kind: 'burger', price: 150, x: -.4, z: -4.5, req: ['s1', 't4']},
+  {id: 'g3', kind: 'p0', price: 150, x: -.4, z: -4.5, req: ['s1', 't4']},
   {id: 't5', kind: 'table', price: 130, x: -3.8, z: 10.6, req: ['t4']},
   {id: 't6', kind: 'table', price: 180, x: 3.8, z: 10.6, req: ['t5']},
+  {id: 'c1', kind: 'cleaner', price: 120, x: -5.6, z: 2.1, req: ['t3']},
   {id: 'h2', kind: 'helper', price: 300, x: 2.2, z: -4.6, req: ['g3', 't6']},
+  {id: 'f2', kind: 'p1', price: 420, x: -5.9, z: -.1, rot: Math.PI / 2, req: ['h2']},
+  {id: 's2', kind: 'p2', price: 520, x: 5.9, z: -.4, rot: -Math.PI / 2, req: ['f2']},
+  {id: 'h3', kind: 'helper', price: 800, x: 5.4, z: 2.1, req: ['s2', 'c1']},
 ];
 const bought = new Set(R.bought);
 const complete = r => !!r && ZONES.every(z => r.bought.includes(z.id));
 function makeZone(z) {
   if (z.kind === 'table') addTable(z.x, z.z);
   else if (z.kind === 'helper') addHelper(z.x, z.z);
-  else addStation(z.kind, z.x, z.z, z.rot || 0);
+  else if (z.kind === 'cleaner') addCleaner(z.x, z.z);
+  else addStation(P[+z.kind[1]], z.x, z.z, z.rot || 0);
 }
 function buildZoneUI(z) {
-  z.price *= T.mult; z.left = z.price; z.step = Math.max(1, Math.ceil(z.price / 25)); z.t = 0;
+  z.price = Math.round(z.price * T.mult * Math.pow(1.2, ZONES.indexOf(z))); z.left = z.price; z.step = Math.max(1, Math.ceil(z.price / 25)); z.t = 0;
   z.g = at(new THREE.Group(), z.x, .02, z.z); z.g.visible = false;
   const base = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 1.9), new THREE.MeshBasicMaterial({map: ZTEX, transparent: true})); base.rotation.x = -Math.PI / 2; z.g.add(base);
   z.fill = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 1.7), new THREE.MeshBasicMaterial({color: 0x2fbf4a, transparent: true, opacity: .65})); z.fill.rotation.x = -Math.PI / 2; z.fill.position.y = .01; z.fill.scale.set(.001, .001, 1); z.g.add(z.fill);
@@ -601,22 +743,43 @@ function buyZone(z, fx) {
 }
 
 // ---------- clientes ----------
+// paciência: cada cliente na fila tem um tempo; se acabar, vai embora bravo, a reputação cai e o combo zera
 const queue = [], customers = [];
-let spawnT = 0;
-function makeOrder() {
-  const o = {burger: 1 + (Math.random() * 2 | 0)};
-  for (const t of ['fries', 'soda']) if (stations.some(s => s.type === t) && Math.random() < .6) o[t] = 1 + (Math.random() < .25 ? 1 : 0);
-  if (o.fries && Math.random() < .3) delete o.burger; // às vezes só acompanhamentos
+let spawnT = 0, combo = 0, comboT = 0, rush = 0, rushNext = 75;
+const comboMult = () => 1 + Math.min(combo, 20) * .05;
+const payMult = () => .7 + .1 * R.rep;
+const patience = () => (S.tut ? 28 : 9999) * (1 + .15 * R.lv.pat) * (rush > 0 ? .8 : 1);
+function makeOrder(vip) {
+  const has = P.filter(k => stations.some(s => s.type === k)), o = {[P[0]]: 1 + (Math.random() * 2 | 0)};
+  for (const t of has.slice(1)) if (Math.random() < .6) o[t] = 1 + (Math.random() < .25 ? 1 : 0);
+  if (o[P[1]] && Math.random() < .3) delete o[P[0]]; // às vezes só acompanhamentos
+  if (vip) for (const t of has) o[t] = (o[t] || 0) + 1 + (Math.random() * 2 | 0);
   return o;
 }
 function spawnCustomer() {
-  const c = makeChar({shirt: pick(SHIRTS), skin: pick(SKINS), pants: pick([0x2d3142, 0x3c5a99, 0x6b4a2a])});
-  c.g.position.set((Math.random() - .5) * 2, 0, 15); c.order = makeOrder(); c.got = {}; c.state = 'queue'; c.t = 0; c.pay = 0; c.payT = 0;
+  const vip = S.tut && bought.size >= 4 && Math.random() < .07 + .01 * R.lv.mkt;
+  const c = makeChar({shirt: vip ? 0xffc928 : pick(SHIRTS), skin: pick(SKINS), pants: vip ? 0x2b2140 : pick([0x2d3142, 0x3c5a99, 0x6b4a2a])});
+  if (vip) { at(mesh(new THREE.CylinderGeometry(.2, .24, .16, 5), 0xffd23f), 0, 1.5, 0, c.body); }
+  c.g.position.set((Math.random() - .5) * 2, 0, 15); c.vip = vip; c.order = makeOrder(vip); c.got = {}; c.state = 'queue'; c.t = 0; c.pay = 0; c.payT = 0;
+  c.pat = c.patMax = patience() * (vip ? .65 : 1);
   for (const k in c.order) c.got[k] = 0;
   c.bubble = label('', {w: 384, scale: 1.9, bg: 'rgba(255,255,255,.97)', fg: '#2b2140'}); c.bubble.position.y = 2.05; c.bubble.visible = false; c.g.add(c.bubble);
   queue.push(c); customers.push(c);
 }
 const orderText = c => Object.entries(c.order).filter(([k, n]) => c.got[k] < n).map(([k, n]) => PRODUCTS[k].icon + (n - c.got[k])).join(' ');
+const moodBg = c => { const k = c.pat / c.patMax; return k > .5 ? (c.vip ? 'rgba(255,233,140,.97)' : 'rgba(255,255,255,.97)') : k > .25 ? 'rgba(255,200,90,.97)' : 'rgba(255,110,110,.97)'; };
+function addRep(d) { R.rep = Math.max(1, Math.min(5, R.rep + d)); dirty = true; refreshHud(); }
+function setCombo(n) {
+  const up = n > combo; combo = n; comboT = 12;
+  if (up && combo % 5 === 0) { floatText(`🔥 COMBO x${comboMult().toFixed(1)}!`, player.g.position, 'rgba(255,122,26,.95)'); sfx.done(); }
+  if (up) track('combo', combo, true);
+  refreshHud(up);
+}
+function angry(c, msg, rep) {
+  const i = queue.indexOf(c); if (i >= 0) queue.splice(i, 1);
+  c.state = 'leave'; c.t = 1.8; c.bubble.set(msg, 'rgba(230,60,60,.95)', '#fff'); c.bubble.visible = true;
+  addRep(rep); if (combo) { floatText('Combo perdido 💔', c.g.position, 'rgba(230,60,60,.95)'); setCombo(0); }
+}
 function updateCustomer(c, dt) {
   if (c.pay > 0 && (c.payT -= dt) <= 0) {
     c.payT = .05; c.pay--;
@@ -628,21 +791,27 @@ function updateCustomer(c, dt) {
     const i = queue.indexOf(c);
     const there = moveTo(c, 0, .9 + i * 1.15, 3, dt);
     if (there) turn(c, Math.PI, dt);
+    if (there || i > 0) c.pat -= dt;
+    if (c.pat <= 0) return angry(c, '😡 Demorou!', -.3);
     if (i === 0 && there) {
-      c.bubble.visible = true; c.bubble.set(orderText(c) || '👍');
+      c.bubble.visible = true; c.bubble.set((c.vip ? '👑' : '') + (orderText(c) || '👍'), moodBg(c));
       if ((c.t -= dt) <= 0) for (const [k, n] of Object.entries(c.order)) if (c.got[k] < n && transfer(counters[k], c.hand)) { c.got[k]++; c.t = .28; break; }
       if (Object.entries(c.order).every(([k, n]) => c.got[k] >= n) && c.hand.ready) {
         queue.shift(); c.bubble.visible = false;
+        const fast = c.pat / c.patMax > .5;
+        setCombo(combo + 1); addRep(fast ? .08 : .03);
         let total = 0, items = 0;
-        for (const [k, n] of Object.entries(c.order)) { total += n * value(k); items += n; track(k, n); }
-        track('serve', 1);
+        for (const [k, n] of Object.entries(c.order)) { total += n * value(k); items += n; track('item', n); }
+        total *= payMult() * comboMult() * (rush > 0 ? 2 : 1) * (c.vip ? 5 : 1);
+        track('serve', 1); if (c.vip) { track('vip', 1); floatText(`👑 VIP +$${fmt(total)}`, c.g.position, 'rgba(224,154,0,.95)'); burst(c.g.position.clone().add(new V3(0, 1.5, 0)), 24, COINS, {speed: 3, up: 6, size: .14}); }
         c.pay = Math.min(15, items * 3); c.billVal = total / c.pay;
         if (Math.hypot(player.g.position.x - c.g.position.x, player.g.position.z - c.g.position.z) < 9) sfx.pay();
-        const free = seats.filter(s => !s.taken), seat = free[Math.random() * free.length | 0];
+        const free = seats.filter(s => !s.taken && !s.dirty), seat = free[Math.random() * free.length | 0];
         if (seat) { seat.taken = true; c.seat = seat; c.state = 'toSeat'; }
-        else { c.state = 'leave'; c.bubble.set('😠 Sem lugar', 'rgba(230,60,60,.95)', '#fff'); c.bubble.visible = true; c.t = 1.6; }
+        else { c.state = 'leave'; c.bubble.set('😠 Sem mesa limpa', 'rgba(230,60,60,.95)', '#fff'); c.bubble.visible = true; c.t = 1.6; addRep(-.15); }
       }
-    }
+    } else if (c.pat / c.patMax < .5) { c.bubble.visible = true; c.bubble.set(c.pat / c.patMax < .25 ? '😠' : '😐', moodBg(c)); }
+    else c.bubble.visible = false;
   } else if (c.state === 'toSeat') {
     if (moveTo(c, c.seat.x, c.seat.z, 3, dt)) {
       c.state = 'eat'; c.t = 5; c.sitting = true; c.g.position.y = .12; c.g.rotation.y = c.seat.side > 0 ? -Math.PI / 2 : Math.PI / 2;
@@ -653,7 +822,7 @@ function updateCustomer(c, dt) {
   } else if (c.state === 'eat') {
     c.t -= dt; c.food.forEach(it => it.mesh.scale.setScalar(Math.max(.01, Math.min(1, c.t / 4))));
     if (c.t <= 0) {
-      c.food.forEach(it => drop(it.mesh)); c.seat.taken = false; c.sitting = false; c.g.position.y = 0; c.state = 'leave'; c.t = 1.2;
+      c.food.forEach(it => drop(it.mesh)); c.seat.taken = false; if (S.tut) soil(c.seat); c.sitting = false; c.g.position.y = 0; c.state = 'leave'; c.t = 1.2;
       c.bubble.set('❤️'); c.bubble.visible = true;
     }
   } else if (c.state === 'leave') {
@@ -662,6 +831,44 @@ function updateCustomer(c, dt) {
   }
   animChar(c, dt);
 }
+// hora do rush: clientes chegam bem mais rápido e pagam em dobro por 25s
+function updateRush(dt) {
+  if (!S.tut || bought.size < 2) return;
+  const el = $('rush');
+  if (rush > 0) {
+    rush -= dt; el.textContent = `🔥 HORA DO RUSH · pagam 2x · ${Math.ceil(rush)}s`;
+    if (rush <= 0) { el.style.display = 'none'; track('rush', 1); toast('Rush encerrado! 💪'); rushNext = 140 + Math.random() * 100; }
+  } else if ((rushNext -= dt) <= 0) {
+    rush = 25; el.style.display = 'block'; sfx.done(); spawnT = 0;
+    floatText('🔥 HORA DO RUSH!', player.g.position, 'rgba(255,59,59,.95)');
+  }
+}
+// presente surpresa: aparece no salão de vez em quando; passe por cima para pegar
+let gift = null, giftNext = 50;
+function updateGift(dt) {
+  if (!S.tut) return;
+  if (!gift && (giftNext -= dt) <= 0) {
+    const g = at(new THREE.Group(), (Math.random() < .5 ? -1 : 1) * (1.4 + Math.random() * .6), 0, 2 + Math.random() * 9);
+    at(box(.6, .5, .6, 0xff4d6d), 0, .25, 0, g); at(box(.64, .12, .64, 0xffd23f), 0, .55, 0, g); at(box(.12, .52, .62, 0xffd23f), 0, .26, 0, g);
+    popIn(g); gift = g;
+  }
+  if (gift) {
+    gift.rotation.y += dt * 1.5; gift.position.y = Math.abs(Math.sin(elapsed * 3)) * .2;
+    const p = player.g.position;
+    if (Math.hypot(p.x - gift.position.x, p.z - gift.position.z) < .9) {
+      const amt = Math.max(20 * T.val, currentRate() * (.5 + Math.random()));
+      addMoney(amt); track('earn', amt); sfx.buy(); floatText(`🎁 +$${fmt(amt)}`, gift.position, 'rgba(255,77,109,.95)');
+      burst(gift.position.clone().add(new V3(0, .6, 0)), 40, COINS, {speed: 4, up: 7, size: .16});
+      scene.remove(gift); gift = null; giftNext = 70 + Math.random() * 80;
+    }
+  }
+}
+function refreshHud(pop) {
+  $('rep').textContent = '⭐ ' + R.rep.toFixed(1);
+  const cb = $('combo'); cb.textContent = `🔥 x${comboMult().toFixed(1)}`; cb.classList.toggle('hot', combo >= 5);
+  if (pop) { cb.classList.remove('pop'); void cb.offsetWidth; cb.classList.add('pop'); }
+  $('stat').style.display = S.tut ? 'flex' : 'none';
+}
 
 // ---------- melhorias (por restaurante) ----------
 const UPS = [
@@ -669,6 +876,8 @@ const UPS = [
   {k: 'speed', icon: '👟', name: 'Tênis novo', desc: l => `Velocidade +${l * 10}% → +${(l + 1) * 10}%`, base: 25, max: 8},
   {k: 'price', icon: '💲', name: 'Receitas especiais', desc: l => `Lanches valem +${l * 30}% → +${(l + 1) * 30}%`, base: 40, max: 20},
   {k: 'grill', icon: '🔥', name: 'Cozinha turbo', desc: l => `Preparo ${Math.round((1 - Math.pow(.88, l)) * 100)}% → ${Math.round((1 - Math.pow(.88, l + 1)) * 100)}% mais rápido`, base: 35, max: 8},
+  {k: 'pat', icon: '🛋️', name: 'Ambiente aconchegante', desc: l => `Clientes esperam +${l * 15}% → +${(l + 1) * 15}%`, base: 50, max: 8},
+  {k: 'mkt', icon: '📣', name: 'Marketing', desc: l => `Mais clientes e VIPs (nível ${l} → ${l + 1})`, base: 60, max: 10},
 ];
 const upCost = u => Math.round(u.base * T.mult * Math.pow(1.7, R.lv[u.k]));
 function renderUps() {
@@ -691,19 +900,21 @@ $('ups').addEventListener('click', e => {
 const dayKey = (t = Date.now()) => new Date(t).toLocaleDateString('sv-SE'); // AAAA-MM-DD no fuso local
 const MPOOL = [
   {k: 'serve', icon: '🙋', t: n => `Atenda ${n} clientes`, n: [12, 25, 45]},
-  {k: 'burger', icon: '🍔', t: n => `Venda ${n} hambúrgueres`, n: [20, 40, 70]},
-  {k: 'fries', icon: '🍟', t: n => `Venda ${n} batatas`, n: [8, 18, 32], need: 'fries'},
-  {k: 'soda', icon: '🥤', t: n => `Venda ${n} refris`, n: [8, 18, 32], need: 'soda'},
+  {k: 'item', icon: '🍽️', t: n => `Venda ${n} itens`, n: [30, 60, 110]},
   {k: 'earn', icon: '💰', t: n => `Ganhe $${fmt(n)}`, n: [300, 800, 1800], scale: true},
   {k: 'upgrade', icon: '⬆️', t: n => `Compre ${n} melhoria${n > 1 ? 's' : ''}`, n: [1, 2, 3]},
+  {k: 'clean', icon: '🧽', t: n => `Limpe ${n} mesas`, n: [8, 16, 30]},
+  {k: 'combo', icon: '🔥', t: n => `Faça um combo de ${n}`, n: [6, 12, 20]},
+  {k: 'vip', icon: '👑', t: n => `Atenda ${n} VIP${n > 1 ? 's' : ''}`, n: [1, 3, 5]},
+  {k: 'rush', icon: '⏱️', t: n => `Encare ${n} hora${n > 1 ? 's' : ''} do rush`, n: [1, 2, 4]},
 ];
-const bestVal = () => Math.max(...S.r.map((r, i) => (r ? RESTS[i].val : 1)));
+const bestVal = () => Math.max(...S.r.map((r, i) => (r ? RESTS[i].val : 1))) * cityMult();
 function ensureDaily() {
   const today = dayKey();
-  if (S.daily && S.daily.day === today) return false;
+  if (S.daily && S.daily.day === today && S.daily.list.every(m => MPOOL.some(x => x.k === m.k))) return false;
   let h = 0; for (const ch of today) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
   const r = () => (h = (h * 1103515245 + 12345) >>> 0) / 4294967296;
-  const pool = MPOOL.filter(m => !m.need || S.has[m.need]), used = new Set(), list = [], v = bestVal();
+  const pool = MPOOL, used = new Set(), list = [], v = bestVal();
   for (let tier = 0; tier < 3; tier++) {
     let m, guard = 0;
     do { m = pool[Math.floor(r() * pool.length)]; } while (used.has(m.k) && guard++ < 30);
@@ -712,10 +923,10 @@ function ensureDaily() {
   }
   S.daily = {day: today, list}; dirty = true; return true;
 }
-function track(k, a) {
+function track(k, a, isMax) {
   if (!S.daily) return;
   for (const m of S.daily.list) if (m.k === k && !m.claimed && m.p < m.n) {
-    m.p = Math.min(m.n, m.p + a); dirty = true;
+    const np = Math.min(m.n, isMax ? Math.max(m.p, a) : m.p + a); if (np === m.p) continue; m.p = np; dirty = true;
     if (m.p >= m.n) { toast('✅ Missão concluída! Resgate em Missões'); sfx.done(); }
   }
   if ($('missions').classList.contains('open') && k !== 'earn') renderMissions();
@@ -745,39 +956,80 @@ function loginBonus() {
   return Math.round(40 * S.streak * bestVal());
 }
 
-// ---------- restaurantes ----------
+// ---------- mapa da cidade, franquias e nova cidade ----------
+// franquia: unidades de um estabelecimento completo que rendem sozinhas; nova cidade: recomeça com bônus permanente
+const FR_MAX = 10;
+const frIncome = i => (S.r[i] ? S.r[i].fr : 0) * 150 * RESTS[i].val * cityMult();
+const frCost = i => Math.round(2500 * RESTS[i].val * Math.pow(1.45, S.r[i].fr) * (1 + .5 * S.city));
+const lotRate = (i, withCur) => { const r = S.r[i]; return r ? ((withCur || i !== S.cur) ? r.rate : 0) + frIncome(i) : 0; };
+const passiveRate = withCur => S.r.reduce((a, r, i) => a + lotRate(i, withCur), 0);
+const doneCount = () => S.r.filter(complete).length;
+const cityGain = () => .25 * doneCount() + .02 * S.r.reduce((a, r) => a + (r ? r.fr : 0), 0);
+let sel = S.cur;
+function lotState(i) {
+  if (i === S.cur) return 'here';
+  if (S.r[i]) return 'own';
+  return complete(S.r[i - 1]) ? 'buy' : 'lock';
+}
 function renderRests() {
-  const others = S.r.reduce((a, r, i) => a + (r && i !== S.cur ? r.rate : 0), 0);
-  $('rSub').textContent = others > 0 ? `Os outros restaurantes rendem $${fmt(others)}/min para você` : 'Complete um restaurante para abrir o próximo';
-  $('rList').innerHTML = RESTS.map((t, i) => {
-    const r = S.r[i]; let right, sub;
-    if (i === S.cur) { right = '<span class="here">Você está aqui</span>'; sub = `${r.bought.length}/${ZONES.length} áreas · lanches valem ${t.val}x`; }
-    else if (r) { right = `<button class="btn" data-go="${i}">Ir</button>`; sub = `${r.bought.length}/${ZONES.length} áreas · rende $${fmt(r.rate)}/min`; }
-    else {
-      const ready = complete(S.r[i - 1]);
-      sub = ready ? `Lanches valem ${t.val}x mais` : `Complete ${RESTS[i - 1].name} para abrir`;
-      right = `<button class="btn" data-open="${i}" ${ready && S.money >= t.cost ? '' : 'disabled'}>${ready ? '$' + fmt(t.cost) : '🔒'}</button>`;
-    }
-    return `<div class="up"><div class="ic">${t.icon}</div><div class="tx"><b>${t.name}</b><span>${sub}</span></div>${right}</div>`;
+  const others = passiveRate(false);
+  $('cityT').textContent = `🗺️ Cidade ${S.city + 1}`;
+  $('rSub').textContent = (S.bonus ? `Bônus de rede x${cityMult().toFixed(2)} · ` : '') + (others > 0 ? `Sua rede rende $${fmt(others)}/min fora daqui` : 'Complete um estabelecimento para abrir o próximo');
+  const roads = '<div class="zone" style="right:-12%;bottom:-14%;width:58%;height:34%;background:#4fb3e8;border-radius:50% 0 0 0"></div><div class="zone" style="right:-8%;bottom:14%;width:50%;height:9%;background:#f2dc9b;border-radius:40px 0 0 40px"></div>'
+    + '<div class="zone" style="left:41%;top:46%;width:18%;height:20%;background:#5fb35a"></div><div class="zone" style="left:66%;top:4%;width:30%;height:16%;background:#b7bec7"></div>'
+    + '<div class="zone" style="left:6%;top:70%;width:30%;height:20%;background:#d9c6a0"></div>'
+    + '<div class="rd h" style="top:22%"></div><div class="rd h" style="top:64%"></div><div class="rd v" style="left:38%"></div><div class="rd v" style="left:62%"></div>';
+  $('map').innerHTML = roads + RESTS.map((t, i) => {
+    const st = lotState(i), tag = st === 'here' ? 'Você está aqui' : st === 'own' ? (S.r[i].fr ? `🏪×${S.r[i].fr}` : 'Seu') : st === 'buy' ? '$' + fmt(t.cost) : '🔒';
+    return `<button class="pin ${st}${i === sel ? ' sel' : ''}" data-lot="${i}" style="left:${t.at[0]}%;top:${t.at[1]}%"><span class="pi">${st === 'lock' ? '🔒' : t.icon}</span><small>${tag}</small></button>`;
   }).join('');
+  const t = RESTS[sel], r = S.r[sel], st = lotState(sel), prods = t.p.map(k => PRODUCTS[k].icon).join(' ');
+  let right, sub;
+  if (st === 'here') { right = '<span class="here">Aqui</span>'; sub = `${r.bought.length}/${ZONES.length} áreas · ⭐ ${repOf(r).toFixed(1)}`; }
+  else if (st === 'own') { right = `<button class="btn" data-go="${sel}">Ir</button>`; sub = `${r.bought.length}/${ZONES.length} áreas · rende $${fmt(lotRate(sel))}/min`; }
+  else if (st === 'buy') { sub = `Produtos valem ${t.val}x · ${prods}`; right = `<button class="btn" data-open="${sel}" ${S.money >= t.cost ? '' : 'disabled'}>$${fmt(t.cost)}</button>`; }
+  else { sub = `Complete ${RESTS[sel - 1].name} para abrir`; right = '<button class="btn" disabled>🔒</button>'; }
+  let html = `<div class="up"><div class="ic">${t.icon}</div><div class="tx"><b>${t.name}</b><small>${t.kind} · ${prods}</small><span>${sub}</span></div>${right}</div>`;
+  if (r) {
+    const done = complete(r), max = r.fr >= FR_MAX;
+    html += `<div class="up"><div class="ic">🏪</div><div class="tx"><b>Franquias ${r.fr}/${FR_MAX}</b><span>${done ? `Cada unidade rende +$${fmt(150 * t.val * cityMult())}/min, mesmo com o app fechado` : 'Complete este estabelecimento para franquear'}</span></div>`
+      + (done ? `<button class="btn gold" data-fr="${sel}" ${!max && S.money >= frCost(sel) ? '' : 'disabled'}>${max ? 'MAX' : '$' + fmt(frCost(sel))}</button>` : '') + '</div>';
+  }
+  $('rList').innerHTML = html;
+  const n = doneCount();
+  $('cityBox').innerHTML = `<div class="up"><div class="ic">✈️</div><div class="tx"><b>Expandir para nova cidade</b><span>${n >= 3 ? `Vende tudo aqui e recomeça com bônus permanente de +${Math.round(cityGain() * 100)}% em tudo` : `Complete 3 estabelecimentos (${n}/3) para levar sua marca a outra cidade`}</span></div><button class="btn gold" id="newCity" ${n >= 3 ? '' : 'disabled'}>Ir</button></div>`;
 }
 function switchTo(i) {
   R.rate = currentRate(); S.cur = i; persist();
   $('fade').textContent = `${RESTS[i].icon} ${RESTS[i].name}`; $('fade').classList.add('on');
   setTimeout(() => location.reload(), 450);
 }
-$('rList').addEventListener('click', e => {
-  const go = e.target.closest('button[data-go]'), op = e.target.closest('button[data-open]');
+$('map').addEventListener('click', e => { const b = e.target.closest('[data-lot]'); if (b) { sel = +b.dataset.lot; renderRests(); } });
+$('rests').addEventListener('click', e => {
+  const go = e.target.closest('button[data-go]'), op = e.target.closest('button[data-open]'), fr = e.target.closest('button[data-fr]');
   if (go) switchTo(+go.dataset.go);
   if (op && !op.disabled) {
     const i = +op.dataset.open, t = RESTS[i]; if (S.money < t.cost || S.r[i]) return;
-    addMoney(-t.cost); S.r[i] = {bought: [], lv: Object.assign({}, LV0), rate: 0}; sfx.buy(); switchTo(i);
+    addMoney(-t.cost); S.r[i] = {bought: [], lv: Object.assign({}, LV0), rate: 0, rep: 3, fr: 0}; sfx.buy(); switchTo(i);
+  }
+  if (fr && !fr.disabled) {
+    const i = +fr.dataset.fr, c = frCost(i); if (S.money < c || S.r[i].fr >= FR_MAX) return;
+    addMoney(-c); S.r[i].fr++; dirty = true; sfx.buy(); track('upgrade', 1); toast(`🏪 Nova franquia de ${RESTS[i].name}!`);
+    burst(player.g.position.clone().add(new V3(0, 1.2, 0)), 30, CONFETTI, {speed: 3.5, up: 7}); renderRests();
+  }
+  if (e.target.id === 'newCity' && !e.target.disabled) {
+    const g = cityGain();
+    if (!confirm(`Levar a marca para a Cidade ${S.city + 2}?\n\nVocê recomeça do zero (dinheiro, estabelecimentos e franquias), mas ganha +${Math.round(g * 100)}% permanente em tudo que vender. Missões e sequência continuam.`)) return;
+    S.bonus = (S.bonus || 0) + g; S.city++; S.money = 0; S.cur = 0; S.r = [{bought: [], lv: Object.assign({}, LV0), rate: 0, rep: 3, fr: 0}];
+    persist(); Cloud.push(true);
+    $('fade').textContent = `✈️ Cidade ${S.city + 1} · bônus x${cityMult().toFixed(2)}`; $('fade').classList.add('on');
+    setTimeout(() => location.reload(), 900);
   }
 });
 
 // ---------- save na nuvem (Google Play Games; só no app Android) ----------
-const progressOf = s => (s && s.r ? s.r.reduce((a, r, i) => a + (r ? i * 100 + r.bought.length * 5 + Object.values(r.lv || {}).reduce((x, y) => x + y, 0) : 0), 0) : 0);
-const describe = s => { const i = s.r.length - 1; return `${RESTS[i] ? RESTS[i].icon + ' ' + RESTS[i].name : ''} · ${s.r[i].bought.length}/${ZONES.length} áreas · $${fmt(s.money)}`; };
+const progressOf = s => (s && s.r ? (s.city || 0) * 10000 + s.r.reduce((a, r, i) => a + (r ? i * 100 + r.bought.length * 5 + (r.fr || 0) * 3 + Object.values(r.lv || {}).reduce((x, y) => x + y, 0) : 0), 0) : 0);
+const describe = s => { const i = s.r.length - 1; return `${s.city ? 'Cidade ' + (s.city + 1) + ' · ' : ''}${RESTS[i] ? RESTS[i].icon + ' ' + RESTS[i].name : ''} · ${s.r[i].bought.length}/${ZONES.length} áreas · $${fmt(s.money)}`; };
 const Cloud = (() => {
   const C = window.Capacitor, SLOT = 'burger-rush-main';
   const P = C && C.isNativePlatform && C.isNativePlatform() && C.registerPlugin ? C.registerPlugin('PlayGamesSaves') : null;
@@ -818,7 +1070,7 @@ const Cloud = (() => {
     if (await signIn(false)) await reconcile();
     setInterval(() => push(false), 180000);
   }
-  async function wipe() { if (st.signedIn) try { await write({v: SAVE_VERSION, money: 0, r: [{bought: [], lv: {}, rate: 0}]}, 'Novo jogo', 0); } catch (e) {} }
+  async function wipe() { if (st.signedIn) try { await write({v: SAVE_VERSION, money: 0, city: 0, bonus: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}]}, 'Novo jogo', 0); } catch (e) {} }
   return {st, start, push, wipe, adopt, signInAndSync: async () => { if (await signIn(true)) await reconcile(); }};
 })();
 function renderCloud() {
@@ -847,19 +1099,19 @@ function refreshBadges() {
   }
   $('bUp').style.display = up ? 'block' : 'none';
   $('bMis').style.display = S.daily && S.daily.list.some(m => !m.claimed && m.p >= m.n) ? 'block' : 'none';
-  const nxt = S.r.length;
-  $('bRest').style.display = RESTS[nxt] && complete(S.r[nxt - 1]) && S.money >= RESTS[nxt].cost ? 'block' : 'none';
+  const nxt = S.r.length, canFr = S.r.some((r, i) => r && complete(r) && r.fr < FR_MAX && S.money >= frCost(i));
+  $('bRest').style.display = (RESTS[nxt] && complete(S.r[nxt - 1]) && S.money >= RESTS[nxt].cost) || canFr || doneCount() >= 3 ? 'block' : 'none';
 }
 const openModal = id => { $(id).classList.add('open'); release(); };
 const closeModal = id => $(id).classList.remove('open');
 $('btnUp').addEventListener('click', () => { initAudio(); renderUps(); openModal('panel'); });
 $('btnMis').addEventListener('click', () => { initAudio(); renderMissions(); openModal('missions'); });
-$('btnRest').addEventListener('click', () => { initAudio(); R.rate = currentRate(); renderRests(); openModal('rests'); });
+$('btnRest').addEventListener('click', () => { initAudio(); R.rate = currentRate(); sel = S.cur; renderRests(); openModal('rests'); });
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(b.closest('.modal').id)));
 document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m && m.id !== 'welcome' && m.id !== 'cloudPick') closeModal(m.id); }));
 $('btnMute').addEventListener('click', () => { initAudio(); setMuted(!S.muted); });
 $('reset').addEventListener('click', async () => {
-  if (!confirm('Apagar todo o progresso (todos os restaurantes, inclusive na nuvem) e começar de novo?')) return;
+  if (!confirm('Apagar todo o progresso (todas as cidades e estabelecimentos, inclusive na nuvem) e começar de novo?')) return;
   lockSave = true;
   try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
   await Cloud.wipe(); location.reload();
@@ -867,8 +1119,8 @@ $('reset').addEventListener('click', async () => {
 
 function offlineEarn(ms) {
   R.rate = currentRate();
-  const minutes = Math.min(ms / 60000, 60);
-  return Math.floor(minutes * S.r.reduce((a, r) => a + (r ? r.rate : 0), 0));
+  const minutes = Math.min(ms / 60000, 120);
+  return Math.floor(minutes * passiveRate(true));
 }
 let pendingGift = 0;
 function showWelcome(offline, bonus) {
@@ -919,6 +1171,7 @@ function autoTarget() {
   const nz = ZONES.find(z => z.g.visible && !bought.has(z.id)), hand = player.hand, any = stations.some(s => s.stack.count);
   if (nz && S.money >= nz.left) return new V3(nz.x, 0, nz.z);
   if (moneyPile.count >= 10 || (moneyPile.count && !hand.count)) return PILE;
+  const dt0 = !cleaners.length && dirtyTables()[0]; if (dt0 && !hand.count) return new V3(dt0[1].x, 0, dt0[1].z + .95);
   if (hand.top && counters[hand.top.type].count < COUNTER_MAX && (hand.count >= cap() || !any)) return new V3(SECTIONS[hand.top.type], 0, -2.2);
   if (hand.count >= cap()) return PILE;
   if (S.money > 0 && nz && !hand.count && !any) return new V3(nz.x, 0, nz.z);
@@ -934,14 +1187,14 @@ let guide = 0, everCollected = false;
 function guideTarget() {
   if (S.tut) return null;
   if (guide === 0) { if (player.hand.count) guide = 1; else return stations[0].pos; }
-  if (guide === 1) { if (counters.burger.count) guide = 2; else return new V3(SECTIONS.burger, 0, -2.2); }
+  if (guide === 1) { if (counters[P[0]].count) guide = 2; else return new V3(SECTIONS[P[0]], 0, -2.2); }
   if (guide === 2) { if (everCollected) guide = 3; else return moneyPile.count ? PILE : null; }
   if (guide === 3) { if (bought.size) { S.tut = true; dirty = true; } else return new V3(ZONES[0].x, 0, ZONES[0].z); }
   return null;
 }
 
 // ---------- loop ----------
-let pickT = 0, dropT = 0, cashT = 0, elapsed = 0, passiveT = 0;
+let pickT = 0, dropT = 0, cashT = 0, cleanT = 0, elapsed = 0, passiveT = 0;
 const camTarget = new V3(2, 0, -2);
 const SQ = Math.SQRT1_2;
 function step(dt) {
@@ -969,7 +1222,7 @@ function step(dt) {
     if (s.stack.count < 6 && (s.t += dt) > prepTime(s.type, R.lv.grill)) {
       s.t = 0; const it = makeItem(s.type); s.stack.group.add(it.mesh); it.mesh.position.copy(s.stack.slot(s.stack.count)); s.stack.items.push(it); popIn(it.mesh);
     }
-    if (s.type !== 'soda' && (s.smokeT -= dt) <= 0) { s.smokeT = .5 + Math.random() * .4; puff(s.pos.clone().add(new V3((Math.random() - .5) * 1, 1.1, (Math.random() - .5) * .6))); }
+    if (s.smoky && (s.smokeT -= dt) <= 0) { s.smokeT = .5 + Math.random() * .4; puff(s.pos.clone().add(new V3((Math.random() - .5) * 1, 1.1, (Math.random() - .5) * .6))); }
     s.max.visible = s.stack.count >= 6;
     if (p.distanceTo(s.pos) < 1.9 && player.hand.count < cap() && (pickT -= dt) <= 0 && transfer(s.stack, player.hand)) { pickT = .12; sfx.pick(); }
   }
@@ -998,14 +1251,21 @@ function step(dt) {
       if (z.left <= .001) buyZone(z, true);
     }
   }
-  // ajudantes, clientes e renda dos outros restaurantes
+  // limpar mesas: basta ficar perto
+  for (const [tbl, tb] of dirtyTables()) if (Math.abs(p.x - tb.x) < 1.9 && Math.abs(p.z - tb.z) < 1.3) {
+    if ((cleanT += dt) > .3) { cleanT = 0; for (const s of seats) if (s.table === tbl && s.dirty) { cleanSeat(s); tone(700, .08, 'triangle', .08, 1.5); } }
+  }
+  // ajudantes, clientes e renda dos outros estabelecimentos
   for (const h of helpers) updateHelper(h, dt);
-  const interval = Math.max(1.1, 3.2 - seats.length * .17);
-  if (queue.length < 4 + Math.floor(seats.length / 4) && (spawnT -= dt) <= 0) { spawnCustomer(); spawnT = interval; }
+  for (const c of cleaners) updateCleaner(c, dt);
+  updateRush(dt); updateGift(dt);
+  if (combo && (comboT -= dt) <= 0) setCombo(0);
+  const interval = Math.max(1, (3.2 - seats.length * .15) * (1.3 - .1 * R.rep) * Math.pow(.95, R.lv.mkt)) / (rush > 0 ? 2.5 : 1);
+  if (queue.length < 4 + Math.floor(seats.length / 4) + (rush > 0 ? 3 : 0) && (spawnT -= dt) <= 0) { spawnCustomer(); spawnT = interval; }
   for (const c of customers.slice()) updateCustomer(c, dt);
   if ((passiveT += dt) >= 1) {
     passiveT = 0; R.rate = currentRate();
-    const others = S.r.reduce((a, r, i) => a + (r && i !== S.cur ? r.rate : 0), 0);
+    const others = passiveRate(false);
     if (others > 0) addMoney(others / 60, true);
   }
 
@@ -1046,14 +1306,14 @@ function frame(now) {
 // ---------- início ----------
 for (const z of ZONES) buildZoneUI(z);
 for (const z of ZONES) if (bought.has(z.id)) { bought.delete(z.id); buyZone(z, false); }
-refreshZones(false); refreshProgress();
+refreshZones(false); refreshProgress(); refreshHud();
 ensureDaily();
 const away = Date.now() - S.last;
 if (firstRun) { loginBonus(); addMoney(0); } else { addMoney(0); showWelcome(FRESH || away < 60000 ? 0 : offlineEarn(away), loginBonus()); }
 setInterval(() => { if (ensureDaily()) { toast('📋 Novas missões do dia!'); refreshBadges(); const b = loginBonus(); if (b) showWelcome(0, b); } }, 30000);
 requestAnimationFrame(frame);
 Cloud.start();
-window.__game = {S, R, Cloud, progressOf, migrate, bought, ZONES, stations, customers, helpers, counters, moneyPile, player, get elapsed() { return elapsed; },
+window.__game = {S, R, P, Cloud, seats, cleaners, queue, get rush() { return rush; }, set rush(v) { rush = v; }, get combo() { return combo; }, renderRests, progressOf, migrate, bought, ZONES, stations, customers, helpers, counters, moneyPile, player, get elapsed() { return elapsed; },
   tick(n) { for (let i = 0; i < n; i++) step(1 / 30); renderer.render(scene, cam); }}; // usado nos testes
 </script>
 </body>

@@ -12,11 +12,32 @@ Arraste na tela (ou use WASD / setas) para mover o chef:
 
 ## Conteúdo
 
-- **Lanches:** hambúrguer, batata frita e refri, com pedidos combinados.
-- **3 restaurantes:** Lanchonete da Praça, Quiosque da Praia e Praça de Alimentação. Cada um tem tema, preços e melhorias próprios. Os que você não está jogando rendem dinheiro passivo.
+- **6 negócios no mapa da cidade**, cada um com 3 produtos e tema próprio:
+
+  | Negócio | Produtos |
+  |---|---|
+  | Lanchonete da Praça | hambúrguer, batata, refri |
+  | Quiosque da Praia | açaí, coco, sorvete |
+  | Pizzaria do Shopping | pizza, suco, refri |
+  | Pastelaria da Feira | pastel, caldo de cana, cachorro-quente |
+  | Sorveteria do Parque | sundae, milkshake, rosquinha |
+  | Café do Centro | café, bolo, suco |
+
+- **Mais estabelecimentos ao mesmo tempo:** cada um tem 16 áreas para comprar, entre mesas, estações, ajudantes e faxineiro. Os que você não está jogando rendem dinheiro sozinhos.
+- **Dificuldade:**
+  - Os clientes têm paciência e vão embora bravos se demorar.
+  - As mesas ficam sujas e precisam ser limpas.
+  - A reputação ⭐ (1 a 5) muda o movimento e o quanto os clientes pagam.
+- **Dopamina rápida:**
+  - Combo de atendimentos seguidos, até x2.
+  - Hora do rush: clientes chegam rápido e pagam em dobro.
+  - Clientes VIP 👑 pagam 5x.
+  - Presentes surpresa aparecem no salão.
+- **Franquias:** até 10 unidades por estabelecimento completo, que rendem mesmo com o app fechado.
+- **Nova cidade:** com 3 estabelecimentos completos, você recomeça do zero com bônus permanente em tudo.
 - **Missões diárias:** 3 por dia, renovadas à meia-noite.
 - **Bônus de dias seguidos:** até 7 dias.
-- **Ganhos offline:** até 60 minutos.
+- **Ganhos offline:** até 2 horas.
 - **Progresso salvo** no aparelho, com versão de formato e migração automática (atualizações não quebram o save).
 - **Save na nuvem** pelo Google Play Games (app Android): ao trocar de celular, o progresso volta sozinho.
 
