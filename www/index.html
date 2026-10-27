@@ -102,12 +102,13 @@
 <button id="btnUp" class="ui round side" aria-label="Melhorias"><span><b>⬆</b>Melhorias</span><i class="badge" id="bUp"></i></button>
 <div id="tut" class="ui"><div class="hand">👆</div><div>ARRASTE PARA MOVER</div></div>
 <div id="joy" class="ui"><div id="knob"></div></div>
-<div id="panel" class="modal"><div class="card"><h2>Melhorias</h2><p id="upSub">Valem só para este restaurante</p><div id="ups"></div><div class="up" id="cloudRow"></div><button class="btn big" data-close>Fechar</button><br><button class="link" id="reset">Recomeçar do zero</button></div></div>
+<div id="panel" class="modal"><div class="card"><h2>Melhorias</h2><p id="upSub">Valem só para este restaurante</p><div id="ups"></div><div class="up" id="cloudRow"></div><button class="btn big" data-close>Fechar</button><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a><br><button class="link" id="reset">Recomeçar do zero</button></div></div>
 <div id="missions" class="modal"><div class="card"><h2>Missões do dia</h2><p id="mSub"></p><div id="mList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="rests" class="modal"><div class="card"><h2 id="cityT">🗺️ Mapa da cidade</h2><p id="rSub"></p><div class="map" id="map"></div><div id="rList"></div><div id="cityBox"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="welcome" class="modal"><div class="card"><h2>Bem-vindo de volta!</h2><div id="wRows"></div><div class="big-num">+<span id="offAmt">0</span></div><button class="btn big ad" id="collect2" style="display:none">📺 Coletar 2x</button><br><button class="btn big" id="collect">Coletar</button></div></div>
 <div id="adShop" class="modal"><div class="card"><h2>🎬 Prêmios grátis</h2><p id="adSub"></p><div id="adList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="cloudPick" class="modal"><div class="card"><h2>☁️ Progresso na nuvem</h2><p>Achamos um progresso maior salvo na sua conta.</p><div class="row" style="flex-direction:column;text-align:left" id="cpTxt"></div><button class="btn big" id="cpLoad">Carregar da nuvem</button><br><button class="link" id="cpKeep">Manter o deste aparelho</button></div></div>
+<div id="ageGate" class="modal"><div class="card"><h2>🎂 Antes de jogar</h2><p>Informe sua data de nascimento. Ela é usada apenas para configurar anúncios adequados à sua idade e não será armazenada.</p><label for="birthDate"><b>Data de nascimento</b></label><br><input id="birthDate" type="date" autocomplete="bday" style="font:700 18px 'Fredoka',system-ui;margin:12px 0;padding:10px;border:2px solid #d8cce2;border-radius:12px;max-width:90%"><p id="ageErr" style="display:none;color:#c83232;font-weight:700">Informe uma data válida.</p><button class="btn big" id="ageGo">Continuar</button></div></div>
 <div id="fade"></div>
 <script>
 'use strict';
@@ -128,7 +129,8 @@ const MIGRATIONS = {
   2: s => { s.daily = null; s.city = 0; s.bonus = 0; for (const r of s.r) if (r) { r.rep = 3; r.fr = 0; } }, // reputação, franquias e cidades
 };
 function migrate(s) { s.v = s.v || 1; while (s.v < SAVE_VERSION) { if (MIGRATIONS[s.v]) MIGRATIONS[s.v](s); s.v++; } return s; }
-const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}}, loadSave() || {}));
+const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}, ageBand: ''}, loadSave() || {}));
+if (AUTO) S.ageBand = 'adult';
 const LV0 = {cap: 0, speed: 0, price: 0, grill: 0, pat: 0, mkt: 0};
 for (const r of S.r) if (r) { r.lv = Object.assign({}, LV0, r.lv); r.rep = r.rep || 3; r.fr = r.fr || 0; }
 if (!S.r[S.cur]) S.cur = 0;
@@ -1114,8 +1116,16 @@ const Ads = (() => {
   }
   function finish(ok) { if (done) { const f = done; done = null; f(ok); } }
   async function start() {
+    if (S.ageBand === 'child') { st.available = false; return; }
     if (!P) return;
-    try { await P.initialize({initializeForTesting: AD_TEST}); } catch (e) { st.available = false; return; }
+    const teen = S.ageBand === 'teen';
+    try { await P.initialize({initializeForTesting: AD_TEST, tagForUnderAgeOfConsent: teen, tagForChildDirectedTreatment: false}); } catch (e) { st.available = false; return; }
+    // UMP do Google: antes de pedir qualquer anúncio, mostra o formulário certificado
+    // somente nas regiões/contas em que o consentimento for obrigatório.
+    try {
+      const consent = await P.requestConsentInfo({tagForUnderAgeOfConsent: teen});
+      if (consent && consent.isConsentFormAvailable && consent.status === 'REQUIRED') await P.showConsentForm();
+    } catch (e) { console.warn('AdMob consent:', e); }
     P.addListener('bannerAdSizeChanged', s => document.documentElement.style.setProperty('--ad', ((s && s.height) || 0) + 'px'));
     P.addListener('onRewardedVideoAdReward', () => { earned = true; });
     P.addListener('onRewardedVideoAdDismissed', () => { finish(earned); load(); });
@@ -1176,6 +1186,22 @@ setInterval(() => {
   Ads.banner();
 }, 1000);
 
+// Tela neutra de idade: guarda somente a faixa, nunca a data digitada.
+function startAgeFlow() {
+  if (S.ageBand) { Ads.start(); return; }
+  openModal('ageGate');
+}
+$('ageGo').addEventListener('click', () => {
+  const raw = $('birthDate').value, born = raw && new Date(raw + 'T12:00:00'), now = new Date();
+  if (!born || Number.isNaN(born.getTime()) || born > now || born.getFullYear() < 1900) { $('ageErr').style.display = ''; return; }
+  let age = now.getFullYear() - born.getFullYear();
+  if (now.getMonth() < born.getMonth() || (now.getMonth() === born.getMonth() && now.getDate() < born.getDate())) age--;
+  S.ageBand = age < 13 ? 'child' : age < 18 ? 'teen' : 'adult';
+  dirty = true; persist(); $('birthDate').value = ''; closeModal('ageGate');
+  if (S.ageBand === 'child') toast('🎮 Jogo liberado sem publicidade');
+  Ads.start();
+});
+
 // ---------- avisos, painéis e ganhos enquanto fora ----------
 function refreshBadges() {
   let up = false;
@@ -1195,7 +1221,7 @@ $('btnMis').addEventListener('click', () => { initAudio(); renderMissions(); ope
 $('btnAd').addEventListener('click', () => { initAudio(); renderAds(); openModal('adShop'); });
 $('btnRest').addEventListener('click', () => { initAudio(); R.rate = currentRate(); sel = S.cur; renderRests(); openModal('rests'); });
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(b.closest('.modal').id)));
-document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m && m.id !== 'welcome' && m.id !== 'cloudPick') closeModal(m.id); }));
+document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m && m.id !== 'welcome' && m.id !== 'cloudPick' && m.id !== 'ageGate') closeModal(m.id); }));
 $('btnMute').addEventListener('click', () => { initAudio(); setMuted(!S.muted); });
 $('reset').addEventListener('click', async () => {
   if (!confirm('Apagar todo o progresso (todas as cidades e estabelecimentos, inclusive na nuvem) e começar de novo?')) return;
@@ -1403,7 +1429,7 @@ if (firstRun) { loginBonus(); addMoney(0); } else { addMoney(0); showWelcome(FRE
 setInterval(() => { if (ensureDaily()) { toast('📋 Novas missões do dia!'); refreshBadges(); const b = loginBonus(); if (b) showWelcome(0, b); } }, 30000);
 requestAnimationFrame(frame);
 Cloud.start();
-Ads.start();
+startAgeFlow();
 window.__game = {S, R, P, Cloud, Ads, renderAds, adDay, seats, cleaners, queue, get rush() { return rush; }, set rush(v) { rush = v; }, get combo() { return combo; }, renderRests, progressOf, migrate, bought, ZONES, stations, customers, helpers, counters, moneyPile, player, get elapsed() { return elapsed; },
   tick(n) { for (let i = 0; i < n; i++) step(1 / 30); renderer.render(scene, cam); }}; // usado nos testes
 </script>

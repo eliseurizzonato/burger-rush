@@ -40,6 +40,8 @@ Arraste na tela (ou use WASD / setas) para mover o chef:
 - **Ganhos offline:** até 2 horas.
 - **Progresso salvo** no aparelho, com versão de formato e migração automática (atualizações não quebram o save).
 - **Save na nuvem** pelo Google Play Games (app Android): ao trocar de celular, o progresso volta sozinho.
+- **Anúncios premiados opcionais:** dinheiro, turbo 2x, hora do rush e fama máxima; banner no app Android.
+- **Privacidade para produção:** consentimento UMP do Google é solicitado antes dos anúncios quando exigido pela região.
 
 ## Estrutura
 
@@ -49,6 +51,9 @@ Arraste na tela (ou use WASD / setas) para mover o chef:
 | `www/vendor/` | Three.js, fonte e Capacitor copiados do `node_modules` (`npm run vendor`), para o app abrir sem internet |
 | `android/` | Projeto Android gerado pelo Capacitor |
 | `android/app/src/main/java/.../PlayGamesSavesPlugin.java` | Plugin nativo do save na nuvem (Play Games Saved Games) |
+| `store-listing/` | Textos, ícone, gráfico promocional, screenshots reais e rascunho de Segurança de dados |
+| `www/privacy.html` | Política de privacidade pública |
+| `www/app-ads.txt` | Declaração do editor AdMob preparada para hospedagem |
 
 ## Rodar localmente
 
@@ -61,7 +66,7 @@ Abra http://localhost:8766. Use `?auto=1` para um robô jogar sozinho (modo de t
 
 ## Gerar o app Android
 
-Precisa de JDK 17 e Android SDK 34 (`ANDROID_HOME`).
+Precisa de JDK 17 e Android SDK 36 (`ANDROID_HOME`).
 
 ```bash
 npm run apk      # APK de teste: android/app/build/outputs/apk/debug/app-debug.apk
@@ -91,6 +96,16 @@ Se a nuvem tiver um save de versão mais nova que o app, o jogo não sobrescreve
 7. Adicione seu e-mail em **Testadores** do Play Games Services, senão o login não funciona antes de publicar.
 8. Gere o `.aab` (`npm run bundle`), envie para **Teste fechado**, preencha a política de privacidade, a classificação de conteúdo e a ficha da loja.
 9. Contas pessoais novas precisam de 12 testadores por 14 dias no teste fechado antes da produção.
+
+## Pacote de produção 1.1
+
+- `versionCode 6`, `versionName 1.1`, `minSdk 24`, `targetSdk 36`.
+- AAB assinado: `../apk/burger-rush-1.1-v6.aab` (artefato local, não versionado).
+- Ícone e splash usam a identidade oficial Burger Rush.
+- Ficha pt-BR e notas da versão: `store-listing/pt-BR.md`.
+- Rascunho de Segurança de dados: `store-listing/data-safety-draft.md` — revisar antes de enviar.
+- Política: `https://eliseurizzonato.github.io/burger-rush/www/privacy.html` após o push do commit.
+- O `app-ads.txt` está preparado, mas a verificação do AdMob exige que o arquivo esteja na raiz do domínio de desenvolvedor informado na Play Store.
 
 ## Prints
 
