@@ -16,7 +16,7 @@
   #cash.pulse{animation:pl .22s}
   @keyframes pl{50%{transform:translateX(-50%) scale(1.12)}}
   .coin{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3a0,#ffc928 45%,#e09a00);border:2px solid #c98400;box-sizing:border-box}
-  #prog{top:calc(64px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:230px;text-align:center;color:#fff;font-weight:700;font-size:13px;text-shadow:0 1px 2px #0008;pointer-events:none}
+  #prog{top:calc(64px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(300px,80vw);white-space:nowrap;text-align:center;color:#fff;font-weight:700;font-size:13px;text-shadow:0 1px 2px #0008;pointer-events:none}
   #prog .bar{height:9px;background:rgba(0,0,0,.25);border-radius:9px;overflow:hidden;margin-top:3px}
   #prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#9cf08b,var(--green));border-radius:9px;transition:width .4s}
   .round{width:50px;height:50px;border-radius:16px;border:0;background:#fff;font-size:22px;box-shadow:0 4px 0 rgba(0,0,0,.18);cursor:pointer;display:grid;place-items:center;padding:0}
@@ -28,7 +28,20 @@
   #btnUp{bottom:calc(20px + var(--ad) + env(safe-area-inset-bottom));background:#ffcf33}
   #btnMis{bottom:calc(98px + var(--ad) + env(safe-area-inset-bottom));background:#8fd8ff}
   #btnRest{bottom:calc(176px + var(--ad) + env(safe-area-inset-bottom));background:#ffb3c7}
-  #btnAd{bottom:calc(254px + var(--ad) + env(safe-area-inset-bottom));background:#c9b8ff;display:none}
+  #btnBiz{bottom:calc(254px + var(--ad) + env(safe-area-inset-bottom));background:#9fe6a8;display:none}
+  #btnStk{bottom:calc(332px + var(--ad) + env(safe-area-inset-bottom));background:#ffd9a0;display:none}
+  #btnAd{bottom:calc(410px + var(--ad) + env(safe-area-inset-bottom));background:#c9b8ff;display:none}
+  .card h3{margin:14px 0 2px;font-size:17px;text-align:left}
+  .req{display:block;font-size:12px;color:#8a7f99}.req.ok{color:var(--green-d)}
+  .tot{font-size:30px;font-weight:700;color:var(--green-d);margin:2px 0 4px}
+  .neg{color:#d23c3c}.pos{color:var(--green-d)}
+  .spark{width:74px;height:30px;flex:none}
+  .qty{display:flex;gap:6px;justify-content:center;margin:4px 0}
+  .qty button{font:700 13px 'Fredoka',system-ui;border:0;border-radius:10px;padding:5px 10px;background:#eee4f5;color:var(--ink);cursor:pointer}
+  .qty button.on{background:var(--ink);color:#fff}
+  .up .btns{display:flex;flex-direction:column;gap:4px;flex:none}
+  .up .btns .btn{min-width:64px;padding:5px 8px;font-size:14px}
+  .btn.red{background:#ff6b6b;border-bottom-color:#c83232}
   .badge{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#ff3b3b;border:3px solid #fff;display:none}
   #toast{top:calc(160px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-20px);background:#fff;color:var(--ink);font-weight:700;font-size:15px;padding:8px 16px;border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.15);opacity:0;transition:.25s;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
   #toast.show{opacity:1;transform:translate(-50%,0)}
@@ -92,11 +105,13 @@
 <body>
 <div id="cash" class="ui"><div class="coin"></div><span id="money">0</span></div>
 <div id="prog" class="ui"><div id="progTxt"></div><div class="bar"><i id="progBar"></i></div></div>
-<div id="stat" class="ui"><span class="chip" id="rep"></span><span class="chip" id="combo"></span><span class="chip boost" id="boost" style="display:none"></span></div>
+<div id="stat" class="ui"><span class="chip" id="rep"></span><span class="chip" id="combo"></span><span class="chip" id="net"></span><span class="chip boost" id="boost" style="display:none"></span></div>
 <div id="rush" class="ui"></div>
 <div id="toast" class="ui"></div>
 <button id="btnMute" class="ui round" aria-label="Som">🔊</button>
 <button id="btnAd" class="ui round side" aria-label="Prêmios grátis"><span><b>🎬</b>Grátis</span><i class="badge" id="bAd"></i></button>
+<button id="btnStk" class="ui round side" aria-label="Bolsa de valores"><span><b>📈</b>Bolsa</span><i class="badge" id="bStk"></i></button>
+<button id="btnBiz" class="ui round side" aria-label="Negócio"><span><b>🏢</b>Negócio</span><i class="badge" id="bBiz"></i></button>
 <button id="btnRest" class="ui round side" aria-label="Mapa"><span><b>🗺️</b>Mapa</span><i class="badge" id="bRest"></i></button>
 <button id="btnMis" class="ui round side" aria-label="Missões"><span><b>📋</b>Missões</span><i class="badge" id="bMis"></i></button>
 <button id="btnUp" class="ui round side" aria-label="Melhorias"><span><b>⬆</b>Melhorias</span><i class="badge" id="bUp"></i></button>
@@ -106,6 +121,8 @@
 <div id="missions" class="modal"><div class="card"><h2>Missões do dia</h2><p id="mSub"></p><div id="mList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="rests" class="modal"><div class="card"><h2 id="cityT">🗺️ Mapa da cidade</h2><p id="rSub"></p><div class="map" id="map"></div><div id="rList"></div><div id="cityBox"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="welcome" class="modal"><div class="card"><h2>Bem-vindo de volta!</h2><div id="wRows"></div><div class="big-num">+<span id="offAmt">0</span></div><button class="btn big ad" id="collect2" style="display:none">📺 Coletar 2x</button><br><button class="btn big" id="collect">Coletar</button></div></div>
+<div id="biz" class="modal"><div class="card"><h2>🏢 Meu negócio</h2><p id="bizSub"></p><div id="bizList"></div><button class="btn big" data-close>Fechar</button></div></div>
+<div id="stocks" class="modal"><div class="card"><h2>📈 Bolsa de valores</h2><p id="stkSub"></p><div class="qty" id="stkQty"></div><div id="stkList"></div><p style="font-size:12px;margin-top:8px">Dinheiro do jogo, sem dinheiro real. Corretagem de 0,5% por operação.</p><button class="btn big" data-close>Fechar</button></div></div>
 <div id="adShop" class="modal"><div class="card"><h2>🎬 Prêmios grátis</h2><p id="adSub"></p><div id="adList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="cloudPick" class="modal"><div class="card"><h2>☁️ Progresso na nuvem</h2><p>Achamos um progresso maior salvo na sua conta.</p><div class="row" style="flex-direction:column;text-align:left" id="cpTxt"></div><button class="btn big" id="cpLoad">Carregar da nuvem</button><br><button class="link" id="cpKeep">Manter o deste aparelho</button></div></div>
 <div id="ageGate" class="modal"><div class="card"><h2>🎂 Antes de jogar</h2><p>Informe sua data de nascimento. Ela é usada apenas para configurar anúncios adequados à sua idade e não será armazenada.</p><label for="birthDate"><b>Data de nascimento</b></label><br><input id="birthDate" type="date" autocomplete="bday" style="font:700 18px 'Fredoka',system-ui;margin:12px 0;padding:10px;border:2px solid #d8cce2;border-radius:12px;max-width:90%"><p id="ageErr" style="display:none;color:#c83232;font-weight:700">Informe uma data válida.</p><button class="btn big" id="ageGo">Continuar</button></div></div>
@@ -123,16 +140,33 @@ const fmt = n => { if (n < 10000) return String(Math.floor(n)); const u = ['k', 
 const SAVE_KEY = 'burger-rush-save-v1';
 function loadSave() { if (FRESH) return null; try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) { return null; } }
 // formato do save: ao mudar, suba SAVE_VERSION e acrescente um passo em MIGRATIONS (nunca apague os antigos)
-const SAVE_VERSION = 3;
+const SAVE_VERSION = 4;
+// fase do prédio que cada área antiga exige (usado só na migração 3 -> 4)
+const OLD_ZONE_LV = {t3: 1, s1: 1, t4: 1, g3: 1, c1: 1, t5: 2, t6: 2, h2: 2, f2: 2, s2: 2, h3: 2};
+const OLD_ZONES = ['t1', 't2', 'g2', 'f1', 'h1', 't3', 's1', 't4', 'g3', 't5', 't6', 'c1', 'h2', 'f2', 's2', 'h3'];
 const MIGRATIONS = {
   1: s => { if (!s.r) { s.r = [{bought: s.bought || [], lv: s.lv || {}, rate: 0}]; delete s.bought; delete s.lv; } }, // 1 restaurante -> vários
   2: s => { s.daily = null; s.city = 0; s.bonus = 0; for (const r of s.r) if (r) { r.rep = 3; r.fr = 0; } }, // reputação, franquias e cidades
+  // prédio (ampliação), fachada, cardápio, bolsa e banco: quem já tinha áreas grandes ganha o prédio do tamanho delas,
+  // estabelecimento que estava completo continua contando como completo (franquias e nova cidade seguem liberadas)
+  3: s => {
+    for (const r of s.r) if (r) {
+      const b = r.bought || [];
+      r.ex = b.reduce((a, id) => Math.max(a, OLD_ZONE_LV[id] || 0), 0);
+      r.fac = 0; r.menu = 0; r.obra = null; r.res = null;
+      r.served = [0, 80, 400, 1500][r.ex];
+      r.done = OLD_ZONES.every(id => b.includes(id));
+    }
+    s.stk = null; s.loan = 0;
+  },
 };
 function migrate(s) { s.v = s.v || 1; while (s.v < SAVE_VERSION) { if (MIGRATIONS[s.v]) MIGRATIONS[s.v](s); s.v++; } return s; }
-const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}, ageBand: ''}, loadSave() || {}));
+const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}, ageBand: '', stk: null, loan: 0}, loadSave() || {}));
 if (AUTO) S.ageBand = 'adult';
 const LV0 = {cap: 0, speed: 0, price: 0, grill: 0, pat: 0, mkt: 0};
-for (const r of S.r) if (r) { r.lv = Object.assign({}, LV0, r.lv); r.rep = r.rep || 3; r.fr = r.fr || 0; }
+const R0 = {ex: 0, fac: 0, menu: 0, obra: null, res: null, served: 0, done: false};
+for (const r of S.r) if (r) { r.lv = Object.assign({}, LV0, r.lv); r.rep = r.rep || 3; r.fr = r.fr || 0; for (const k in R0) if (r[k] === undefined) r[k] = R0[k]; }
+S.loan = S.loan || 0;
 if (!S.r[S.cur]) S.cur = 0;
 const R = S.r[S.cur];
 const firstRun = !S.tut;
@@ -143,12 +177,12 @@ addEventListener('pagehide', persist);
 
 // estabelecimentos do mapa: cada um é um negócio com 3 produtos, tema próprio e preços maiores
 const RESTS = [
-  {name: 'Lanchonete da Praça', kind: 'Hamburgueria', icon: '🍔', p: ['burger', 'fries', 'soda'], mult: 1, val: 1, cost: 0, at: [27, 33], floor: ['#f8e6c4', '#efd3a3'], kitchen: ['#e8f0f4', '#d3e0e8'], wall: 0xfbe7c6, trim: 0xd9573b, ground: 0x8fd16a, sky: 0x9fdcff, tree: 'pine'},
-  {name: 'Quiosque da Praia', kind: 'Açaiteria', icon: '🍇', p: ['acai', 'coco', 'sorvete'], mult: 6, val: 4, cost: 15000, at: [80, 84], floor: ['#fff3d6', '#ffe1a1'], kitchen: ['#e3f6f5', '#c4ebe8'], wall: 0xc4ecf3, trim: 0x2a9fb8, ground: 0xf2dc9b, sky: 0x8fe3ff, tree: 'palm'},
-  {name: 'Pizzaria do Shopping', kind: 'Pizzaria', icon: '🍕', p: ['pizza', 'juice', 'soda'], mult: 36, val: 16, cost: 3e5, at: [74, 33], floor: ['#efeaf6', '#dcd3ee'], kitchen: ['#eef0f3', '#dde2e8'], wall: 0xf1e2f6, trim: 0x7b4fd8, ground: 0xb7bec7, sky: 0xc9d6ff, tree: 'round'},
-  {name: 'Pastelaria da Feira', kind: 'Pastelaria', icon: '🥟', p: ['pastel', 'caldo', 'hotdog'], mult: 216, val: 64, cost: 6e6, at: [24, 78], floor: ['#fbe9d0', '#f3d2a8'], kitchen: ['#f4ece4', '#e6d8c8'], wall: 0xffe3b0, trim: 0xe0603a, ground: 0xd9c6a0, sky: 0xffd9a8, tree: 'round'},
-  {name: 'Sorveteria do Parque', kind: 'Sorveteria', icon: '🍨', p: ['sundae', 'shake', 'donut'], mult: 1296, val: 256, cost: 1.2e8, at: [50, 56], floor: ['#fde8f1', '#f8cfe1'], kitchen: ['#eef6fb', '#d9eaf5'], wall: 0xffe0ef, trim: 0xe0578f, ground: 0x7cc96a, sky: 0xb8ecff, tree: 'pine'},
-  {name: 'Café do Centro', kind: 'Cafeteria', icon: '☕', p: ['coffee', 'cake', 'juice'], mult: 7776, val: 1024, cost: 2.4e9, at: [50, 11], floor: ['#efe4d6', '#e0cdb6'], kitchen: ['#eceff1', '#dadfe3'], wall: 0xece4da, trim: 0x6b3a1e, ground: 0xa9b0ba, sky: 0xd6e4f0, tree: 'round'},
+  {name: 'Lanchonete da Praça', kind: 'Hamburgueria', icon: '🍔', p: ['burger', 'fries', 'soda'], x: ['hotdog', 'shake'], rn: ['X-Bacon', 'Batata com cheddar', 'Refri da casa'], mult: 1, val: 1, cost: 0, at: [27, 33], floor: ['#f8e6c4', '#efd3a3'], kitchen: ['#e8f0f4', '#d3e0e8'], wall: 0xfbe7c6, trim: 0xd9573b, ground: 0x8fd16a, sky: 0x9fdcff, tree: 'pine'},
+  {name: 'Quiosque da Praia', kind: 'Açaiteria', icon: '🍇', p: ['acai', 'coco', 'sorvete'], x: ['juice', 'sundae'], rn: ['Açaí com granola', 'Coco gelado', 'Sorvete de casquinha dupla'], mult: 6, val: 4, cost: 3e6, at: [80, 84], floor: ['#fff3d6', '#ffe1a1'], kitchen: ['#e3f6f5', '#c4ebe8'], wall: 0xc4ecf3, trim: 0x2a9fb8, ground: 0xf2dc9b, sky: 0x8fe3ff, tree: 'palm'},
+  {name: 'Pizzaria do Shopping', kind: 'Pizzaria', icon: '🍕', p: ['pizza', 'juice', 'soda'], x: ['cake', 'coffee'], rn: ['Pizza de borda recheada', 'Suco detox', 'Refri artesanal'], mult: 36, val: 16, cost: 2e7, at: [74, 33], floor: ['#efeaf6', '#dcd3ee'], kitchen: ['#eef0f3', '#dde2e8'], wall: 0xf1e2f6, trim: 0x7b4fd8, ground: 0xb7bec7, sky: 0xc9d6ff, tree: 'round'},
+  {name: 'Pastelaria da Feira', kind: 'Pastelaria', icon: '🥟', p: ['pastel', 'caldo', 'hotdog'], x: ['coffee', 'donut'], rn: ['Pastel de feira especial', 'Caldo com limão', 'Dogão completo'], mult: 216, val: 64, cost: 1.2e8, at: [24, 78], floor: ['#fbe9d0', '#f3d2a8'], kitchen: ['#f4ece4', '#e6d8c8'], wall: 0xffe3b0, trim: 0xe0603a, ground: 0xd9c6a0, sky: 0xffd9a8, tree: 'round'},
+  {name: 'Sorveteria do Parque', kind: 'Sorveteria', icon: '🍨', p: ['sundae', 'shake', 'donut'], x: ['sorvete', 'cake'], rn: ['Sundae triplo', 'Shake de Ovomaltine', 'Rosquinha recheada'], mult: 1296, val: 256, cost: 8e8, at: [50, 56], floor: ['#fde8f1', '#f8cfe1'], kitchen: ['#eef6fb', '#d9eaf5'], wall: 0xffe0ef, trim: 0xe0578f, ground: 0x7cc96a, sky: 0xb8ecff, tree: 'pine'},
+  {name: 'Café do Centro', kind: 'Cafeteria', icon: '☕', p: ['coffee', 'cake', 'juice'], x: ['donut', 'sundae'], rn: ['Cappuccino cremoso', 'Bolo de pote', 'Suco de laranja natural'], mult: 7776, val: 1024, cost: 5e9, at: [50, 11], floor: ['#efe4d6', '#e0cdb6'], kitchen: ['#eceff1', '#dadfe3'], wall: 0xece4da, trim: 0x6b3a1e, ground: 0xa9b0ba, sky: 0xd6e4f0, tree: 'round'},
 ];
 const T = RESTS[S.cur];
 // look = visual da estação de preparo
@@ -170,13 +204,41 @@ const PRODUCTS = {
   coffee: {icon: '☕', name: 'café', base: 7, time: .8, st: '☕ CAFETEIRA', look: 'machine', color: 0x6b3a1e},
   cake: {icon: '🍰', name: 'bolo', base: 16, time: 1.6, st: '🍰 CONFEITARIA', look: 'oven'},
 };
-const P = T.p; // produtos deste estabelecimento
+// produtos deste estabelecimento: os 3 da casa + 2 lanches novos do cardápio (pesquisados e feitos no anexo)
+const P = T.p.concat(T.x);
 const cityMult = () => 1 + (S.bonus || 0);
 const repOf = r => (r && r.rep) || 3;
 const cap = () => 5 + R.lv.cap;
 const speed = () => 5.5 * (1 + .1 * R.lv.speed);
-const value = type => PRODUCTS[type].base * T.val * (1 + .3 * R.lv.price) * cityMult();
+// receita pesquisada: o produto da casa vira versão especial (+50%); os lanches novos já valem bem mais
+const prem = type => { const i = P.indexOf(type); return i < 3 ? (R.menu > i ? 1.5 : 1) : i === 3 ? 2.5 : 4; };
+const facMult = () => 1 + .04 * R.fac; // fachada bonita: clientes pagam um pouco mais
+const value = type => PRODUCTS[type].base * prem(type) * T.val * (1 + .2 * R.lv.price) * cityMult();
 const prepTime = (type, l) => PRODUCTS[type].time * Math.pow(.88, l);
+
+// ---------- vida de empresário: prédio, fachada e cardápio ----------
+// fases do prédio: W = borda direita, F = frente. Para ampliar: pagar, cumprir as metas e esperar a obra (que anda mesmo com o app fechado)
+const EXP = [
+  {name: 'Portinha', W: 7, F: 6.4},
+  {name: 'Salão ampliado', W: 7, F: 9.7, cost: 2500, serve: 80, rep: 3.5, min: 3, d: '+2 mesas, faxineiro e o 3º produto'},
+  {name: 'Salão completo', W: 7, F: 13, cost: 25000, serve: 400, rep: 4, min: 15, d: '+2 mesas, ajudantes e estações extras'},
+  {name: 'Anexo com cozinha nova', W: 11.5, F: 13, cost: 300000, serve: 1500, rep: 4.5, min: 60, d: 'Ala nova com balcão 2, lanches novos e +3 mesas'},
+];
+const B = {W: EXP[R.ex].W, F: EXP[R.ex].F};
+const FAC = [
+  {name: 'Fachada simples'},
+  {icon: '🎨', name: 'Pintura e calçada', cost: 800, ex: 0},
+  {icon: '⛱️', name: 'Toldo listrado', cost: 8000, ex: 1},
+  {icon: '🪧', name: 'Letreiro', cost: 40000, ex: 2},
+  {icon: '💡', name: 'Iluminação', cost: 150000, ex: 2},
+  {icon: '🌈', name: 'Letreiro neon', cost: 600000, ex: 3},
+];
+// cardápio: 3 receitas especiais (produto da casa +50%) e 2 lanches novos (estação no anexo)
+const MENU = [
+  {ex: 0, cost: 1500, min: 2}, {ex: 1, cost: 12000, min: 5}, {ex: 1, cost: 30000, min: 10},
+  {ex: 2, cost: 150000, min: 20}, {ex: 3, cost: 600000, min: 40},
+];
+const menuName = i => i < 3 ? (T.rn ? T.rn[i] : PRODUCTS[P[i]].name + ' especial') : PRODUCTS[P[i]].name[0].toUpperCase() + PRODUCTS[P[i]].name.slice(1);
 
 // ---------- cena ----------
 const renderer = new THREE.WebGLRenderer({antialias: true});
@@ -232,25 +294,11 @@ function plane(w, d, m, x, z, y = 0) { const p = new THREE.Mesh(new THREE.PlaneG
 plane(120, 120, mat(T.ground), 0, 0, -0.03);
 plane(80, 3.2, mat(0x5d6470), 0, 17.6, -0.02);
 for (let x = -38; x < 40; x += 3) plane(1.4, .18, basic(0xf6f1de), x, 17.6, -0.01);
-plane(2.6, 3, mat(0xd8d2c4), 0, 14.6, -0.015);
-plane(14, 14, new THREE.MeshToonMaterial({gradientMap: grad, map: canvasTex(64, 64, tiles(T.floor, 'rgba(0,0,0,.05)'), [7, 7])}), 0, 6);
-plane(14, 6, new THREE.MeshToonMaterial({gradientMap: grad, map: canvasTex(64, 64, tiles(T.kitchen, 'rgba(0,0,0,.06)'), [7, 3])}), 0, -4, 0.002);
-plane(1.6, 1, mat(T.trim), 0, 12.6, 0.004);
-
-// paredes do fundo (as da frente são baixas para não tapar a câmera)
-at(box(14.6, 2.8, .3, T.wall), 0, 1.4, -7.15); at(box(14.6, .7, .34, T.trim), 0, .35, -7.13);
-at(box(.3, 2.8, 20.3, T.wall), -7.15, 1.4, 3); at(box(.34, .7, 20.3, T.trim), -7.13, .35, 3);
-at(box(.3, .5, 20.3, T.trim), 7.15, .25, 3);
-at(box(5.7, .5, .3, T.trim), -4.3, .25, 13.15); at(box(5.7, .5, .3, T.trim), 4.3, .25, 13.15);
-for (const z of [1.5, 5.5, 9.5]) {
-  at(box(.12, 1.3, 1.9, 0xffffff), -7.02, 1.6, z);
-  at(mesh(new THREE.BoxGeometry(.1, 1.1, 1.7), basic(0xbfe8ff), false), -6.98, 1.6, z);
-  at(box(.14, .08, 1.7, 0xffffff), -6.96, 1.6, z);
-}
+// piso, paredes e fachada dependem da fase do prédio: ver buildShell()
 const menuTex = canvasTex(512, 256, (g, w, h) => {
   g.fillStyle = '#2f4a3a'; g.fillRect(0, 0, w, h); g.strokeStyle = '#b5793f'; g.lineWidth = 18; g.strokeRect(0, 0, w, h);
   g.fillStyle = '#ffe9a8'; g.font = '700 64px Fredoka, system-ui'; g.textAlign = 'center'; g.fillText(T.kind.toUpperCase(), w / 2, 100);
-  g.font = '80px system-ui'; g.fillText(P.map(k => PRODUCTS[k].icon).join(' '), w / 2, 200);
+  g.font = '80px system-ui'; g.fillText(T.p.map(k => PRODUCTS[k].icon).join(' '), w / 2, 200);
 });
 at(new THREE.Mesh(new THREE.PlaneGeometry(3, 1.5), new THREE.MeshBasicMaterial({map: menuTex})), 3, 1.75, -6.98);
 
@@ -258,12 +306,12 @@ const fridge = at(new THREE.Group(), 6.1, 0, -6.3);
 at(box(1.3, 2.2, 1, 0xf2f6f8), 0, 1.1, 0, fridge); at(box(1.32, .04, 1.02, 0xc5d0d8), 0, 1.4, 0, fridge);
 at(box(.06, .5, .06, 0x9aa7b0), -.45, 1.75, .52, fridge); at(box(.06, .5, .06, 0x9aa7b0), -.45, .9, .52, fridge);
 
-function plant(x, z, s = 1) {
-  const g = at(new THREE.Group(), x, 0, z);
+function plant(x, z, s = 1, parent = scene) {
+  const g = at(new THREE.Group(), x, 0, z, parent);
   at(cyl(.32 * s, .5 * s, 0xc96f3b, 14, .24 * s), 0, .25 * s, 0, g);
   at(ball(.45 * s, 0x4fb04a), 0, .8 * s, 0, g); at(ball(.3 * s, 0x63c45a), .22 * s, 1.05 * s, .1 * s, g);
 }
-plant(-6.4, 12.4); plant(6.4, 12.4); plant(-6.4, -.4, .8);
+plant(-6.4, -.4, .8);
 function tree(x, z, s) {
   const g = at(new THREE.Group(), x, 0, z);
   if (T.tree === 'palm') {
@@ -282,7 +330,7 @@ function tree(x, z, s) {
 let seed = 7 + S.cur * 13; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 for (let i = 0; i < 70; i++) {
   const x = rnd() * 50 - 25, z = rnd() * 50 - 20;
-  if ((x > -9 && x < 9 && z > -9 && z < 15.5) || (z > 15 && z < 20.5)) continue;
+  if ((x > -9 && x < 13.5 && z > -9 && z < 15.5) || (z > 15 && z < 20.5)) continue;
   tree(x, z, .8 + rnd() * .6);
 }
 
@@ -490,10 +538,10 @@ function popIn(obj) { obj.scale.setScalar(0.01); pops.push({obj, t: 0}); }
 const colliders = [];
 const addCollider = (x, z, hw, hd) => colliders.push({x0: x - hw, x1: x + hw, z0: z - hd, z1: z + hd});
 addCollider(6.1, -6.3, .65, .5);
-addCollider(-6.4, 12.4, .4, .4); addCollider(6.4, 12.4, .4, .4); addCollider(-6.4, -.4, .35, .35);
+addCollider(-6.4, -.4, .35, .35);
 function collide(p) {
   const r = .35;
-  p.x = Math.max(-6.6, Math.min(6.6, p.x)); p.z = Math.max(-6.6, Math.min(12.6, p.z));
+  p.x = Math.max(-6.6, Math.min(B.W - .4, p.x)); p.z = Math.max(-6.6, Math.min(B.F - .4, p.z));
   if (AUTO) return; // o robô de teste anda em linha reta, então atravessa obstáculos
   for (const b of colliders) {
     const cx = Math.max(b.x0, Math.min(p.x, b.x1)), cz = Math.max(b.z0, Math.min(p.z, b.z1));
@@ -504,6 +552,91 @@ function collide(p) {
     if (m === pen[0]) p.x = b.x0 - r; else if (m === pen[1]) p.x = b.x1 + r; else if (m === pen[2]) p.z = b.z0 - r; else p.z = b.z1 + r;
   }
 }
+
+// ---------- prédio (paredes, piso, anexo, fachada e obra) ----------
+// tudo que muda com a ampliação/fachada fica no grupo "shell" e é refeito do zero
+const shell = at(new THREE.Group(), 0, 0, 0);
+let neons = [], obraLbl = null, sign2 = null;
+function sPlane(w, d, m, x, z, y = 0) { const p = new THREE.Mesh(new THREE.PlaneGeometry(w, d), m); p.rotation.x = -Math.PI / 2; p.position.set(x, y, z); p.receiveShadow = true; shell.add(p); return p; }
+const sAt = (o, x, y, z) => at(o, x, y, z, shell);
+function shellCol(x, z, hw, hd) { addCollider(x, z, hw, hd); colliders[colliders.length - 1].shell = true; }
+const hex = c => '#' + c.toString(16).padStart(6, '0');
+function neon(geo, c, x, y, z) { const m = new THREE.MeshBasicMaterial({color: c}); neons.push(m); return sAt(new THREE.Mesh(geo, m), x, y, z); }
+function buildShell() {
+  for (let i = colliders.length - 1; i >= 0; i--) if (colliders[i].shell) colliders.splice(i, 1);
+  while (shell.children.length) shell.remove(shell.children[0]);
+  neons = []; obraLbl = null; sign2 = null;
+  const {W, F} = B, cx = (W - 7) / 2, len = F + 7.3, cz = (F - 7) / 2, fz = F + .15;
+  sPlane(W + 7, F + 1, new THREE.MeshToonMaterial({gradientMap: grad, map: canvasTex(64, 64, tiles(T.floor, 'rgba(0,0,0,.05)'), [(W + 7) / 2, (F + 1) / 2])}), cx, (F - 1) / 2);
+  sPlane(W + 7, 6, new THREE.MeshToonMaterial({gradientMap: grad, map: canvasTex(64, 64, tiles(T.kitchen, 'rgba(0,0,0,.06)'), [(W + 7) / 2, 3])}), cx, -4, .002);
+  sPlane(2.6, 16 - fz, mat(0xd8d2c4), 0, (fz + 16) / 2, -.015);
+  sPlane(1.6, 1, mat(T.trim), 0, F - .4, .004);
+  // paredes do fundo e da esquerda altas; direita e frente baixas para não tapar a câmera
+  sAt(box(W + 7.6, 2.8, .3, T.wall), cx, 1.4, -7.15); sAt(box(W + 7.6, .7, .34, T.trim), cx, .35, -7.13);
+  sAt(box(.3, 2.8, len, T.wall), -7.15, 1.4, cz); sAt(box(.34, .7, len, T.trim), -7.13, .35, cz);
+  sAt(box(.3, .5, len, T.trim), W + .15, .25, cz);
+  const fh = R.fac >= 1 ? .75 : .5, segs = [[-4.3, 5.7], [(W + 1.6) / 2, W - 1.3]];
+  for (const [x, w] of segs) {
+    sAt(box(w, fh, .3, R.fac >= 1 ? T.wall : T.trim), x, fh / 2, fz);
+    if (R.fac >= 1) { sAt(box(w + .04, .12, .36, T.trim), x, fh, fz); sAt(box(w + .04, .16, .34, T.trim), x, .08, fz); }
+  }
+  for (const z of [1.5, 5.5, 9.5]) if (z + 1.2 < F) {
+    sAt(box(.12, 1.3, 1.9, 0xffffff), -7.02, 1.6, z);
+    sAt(mesh(new THREE.BoxGeometry(.1, 1.1, 1.7), basic(0xbfe8ff), false), -6.98, 1.6, z);
+    sAt(box(.14, .08, 1.7, 0xffffff), -6.96, 1.6, z);
+  }
+  plant(-6.4, F - .6, 1, shell); plant(W - .6, F - .6, 1, shell); shellCol(-6.4, F - .6, .4, .4); shellCol(W - .6, F - .6, .4, .4);
+  // anexo: balcão 2 para os lanches novos
+  if (W > 7) {
+    sAt(box(2.6, .95, 1, T.trim), 8.9, .475, -1); sAt(box(2.8, .1, 1.2, 0xfaf6ee), 8.9, 1, -1); sAt(box(2.62, .12, 1.02, 0x3a2f45), 8.9, .06, -1);
+    shellCol(8.9, -1, 1.4, .6);
+    const cv = document.createElement('canvas'); cv.width = 384; cv.height = 64; sign2 = {cv, tex: new THREE.CanvasTexture(cv)};
+    sAt(new THREE.Mesh(new THREE.PlaneGeometry(2.6, .44), new THREE.MeshBasicMaterial({map: sign2.tex, transparent: true})), 8.9, .62, -.49);
+    const dz = sPlane(2.8, 1.1, dropZone.material, 8.9, -2.2, .01); dz.receiveShadow = false;
+    drawSign();
+  }
+  // ----- fachada -----
+  if (R.fac >= 1) { // calçada de pedra e floreiras
+    sPlane(W + 9, 2.4, new THREE.MeshToonMaterial({gradientMap: grad, map: canvasTex(64, 64, tiles(['#ece5d3', '#d8cfb8'], 'rgba(0,0,0,.08)'), [(W + 9) / 1.2, 2])}), cx, F + 1.45, -.012);
+    for (const [x0, x1] of [[-6.6, -2.2], [2.2, W - 1.2]]) for (let x = x0; x <= x1; x += 1.7) {
+      sAt(box(.9, .28, .32, 0x8a5a33), x, .14, F + .5);
+      for (let k = 0; k < 3; k++) sAt(ball(.1, [0xff5a7a, 0xffd23f, 0xffffff][k]), x - .25 + k * .25, .34, F + .5);
+    }
+  }
+  if (R.fac >= 2) { // toldo listrado em cima da porta
+    for (let i = 0; i < 8; i++) { const st = sAt(box(.46, .05, 1.5, i % 2 ? 0xffffff : T.trim), -1.61 + i * .46, 2.45, F + .7); st.rotation.x = .38; }
+    for (let i = 0; i < 8; i++) sAt(box(.44, .18, .04, i % 2 ? 0xffffff : T.trim), -1.61 + i * .46, 2.08, F + 1.42);
+    for (const s of [-1, 1]) sAt(cyl(.05, 2.2, 0x4a5568, 8), s * 1.8, 1.1, F + 1.4);
+  }
+  if (R.fac >= 3) { // letreiro com o nome
+    for (const x of [-6.1, -2.7]) sAt(cyl(.08, 3.4, 0x4a5568, 8), x, 1.7, F + 1.7);
+    sAt(box(4.2, 1.3, .16, 0x2b2140), -4.4, 3.05, F + 1.7);
+    const tx = canvasTex(512, 160, (g, w, h) => {
+      g.fillStyle = hex(T.trim); roundRect(g, 6, 6, w - 12, h - 12, 26); g.fill();
+      g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = '700 50px Fredoka, system-ui';
+      g.fillText(T.icon + ' ' + T.name, w / 2, h / 2 - 16, w - 30); g.font = '700 30px Fredoka, system-ui'; g.fillStyle = '#ffe9a8'; g.fillText(T.kind.toUpperCase() + (S.city ? ' · CIDADE ' + (S.city + 1) : ''), w / 2, h / 2 + 34);
+    });
+    sAt(new THREE.Mesh(new THREE.PlaneGeometry(4, 1.2), new THREE.MeshBasicMaterial({map: tx})), -4.4, 3.05, F + 1.79);
+  }
+  if (R.fac >= 4) { // postes de luz e varal de lâmpadas
+    for (const x of [-7.7, W + .7]) { sAt(cyl(.07, 2.8, 0x2b2f36, 8), x, 1.4, F + .9); sAt(mesh(new THREE.SphereGeometry(.24, 12, 8), basic(0xfff1a8), false), x, 2.9, F + .9); sAt(mesh(new THREE.SphereGeometry(.42, 12, 8), new THREE.MeshBasicMaterial({color: 0xffe98a, transparent: true, opacity: .25, depthWrite: false}), false), x, 2.9, F + .9); }
+    for (let x = -6.8; x <= W - .4; x += .55) if (Math.abs(x) > 1.6) sAt(mesh(new THREE.SphereGeometry(.07, 8, 6), basic([0xfff1a8, 0xffb347, 0xff8cc0][Math.round(x / .55 + 20) % 3]), false), x, fh + .32, fz);
+  }
+  if (R.fac >= 5) { // neon em volta do letreiro e na mureta
+    const thin = (w, h) => new THREE.BoxGeometry(w, h, .06);
+    neon(thin(4.4, .08), 0xff3bd4, -4.4, 3.74, F + 1.82); neon(thin(4.4, .08), 0xff3bd4, -4.4, 2.36, F + 1.82);
+    neon(thin(.08, 1.46), 0x3be8ff, -6.56, 3.05, F + 1.82); neon(thin(.08, 1.46), 0x3be8ff, -2.24, 3.05, F + 1.82);
+    for (const [x, w] of segs) neon(thin(w, .06), 0x3be8ff, x, fh + .1, fz + .2);
+    neon(new THREE.TorusGeometry(.32, .05, 6, 20), 0xffe14d, -4.4, 4.25, F + 1.8);
+  }
+  // obra em andamento: cones, faixa e cronômetro
+  if (R.obra) {
+    for (let i = 0; i < 5; i++) { const cx2 = -5 + i * 2.6 + (i > 1 ? 1.2 : 0); sAt(mesh(new THREE.ConeGeometry(.2, .55, 10), 0xff7a1a), cx2, .28, F + 1.1); sAt(box(.4, .05, .4, 0xff7a1a), cx2, .03, F + 1.1); }
+    for (let i = 0; i < 10; i++) sAt(box(.6, .1, .05, i % 2 ? 0x2b2140 : 0xffd23f), -6.4 + i * .6, .45, F + 1.1);
+    obraLbl = label('🚧 OBRA', {w: 512, scale: 3.2, bg: 'rgba(255,122,26,.95)'}); obraLbl.position.set(Math.min(4, W - 3), 2.8, F + 1); shell.add(obraLbl);
+  }
+}
+function updateNeon() { neons.forEach((m, i) => m.color.setHSL((elapsed * .12 + i * .17) % 1, 1, .62)); }
 
 // ---------- personagens ----------
 const SKINS = [0xffd3a8, 0xf1b98a, 0xc68a5e, 0x8d5a3b];
@@ -545,7 +678,8 @@ function animChar(ch, dt) {
 
 // ---------- balcão: uma seção por produto ----------
 const COUNTER_MAX = 12;
-const SECTIONS = {[P[0]]: -1.3, [P[1]]: -.15, [P[2]]: 1};
+// seções 0-2 no balcão principal; 3-4 no balcão 2 do anexo
+const SECTIONS = {[P[0]]: -1.3, [P[1]]: -.15, [P[2]]: 1, [P[3]]: 8.3, [P[4]]: 9.5};
 at(box(4.2, .95, 1, T.trim), 0, .475, -1); at(box(4.4, .1, 1.2, 0xfaf6ee), 0, 1, -1);
 at(box(4.22, .12, 1.02, 0x3a2f45), 0, .06, -1);
 const reg = at(new THREE.Group(), 1.85, 1.05, -1.1);
@@ -557,12 +691,18 @@ at(new THREE.Mesh(new THREE.PlaneGeometry(4.2, .52), new THREE.MeshBasicMaterial
 function drawSign() {
   const g = signCv.getContext('2d'); g.clearRect(0, 0, 512, 64);
   g.font = '44px system-ui'; g.textAlign = 'center'; g.textBaseline = 'middle';
-  for (const [t, x] of Object.entries(SECTIONS)) {
-    const on = stations.some(s => s.type === t), px = (x + 2.1) / 4.2 * 512;
+  const cell = (g, t, px) => {
+    const on = stations.some(s => s.type === t);
     g.fillStyle = 'rgba(255,255,255,.9)'; roundRect(g, px - 34, 6, 68, 52, 14); g.fill();
     g.globalAlpha = on ? 1 : .35; g.fillStyle = '#000'; g.fillText(on ? PRODUCTS[t].icon : '🔒', px, 34); g.globalAlpha = 1;
-  }
+  };
+  for (const t of P.slice(0, 3)) cell(g, t, (SECTIONS[t] + 2.1) / 4.2 * 512);
   signTex.needsUpdate = true;
+  if (sign2) {
+    const g2 = sign2.cv.getContext('2d'); g2.clearRect(0, 0, 384, 64); g2.font = '44px system-ui'; g2.textAlign = 'center'; g2.textBaseline = 'middle';
+    for (const t of P.slice(3)) cell(g2, t, (SECTIONS[t] - 8.9 + 1.3) / 2.6 * 384);
+    sign2.tex.needsUpdate = true;
+  }
 }
 const counters = {}, cMax = {};
 for (const t in SECTIONS) {
@@ -570,7 +710,7 @@ for (const t in SECTIONS) {
   cMax[t] = label('MAX', {bg: 'rgba(230,50,50,.95)', scale: 1}); cMax[t].position.set(SECTIONS[t], 3.7, -1); cMax[t].visible = false; scene.add(cMax[t]);
 }
 const dropZone = plane(4.2, 1.1, new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: .45}), 0, -2.2, .01);
-const inDrop = p => Math.abs(p.x) < 2.3 && p.z > -2.9 && p.z < -1.5;
+const inDrop = p => p.z > -2.9 && p.z < -1.5 && (Math.abs(p.x) < 2.3 || (B.W > 7 && p.x > 7.5 && p.x < 10.3));
 
 const PILE = new V3(3.2, 0, -1);
 const moneyPile = new Stack(scene, i => { const j = i % 6; return new V3((j % 2) * .55 - .27, .03 + Math.floor(i / 6) * .07, Math.floor(j / 2) * .32 - .32); });
@@ -688,7 +828,7 @@ function updateCleaner(c, dt) {
   animChar(c, dt);
 }
 // $/min sem o jogador (usado nos ganhos parados e nos outros estabelecimentos)
-function currentRate() { return (seats.length / 2 + helpers.length * 3 + cleaners.length * 2) * value(P[0]) * .8 * (.7 + .1 * R.rep); }
+function currentRate() { return (seats.length / 2 + helpers.length * 3 + cleaners.length * 2) * value(P[0]) * .8 * (.7 + .1 * R.rep) * facMult() * (1 + .2 * stations.filter(s => P.indexOf(s.type) > 2).length); }
 
 // ---------- áreas de compra ----------
 const ZTEX = canvasTex(128, 128, g => { g.fillStyle = 'rgba(255,255,255,.3)'; roundRect(g, 6, 6, 116, 116, 18); g.fill(); g.setLineDash([16, 10]); g.lineWidth = 8; g.strokeStyle = '#fff'; g.stroke(); });
@@ -698,26 +838,34 @@ const KINDS = {
   cleaner: {name: '🧽 FAXINEIRO', msg: 'Faxineiro contratado!'},
 };
 P.forEach((k, i) => { KINDS['p' + i] = {name: PRODUCTS[k].st, msg: `${PRODUCTS[k].icon} ${PRODUCTS[k].name[0].toUpperCase() + PRODUCTS[k].name.slice(1)} liberado!`}; });
+// lv = fase do prédio exigida; rec = receitas do cardápio exigidas. Preços do 1º estabelecimento (os outros multiplicam por T.mult)
 const ZONES = [
-  {id: 't1', kind: 'table', price: 10, x: -3.8, z: 4, req: []},
-  {id: 't2', kind: 'table', price: 25, x: 3.8, z: 4, req: ['t1']},
-  {id: 'g2', kind: 'p0', price: 40, x: -5.6, z: -4.5, req: ['t1']},
-  {id: 'f1', kind: 'p1', price: 60, x: -5.9, z: -2.3, rot: Math.PI / 2, req: ['t2']},
-  {id: 'h1', kind: 'helper', price: 80, x: 4.2, z: -4.4, req: ['t2', 'g2']},
-  {id: 't3', kind: 'table', price: 60, x: -3.8, z: 7.3, req: ['f1']},
-  {id: 's1', kind: 'p2', price: 100, x: 5.9, z: -2.6, rot: -Math.PI / 2, req: ['h1', 't3']},
-  {id: 't4', kind: 'table', price: 90, x: 3.8, z: 7.3, req: ['t3']},
-  {id: 'g3', kind: 'p0', price: 150, x: -.4, z: -4.5, req: ['s1', 't4']},
-  {id: 't5', kind: 'table', price: 130, x: -3.8, z: 10.6, req: ['t4']},
-  {id: 't6', kind: 'table', price: 180, x: 3.8, z: 10.6, req: ['t5']},
-  {id: 'c1', kind: 'cleaner', price: 120, x: -5.6, z: 2.1, req: ['t3']},
-  {id: 'h2', kind: 'helper', price: 300, x: 2.2, z: -4.6, req: ['g3', 't6']},
-  {id: 'f2', kind: 'p1', price: 420, x: -5.9, z: -.1, rot: Math.PI / 2, req: ['h2']},
-  {id: 's2', kind: 'p2', price: 520, x: 5.9, z: -.4, rot: -Math.PI / 2, req: ['f2']},
-  {id: 'h3', kind: 'helper', price: 800, x: 5.4, z: 2.1, req: ['s2', 'c1']},
+  {id: 't1', kind: 'table', price: 15, x: -3.8, z: 4, req: []},
+  {id: 't2', kind: 'table', price: 60, x: 3.8, z: 4, req: ['t1']},
+  {id: 'g2', kind: 'p0', price: 150, x: -5.6, z: -4.5, req: ['t1']},
+  {id: 'f1', kind: 'p1', price: 300, x: -5.9, z: -2.3, rot: Math.PI / 2, req: ['t2']},
+  {id: 'h1', kind: 'helper', price: 600, x: 4.2, z: -4.4, req: ['t2', 'g2']},
+  {id: 't3', kind: 'table', price: 1200, x: -3.8, z: 7.3, req: ['f1'], lv: 1},
+  {id: 's1', kind: 'p2', price: 2000, x: 5.9, z: -2.6, rot: -Math.PI / 2, req: ['h1', 't3'], lv: 1},
+  {id: 't4', kind: 'table', price: 3000, x: 3.8, z: 7.3, req: ['t3'], lv: 1},
+  {id: 'g3', kind: 'p0', price: 4500, x: -.4, z: -4.5, req: ['s1', 't4'], lv: 1},
+  {id: 't5', kind: 'table', price: 12000, x: -3.8, z: 10.6, req: ['t4'], lv: 2},
+  {id: 't6', kind: 'table', price: 18000, x: 3.8, z: 10.6, req: ['t5'], lv: 2},
+  {id: 'c1', kind: 'cleaner', price: 6000, x: -5.6, z: 2.1, req: ['t3'], lv: 1},
+  {id: 'h2', kind: 'helper', price: 26000, x: 2.2, z: -4.6, req: ['g3', 't6'], lv: 2},
+  {id: 'f2', kind: 'p1', price: 38000, x: -5.9, z: -.1, rot: Math.PI / 2, req: ['h2'], lv: 2},
+  {id: 's2', kind: 'p2', price: 52000, x: 5.9, z: -.4, rot: -Math.PI / 2, req: ['f2'], lv: 2},
+  {id: 'h3', kind: 'helper', price: 75000, x: 5.4, z: 2.1, req: ['s2', 'c1'], lv: 2},
+  // anexo (fase 3): balcão 2 e os lanches novos do cardápio
+  {id: 'x1', kind: 'p3', price: 150000, x: 8.6, z: -4.5, req: ['h3'], lv: 3, rec: 4},
+  {id: 't7', kind: 'table', price: 200000, x: 9.3, z: 4, req: ['h3'], lv: 3},
+  {id: 'x2', kind: 'p4', price: 320000, x: 10.6, z: -2.5, rot: -Math.PI / 2, req: ['x1'], lv: 3, rec: 5},
+  {id: 't8', kind: 'table', price: 420000, x: 9.3, z: 7.4, req: ['t7'], lv: 3},
+  {id: 'h4', kind: 'helper', price: 600000, x: 8.2, z: 1.4, req: ['x1'], lv: 3},
+  {id: 't9', kind: 'table', price: 800000, x: 9.3, z: 10.8, req: ['t8'], lv: 3},
 ];
 const bought = new Set(R.bought);
-const complete = r => !!r && ZONES.every(z => r.bought.includes(z.id));
+const complete = r => !!r && (!!r.done || ZONES.every(z => r.bought.includes(z.id)));
 function makeZone(z) {
   if (z.kind === 'table') addTable(z.x, z.z);
   else if (z.kind === 'helper') addHelper(z.x, z.z);
@@ -725,16 +873,19 @@ function makeZone(z) {
   else addStation(P[+z.kind[1]], z.x, z.z, z.rot || 0);
 }
 function buildZoneUI(z) {
-  z.price = Math.round(z.price * T.mult * Math.pow(1.2, ZONES.indexOf(z))); z.left = z.price; z.step = Math.max(1, Math.ceil(z.price / 25)); z.t = 0;
+  z.base = z.price; z.price = Math.round(z.base * T.mult); z.left = z.price; z.step = Math.max(1, Math.ceil(z.price / 25)); z.t = 0;
   z.g = at(new THREE.Group(), z.x, .02, z.z); z.g.visible = false;
   const base = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 1.9), new THREE.MeshBasicMaterial({map: ZTEX, transparent: true})); base.rotation.x = -Math.PI / 2; z.g.add(base);
   z.fill = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 1.7), new THREE.MeshBasicMaterial({color: 0x2fbf4a, transparent: true, opacity: .65})); z.fill.rotation.x = -Math.PI / 2; z.fill.position.y = .01; z.fill.scale.set(.001, .001, 1); z.g.add(z.fill);
   z.title = label(KINDS[z.kind].name, {w: 420, scale: 2.3, bg: 'rgba(43,33,64,.85)'}); z.title.position.set(0, 1.3, 0); z.g.add(z.title);
   z.lbl = label('$' + fmt(z.price), {scale: 1.4, bg: null, fg: '#ffe14d', font: '700 64px Fredoka, system-ui'}); z.lbl.position.set(0, .65, 0); z.g.add(z.lbl);
 }
-function refreshZones(anim = true) { for (const z of ZONES) if (!bought.has(z.id) && !z.g.visible && z.req.every(r => bought.has(r))) { z.g.visible = true; if (anim) popIn(z.g); } }
+const zoneOpen = z => (z.lv || 0) <= R.ex && (!z.rec || R.menu >= z.rec);
+function refreshZones(anim = true) { for (const z of ZONES) if (!bought.has(z.id) && !z.g.visible && zoneOpen(z) && z.req.every(r => bought.has(r))) { z.g.visible = true; if (anim) popIn(z.g); } }
+// todas as áreas que a fase atual do prédio permite já foram compradas?
+const phaseDone = () => ZONES.every(z => (z.lv || 0) > R.ex || z.rec || bought.has(z.id));
 function refreshProgress() {
-  $('progTxt').textContent = `${T.icon} ${T.name} — ${bought.size === ZONES.length ? 'completo! ⭐' : bought.size + '/' + ZONES.length}`;
+  $('progTxt').textContent = `${T.icon} ${T.name} — ${bought.size === ZONES.length ? 'completo! ⭐' : bought.size + '/' + ZONES.length} · 🏗️${R.ex + 1}/${EXP.length}`;
   $('progBar').style.width = (bought.size / ZONES.length * 100) + '%';
 }
 function buyZone(z, fx) {
@@ -743,6 +894,8 @@ function buyZone(z, fx) {
     burst(new V3(z.x, .5, z.z), 40, CONFETTI, {speed: 4, up: 7, life: 1.3}); sfx.buy();
     floatText(KINDS[z.kind].msg, new V3(z.x, 0, z.z), 'rgba(43,33,64,.9)');
     if (!R.bought.includes(z.id)) R.bought.push(z.id); dirty = true;
+    if (phaseDone() && EXP[R.ex + 1] && !R.obra && !S.tips['ex' + R.ex]) { S.tips['ex' + R.ex] = true; setTimeout(() => toast('🏗️ Salão lotado! Amplie o prédio em 🏢 Negócio'), 1200); }
+    if (bought.size === ZONES.length) R.done = true;
     if (bought.size === ZONES.length) setTimeout(() => {
       floatText('Restaurante completo! 🎉', player.g.position, 'rgba(224,154,0,.95)');
       if (RESTS[S.cur + 1] && !S.r[S.cur + 1]) toast(`🏪 Novo restaurante disponível em Lojas!`);
@@ -756,7 +909,7 @@ function buyZone(z, fx) {
 const queue = [], customers = [];
 let spawnT = 0, combo = 0, comboT = 0, rush = 0, rushNext = 75;
 const comboMult = () => 1 + Math.min(combo, 20) * .05;
-const payMult = () => .7 + .1 * R.rep;
+const payMult = () => (.7 + .1 * R.rep) * facMult();
 const patience = () => (S.tut ? 28 : 9999) * (1 + .15 * R.lv.pat) * (rush > 0 ? .8 : 1);
 function makeOrder(vip) {
   const has = P.filter(k => stations.some(s => s.type === k)), o = {[P[0]]: 1 + (Math.random() * 2 | 0)};
@@ -766,7 +919,7 @@ function makeOrder(vip) {
   return o;
 }
 function spawnCustomer() {
-  const vip = S.tut && bought.size >= 4 && Math.random() < .07 + .01 * R.lv.mkt;
+  const vip = S.tut && bought.size >= 4 && Math.random() < .07 + .01 * R.lv.mkt + .015 * R.fac;
   const c = makeChar({shirt: vip ? 0xffc928 : pick(SHIRTS), skin: pick(SKINS), pants: vip ? 0x2b2140 : pick([0x2d3142, 0x3c5a99, 0x6b4a2a])});
   if (vip) { at(mesh(new THREE.CylinderGeometry(.2, .24, .16, 5), 0xffd23f), 0, 1.5, 0, c.body); }
   c.g.position.set((Math.random() - .5) * 2, 0, 15); c.vip = vip; c.order = makeOrder(vip); c.got = {}; c.state = 'queue'; c.t = 0; c.pay = 0; c.payT = 0;
@@ -808,7 +961,7 @@ function updateCustomer(c, dt) {
       if (Object.entries(c.order).every(([k, n]) => c.got[k] >= n) && c.hand.ready) {
         queue.shift(); c.bubble.visible = false;
         const fast = c.pat / c.patMax > .5;
-        setCombo(combo + 1); addRep(fast ? .08 : .03);
+        setCombo(combo + 1); addRep((fast ? .08 : .03) * (1 + .2 * R.fac)); R.served = (R.served || 0) + 1;
         let total = 0, items = 0;
         for (const [k, n] of Object.entries(c.order)) { total += n * value(k); items += n; track('item', n); }
         total *= payMult() * comboMult() * (rush > 0 ? 2 : 1) * (c.vip ? 5 : 1) * boostMult();
@@ -858,7 +1011,7 @@ let gift = null, giftNext = 50;
 function updateGift(dt) {
   if (!S.tut) return;
   if (!gift && (giftNext -= dt) <= 0) {
-    const g = at(new THREE.Group(), (Math.random() < .5 ? -1 : 1) * (1.4 + Math.random() * .6), 0, 2 + Math.random() * 9);
+    const g = at(new THREE.Group(), (Math.random() < .5 ? -1 : 1) * (1.4 + Math.random() * .6), 0, 2 + Math.random() * (B.F - 3.5));
     at(box(.6, .5, .6, 0xff4d6d), 0, .25, 0, g); at(box(.64, .12, .64, 0xffd23f), 0, .55, 0, g); at(box(.12, .52, .62, 0xffd23f), 0, .26, 0, g);
     popIn(g); gift = g;
   }
@@ -882,26 +1035,28 @@ function refreshHud(pop) {
 
 // ---------- melhorias (por restaurante) ----------
 const UPS = [
-  {k: 'cap', icon: '💪', name: 'Braços fortes', desc: l => `Carrega ${5 + l} → ${6 + l} itens`, base: 30, max: 10},
-  {k: 'speed', icon: '👟', name: 'Tênis novo', desc: l => `Velocidade +${l * 10}% → +${(l + 1) * 10}%`, base: 25, max: 8},
-  {k: 'price', icon: '💲', name: 'Receitas especiais', desc: l => `Lanches valem +${l * 30}% → +${(l + 1) * 30}%`, base: 40, max: 20},
-  {k: 'grill', icon: '🔥', name: 'Cozinha turbo', desc: l => `Preparo ${Math.round((1 - Math.pow(.88, l)) * 100)}% → ${Math.round((1 - Math.pow(.88, l + 1)) * 100)}% mais rápido`, base: 35, max: 8},
-  {k: 'pat', icon: '🛋️', name: 'Ambiente aconchegante', desc: l => `Clientes esperam +${l * 15}% → +${(l + 1) * 15}%`, base: 50, max: 8},
-  {k: 'mkt', icon: '📣', name: 'Marketing', desc: l => `Mais clientes e VIPs (nível ${l} → ${l + 1})`, base: 60, max: 10},
+  {k: 'cap', icon: '💪', name: 'Braços fortes', desc: l => `Carrega ${5 + l} → ${6 + l} itens`, base: 60, max: 10},
+  {k: 'speed', icon: '👟', name: 'Tênis novo', desc: l => `Velocidade +${l * 10}% → +${(l + 1) * 10}%`, base: 50, max: 8},
+  {k: 'price', icon: '💲', name: 'Ingredientes melhores', desc: l => `Lanches valem +${l * 20}% → +${(l + 1) * 20}%`, base: 120, max: 20},
+  {k: 'grill', icon: '🔥', name: 'Cozinha turbo', desc: l => `Preparo ${Math.round((1 - Math.pow(.88, l)) * 100)}% → ${Math.round((1 - Math.pow(.88, l + 1)) * 100)}% mais rápido`, base: 80, max: 8},
+  {k: 'pat', icon: '🛋️', name: 'Ambiente aconchegante', desc: l => `Clientes esperam +${l * 15}% → +${(l + 1) * 15}%`, base: 100, max: 8},
+  {k: 'mkt', icon: '📣', name: 'Marketing', desc: l => `Mais clientes e VIPs (nível ${l} → ${l + 1})`, base: 150, max: 10},
 ];
-const upCost = u => Math.round(u.base * T.mult * Math.pow(1.7, R.lv[u.k]));
+const upCost = u => Math.round(u.base * T.mult * Math.pow(1.85, R.lv[u.k]));
+// o nível máximo de cada melhoria cresce com o prédio (fase 1: 1/4 do total ... fase 4: tudo)
+const upMax = u => Math.min(u.max, Math.ceil(u.max * (R.ex + 1) / EXP.length));
 function renderUps() {
   $('upSub').textContent = `Valem só para ${T.name}`;
   $('ups').innerHTML = UPS.map(u => {
-    const l = R.lv[u.k], maxed = l >= u.max;
-    return `<div class="up"><div class="ic">${u.icon}</div><div class="tx"><b>${u.name}</b><small>Nível ${l + 1}${maxed ? ' · máximo' : ''}</small><span>${maxed ? 'Já está no máximo' : u.desc(l)}</span></div><button class="btn" data-k="${u.k}">${maxed ? 'MAX' : '$' + fmt(upCost(u))}</button></div>`;
+    const l = R.lv[u.k], maxed = l >= u.max, capped = !maxed && l >= upMax(u);
+    return `<div class="up"><div class="ic">${u.icon}</div><div class="tx"><b>${u.name}</b><small>Nível ${l + 1}${maxed ? ' · máximo' : ` · limite da fase: ${upMax(u) + 1}`}</small><span>${maxed ? 'Já está no máximo' : capped ? '🏗️ Amplie o prédio para melhorar mais' : u.desc(l)}</span></div><button class="btn" data-k="${u.k}">${maxed ? 'MAX' : capped ? '🔒' : '$' + fmt(upCost(u))}</button></div>`;
   }).join('');
   refreshBadges();
 }
 $('ups').addEventListener('click', e => {
   const b = e.target.closest('button[data-k]'); if (!b || b.disabled) return;
   const u = UPS.find(x => x.k === b.dataset.k), c = upCost(u);
-  if (S.money < c || R.lv[u.k] >= u.max) return;
+  if (S.money < c || R.lv[u.k] >= upMax(u)) return;
   R.lv[u.k]++; addMoney(-c); sfx.buy(); track('upgrade', 1); renderUps();
   burst(player.g.position.clone().add(new V3(0, 1, 0)), 24, CONFETTI, {speed: 3, up: 6});
 });
@@ -929,7 +1084,8 @@ function ensureDaily() {
     let m, guard = 0;
     do { m = pool[Math.floor(r() * pool.length)]; } while (used.has(m.k) && guard++ < 30);
     used.add(m.k);
-    list.push({k: m.k, n: Math.round(m.n[tier] * (m.scale ? v : 1)), p: 0, reward: Math.round([60, 150, 320][tier] * v), claimed: false});
+    const rt = Math.max(0, currentRate() + passiveRate(false)); // prêmios e metas de dinheiro acompanham o faturamento
+    list.push({k: m.k, n: Math.round(m.scale ? Math.max(m.n[tier] * v, rt * [3, 8, 15][tier]) : m.n[tier]), p: 0, reward: Math.round(Math.max([60, 150, 320][tier] * v, rt * [2, 5, 10][tier])), claimed: false});
   }
   S.daily = {day: today, list}; dirty = true; return true;
 }
@@ -969,8 +1125,9 @@ function loginBonus() {
 // ---------- mapa da cidade, franquias e nova cidade ----------
 // franquia: unidades de um estabelecimento completo que rendem sozinhas; nova cidade: recomeça com bônus permanente
 const FR_MAX = 10;
-const frIncome = i => (S.r[i] ? S.r[i].fr : 0) * 150 * RESTS[i].val * cityMult();
-const frCost = i => Math.round(2500 * RESTS[i].val * Math.pow(1.45, S.r[i].fr) * (1 + .5 * S.city));
+const frUnit = i => 1500 * RESTS[i].val * cityMult(); // $/min de cada franquia
+const frIncome = i => (S.r[i] ? S.r[i].fr : 0) * frUnit(i);
+const frCost = i => Math.round(250000 * RESTS[i].val * Math.pow(1.5, S.r[i].fr) * (1 + .5 * S.city));
 const lotRate = (i, withCur) => { const r = S.r[i]; return r ? ((withCur || i !== S.cur) ? r.rate : 0) + frIncome(i) : 0; };
 const passiveRate = withCur => S.r.reduce((a, r, i) => a + lotRate(i, withCur), 0);
 const doneCount = () => S.r.filter(complete).length;
@@ -1002,7 +1159,7 @@ function renderRests() {
   let html = `<div class="up"><div class="ic">${t.icon}</div><div class="tx"><b>${t.name}</b><small>${t.kind} · ${prods}</small><span>${sub}</span></div>${right}</div>`;
   if (r) {
     const done = complete(r), max = r.fr >= FR_MAX;
-    html += `<div class="up"><div class="ic">🏪</div><div class="tx"><b>Franquias ${r.fr}/${FR_MAX}</b><span>${done ? `Cada unidade rende +$${fmt(150 * t.val * cityMult())}/min, mesmo com o app fechado` : 'Complete este estabelecimento para franquear'}</span></div>`
+    html += `<div class="up"><div class="ic">🏪</div><div class="tx"><b>Franquias ${r.fr}/${FR_MAX}</b><span>${done ? `Cada unidade rende +$${fmt(frUnit(sel))}/min, mesmo com o app fechado` : 'Complete este estabelecimento para franquear'}</span></div>`
       + (done ? `<button class="btn gold" data-fr="${sel}" ${!max && S.money >= frCost(sel) ? '' : 'disabled'}>${max ? 'MAX' : '$' + fmt(frCost(sel))}</button>` : '') + '</div>';
   }
   $('rList').innerHTML = html;
@@ -1030,7 +1187,8 @@ $('rests').addEventListener('click', e => {
   if (e.target.id === 'newCity' && !e.target.disabled) {
     const g = cityGain();
     if (!confirm(`Levar a marca para a Cidade ${S.city + 2}?\n\nVocê recomeça do zero (dinheiro, estabelecimentos e franquias), mas ganha +${Math.round(g * 100)}% permanente em tudo que vender. Missões e sequência continuam.`)) return;
-    S.bonus = (S.bonus || 0) + g; S.city++; S.money = 0; S.cur = 0; S.r = [{bought: [], lv: Object.assign({}, LV0), rate: 0, rep: 3, fr: 0}];
+    if (S.stk) for (const c of S.stk.c) { c.own = 0; c.paid = 0; }
+    S.bonus = (S.bonus || 0) + g; S.city++; S.money = 0; S.loan = 0; S.cur = 0; S.r = [{bought: [], lv: Object.assign({}, LV0), rate: 0, rep: 3, fr: 0}];
     persist(); Cloud.push(true);
     $('fade').textContent = `✈️ Cidade ${S.city + 1} · bônus x${cityMult().toFixed(2)}`; $('fade').classList.add('on');
     setTimeout(() => location.reload(), 900);
@@ -1038,8 +1196,8 @@ $('rests').addEventListener('click', e => {
 });
 
 // ---------- save na nuvem (Google Play Games; só no app Android) ----------
-const progressOf = s => (s && s.r ? (s.city || 0) * 10000 + s.r.reduce((a, r, i) => a + (r ? i * 100 + r.bought.length * 5 + (r.fr || 0) * 3 + Object.values(r.lv || {}).reduce((x, y) => x + y, 0) : 0), 0) : 0);
-const describe = s => { const i = s.r.length - 1; return `${s.city ? 'Cidade ' + (s.city + 1) + ' · ' : ''}${RESTS[i] ? RESTS[i].icon + ' ' + RESTS[i].name : ''} · ${s.r[i].bought.length}/${ZONES.length} áreas · $${fmt(s.money)}`; };
+const progressOf = s => (s && s.r ? (s.city || 0) * 10000 + s.r.reduce((a, r, i) => a + (r ? i * 100 + r.bought.length * 5 + (r.fr || 0) * 3 + (r.ex || 0) * 8 + (r.fac || 0) * 2 + (r.menu || 0) * 3 + Object.values(r.lv || {}).reduce((x, y) => x + y, 0) : 0), 0) : 0);
+const describe = s => { const i = s.r.length - 1; return `${s.city ? 'Cidade ' + (s.city + 1) + ' · ' : ''}${RESTS[i] ? RESTS[i].icon + ' ' + RESTS[i].name : ''} · ${s.r[i].bought.length}/${ZONES.length} áreas · prédio ${(s.r[i].ex || 0) + 1}/${EXP.length} · $${fmt(s.money)}`; };
 const Cloud = (() => {
   const C = window.Capacitor, SLOT = 'burger-rush-main';
   const P = C && C.isNativePlatform && C.isNativePlatform() && C.registerPlugin ? C.registerPlugin('PlayGamesSaves') : null;
@@ -1080,7 +1238,7 @@ const Cloud = (() => {
     if (await signIn(false)) await reconcile();
     setInterval(() => push(false), 180000);
   }
-  async function wipe() { if (st.signedIn) try { await write({v: SAVE_VERSION, money: 0, city: 0, bonus: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}]}, 'Novo jogo', 0); } catch (e) {} }
+  async function wipe() { if (st.signedIn) try { await write({v: SAVE_VERSION, money: 0, city: 0, bonus: 0, loan: 0, stk: null, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0, ex: 0, fac: 0, menu: 0, served: 0}]}, 'Novo jogo', 0); } catch (e) {} }
   return {st, start, push, wipe, adopt, signInAndSync: async () => { if (await signIn(true)) await reconcile(); }};
 })();
 function renderCloud() {
@@ -1202,14 +1360,251 @@ $('ageGo').addEventListener('click', () => {
   Ads.start();
 });
 
+// ---------- negócio: obra, fachada, cardápio, banco, patrimônio e inspeção ----------
+const expCost = (i, k = S.cur) => Math.round(EXP[i].cost * RESTS[k].mult);
+const facCost = (i, k = S.cur) => Math.round(FAC[i].cost * RESTS[k].mult);
+const menuCost = (i, k = S.cur) => Math.round(MENU[i].cost * RESTS[k].mult);
+const secsTo = end => Math.max(0, Math.ceil((end - Date.now()) / 1000));
+const hms = s => s >= 3600 ? `${Math.floor(s / 3600)}h ${String(Math.floor(s % 3600 / 60)).padStart(2, '0')}min` : `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+const fmtS = n => (n < 0 ? '-' : '') + fmt(Math.abs(n));
+function expReqs() {
+  const nx = EXP[R.ex + 1]; if (!nx) return [];
+  return [
+    {t: 'Comprar todas as áreas desta fase', ok: phaseDone()},
+    {t: `Atender ${fmt(nx.serve)} clientes aqui (${fmt(Math.min(R.served, nx.serve))})`, ok: R.served >= nx.serve},
+    {t: `Reputação ⭐ ${nx.rep.toFixed(1)} (agora ${R.rep.toFixed(1)})`, ok: R.rep >= nx.rep - 1e-9},
+  ];
+}
+function buyExpand() {
+  const nx = EXP[R.ex + 1], c = nx && expCost(R.ex + 1);
+  if (!nx || R.obra || S.money < c || !expReqs().every(r => r.ok)) return;
+  addMoney(-c); R.obra = {lv: R.ex + 1, end: Date.now() + nx.min * 60000}; dirty = true;
+  buildShell(); sfx.buy(); toast(`🚧 Obra começou: ${nx.name} (${hms(nx.min * 60)})`);
+  burst(new V3(0, 1, B.F + 1), 30, [0xff7a1a, 0xffd23f], {speed: 4, up: 6});
+}
+function buyFacade() {
+  const nf = FAC[R.fac + 1], c = nf && facCost(R.fac + 1);
+  if (!nf || nf.ex > R.ex || S.money < c) return;
+  addMoney(-c); R.fac++; dirty = true; buildShell(); sfx.buy(); track('upgrade', 1);
+  toast(`${nf.icon} ${nf.name}! Mais clientes passando na porta`);
+  burst(new V3(0, 1.5, B.F + 1), 50, CONFETTI, {speed: 5, up: 8, life: 1.3});
+}
+function research() {
+  const m = MENU[R.menu], c = m && menuCost(R.menu);
+  if (!m || R.res || m.ex > R.ex || S.money < c) return;
+  addMoney(-c); R.res = {n: R.menu + 1, end: Date.now() + m.min * 60000}; dirty = true; sfx.buy();
+  toast(`🧪 Pesquisando: ${menuName(R.menu)} (${hms(m.min * 60)})`);
+}
+// obra e pesquisa terminam pelo relógio (também com o app fechado)
+function checkTimers() {
+  if (R.obra && Date.now() >= R.obra.end) {
+    R.ex = R.obra.lv; R.obra = null; B.W = EXP[R.ex].W; B.F = EXP[R.ex].F; dirty = true;
+    buildShell(); refreshZones(true); refreshProgress(); sfx.done();
+    burst(new V3(0, 1, B.F - 1), 60, CONFETTI, {speed: 5, up: 8, life: 1.4});
+    floatText(`🏗️ ${EXP[R.ex].name}!`, player.g.position, 'rgba(43,33,64,.9)'); toast(`🏗️ Obra pronta: ${EXP[R.ex].name}! Novas áreas liberadas`);
+  }
+  if (R.res && Date.now() >= R.res.end) {
+    R.menu = R.res.n; R.res = null; dirty = true; refreshZones(true); sfx.done();
+    toast(`📖 Receita nova no cardápio: ${menuName(R.menu - 1)}!`); floatText(`📖 ${menuName(R.menu - 1)}`, player.g.position, 'rgba(224,154,0,.95)');
+  }
+  if (obraLbl && R.obra) obraLbl.set(`🚧 OBRA ${hms(secsTo(R.obra.end))}`);
+}
+// patrimônio: caixa + negócios (70% do que foi investido) + ações - dívida
+function bizValue() {
+  let v = 0;
+  S.r.forEach((r, i) => {
+    if (!r) return; const m = RESTS[i].mult;
+    for (const z of ZONES) if (r.bought.includes(z.id)) v += z.base * m;
+    for (let k = 1; k <= (r.ex || 0); k++) v += EXP[k].cost * m;
+    for (let k = 1; k <= (r.fac || 0); k++) v += FAC[k].cost * m;
+    for (let k = 0; k < (r.menu || 0); k++) v += MENU[k].cost * m;
+    v += RESTS[i].cost + (r.fr || 0) * frUnit(i) * 120;
+  });
+  return v * .7;
+}
+const stockValue = () => S.stk ? S.stk.c.reduce((a, c) => a + c.own * c.p, 0) : 0;
+const grossWorth = () => S.money + bizValue() + stockValue();
+const netWorth = () => grossWorth() - S.loan;
+// banco: empréstimo com juros compostos (1,5% a cada 10 min; fora do app conta no máximo 2h)
+const LOAN_RATE = .015;
+const loanLimit = () => Math.round(Math.max(2000 * bestVal(), netWorth() * .3)); // pelo patrimônio líquido: pegar emprestado não aumenta o limite
+function loanSync() {
+  const now = Date.now(), gap = Math.min(now - (S.loanAt || now), 7200000); S.loanAt = now;
+  if (S.loan > 0 && gap > 0) { S.loan *= Math.pow(1 + LOAN_RATE, gap / 600000); dirty = true; }
+}
+function takeLoan() { loanSync(); const v = Math.floor(loanLimit() - S.loan); if (v < 1) return; S.loan += v; addMoney(v); sfx.pay(); toast(`🏦 Empréstimo de $${fmt(v)} na conta`); }
+function payLoan() { loanSync(); const v = Math.min(S.money, S.loan); if (v <= 0) return; S.loan -= v; if (S.loan < 1) S.loan = 0; addMoney(-v); sfx.buy(); toast(S.loan ? `🏦 Pagou $${fmt(v)} · falta $${fmt(S.loan)}` : '🏦 Dívida quitada! 🎉'); }
+// inspeção sanitária: avisa 20s antes; mesas limpas = prêmio e reputação, sujas = multa
+let inspT = 420 + Math.random() * 240, inspWarn = false;
+function updateInspection(dt) {
+  if (!S.tut || (R.ex < 1 && bought.size < 5)) return;
+  inspT -= dt;
+  if (!inspWarn && inspT <= 20) { inspWarn = true; toast('🧑‍⚖️ Fiscal da vigilância chega em 20s: limpe as mesas!'); }
+  if (inspT > 0) return;
+  inspWarn = false; inspT = 480 + Math.random() * 300;
+  const d = seats.filter(s => s.dirty).length, rt = currentRate();
+  if (!d) { const amt = Math.round(Math.max(30 * T.val, rt * 1.5)); addMoney(amt); track('earn', amt); addRep(.3); sfx.done(); floatText(`🧑‍⚖️ Aprovado! +$${fmt(amt)}`, player.g.position, 'rgba(47,191,74,.95)'); toast('🧑‍⚖️ Inspeção aprovada! ⭐ subiu'); }
+  else { const fine = Math.round(Math.min(S.money, Math.max(20 * T.val, rt * d))); addMoney(-fine); addRep(-.3); floatText(`🧾 Multa -$${fmt(fine)}`, player.g.position, 'rgba(230,60,60,.95)'); toast(`🧾 Multa da vigilância: ${d} lugar(es) sujo(s)`); }
+}
+function bizReady() {
+  if (!S.tut) return false;
+  if (EXP[R.ex + 1] && !R.obra && S.money >= expCost(R.ex + 1) && expReqs().every(r => r.ok)) return true;
+  const nf = FAC[R.fac + 1]; if (nf && nf.ex <= R.ex && S.money >= facCost(R.fac + 1)) return true;
+  const m = MENU[R.menu]; return !!m && !R.res && m.ex <= R.ex && S.money >= menuCost(R.menu);
+}
+function renderBiz() {
+  const nw = netWorth();
+  $('bizSub').textContent = `${T.icon} ${T.name} · prédio: ${EXP[R.ex].name}`;
+  let h = `<div class="tot">🏦 $${fmtS(nw)}</div><p>Patrimônio total</p>`
+    + `<div class="row"><span>💵 Caixa</span><b>$${fmt(S.money)}</b></div><div class="row"><span>🏪 Negócios e franquias</span><b>$${fmt(bizValue())}</b></div><div class="row"><span>📈 Ações</span><b>$${fmt(stockValue())}</b></div>`
+    + (S.loan > 0 ? `<div class="row"><span>🏦 Dívida no banco</span><b class="neg">-$${fmt(S.loan)}</b></div>` : '');
+  h += '<h3>🏗️ Prédio</h3>';
+  const nx = EXP[R.ex + 1];
+  if (R.obra) { const tot = EXP[R.obra.lv].min * 60, s = secsTo(R.obra.end); h += `<div class="up"><div class="ic">🚧</div><div class="tx"><b>Obra: ${EXP[R.obra.lv].name}</b><div class="mbar"><i style="width:${(1 - s / tot) * 100}%"></i></div><small>Pronta em ${hms(s)} (anda mesmo com o app fechado)</small></div></div>`; }
+  else if (!nx) h += `<div class="up"><div class="ic">🏢</div><div class="tx"><b>${EXP[R.ex].name}</b><span>Prédio no tamanho máximo!</span></div><span class="here">✓</span></div>`;
+  else {
+    const rq = expReqs(), ok = rq.every(r => r.ok), c = expCost(R.ex + 1);
+    h += `<div class="up"><div class="ic">🏗️</div><div class="tx"><b>Ampliar: ${nx.name}</b><span>${nx.d} · obra de ${hms(nx.min * 60)}</span>${rq.map(r => `<span class="req ${r.ok ? 'ok' : ''}">${r.ok ? '✅' : '⬜'} ${r.t}</span>`).join('')}</div><button class="btn gold" data-act="exp" ${ok && S.money >= c ? '' : 'disabled'}>$${fmt(c)}</button></div>`;
+  }
+  h += '<h3>🎨 Fachada</h3>';
+  const nf = FAC[R.fac + 1];
+  h += `<div class="row"><span>${FAC[R.fac].icon || '🏠'} ${FAC[R.fac].name}</span><b>+${7 * R.fac}% clientes</b></div>`;
+  if (nf) {
+    const c = facCost(R.fac + 1), okx = nf.ex <= R.ex;
+    h += `<div class="up"><div class="ic">${nf.icon}</div><div class="tx"><b>${nf.name}</b><span>+7% clientes, +1,5% VIPs, +4% no preço e reputação sobe mais rápido</span>${okx ? '' : `<span class="req">⬜ Precisa do prédio: ${EXP[nf.ex].name}</span>`}</div><button class="btn" data-act="fac" ${okx && S.money >= c ? '' : 'disabled'}>$${fmt(c)}</button></div>`;
+  } else h += '<div class="up"><div class="ic">🌟</div><div class="tx"><b>Fachada completa</b><span>A mais bonita da cidade!</span></div></div>';
+  h += '<h3>📖 Cardápio</h3>';
+  MENU.forEach((m, i) => {
+    const k = P[i], done = R.menu > i, doing = R.res && R.res.n === i + 1;
+    const desc = i < 3 ? `${PRODUCTS[k].name[0].toUpperCase() + PRODUCTS[k].name.slice(1)} vale +50%` : `Lanche novo: vale ${i === 3 ? '2,5x' : '4x'} · estação no anexo`;
+    let right;
+    if (done) right = '<span class="here">✓</span>';
+    else if (doing) right = `<span class="here">🧪 ${hms(secsTo(R.res.end))}</span>`;
+    else if (i === R.menu && !R.res && m.ex <= R.ex) right = `<button class="btn" data-act="res" ${S.money >= menuCost(i) ? '' : 'disabled'}>$${fmt(menuCost(i))}</button>`;
+    else right = '<button class="btn" disabled>🔒</button>';
+    const sub = done ? desc + ' · no cardápio' : doing ? 'Pesquisando a receita...' : m.ex > R.ex ? `Precisa do prédio: ${EXP[m.ex].name}` : i > R.menu ? 'Pesquise a receita anterior' : `${desc} · pesquisa de ${hms(m.min * 60)}`;
+    h += `<div class="up"><div class="ic">${PRODUCTS[k].icon}</div><div class="tx"><b>${menuName(i)}</b><span>${sub}</span></div>${right}</div>`;
+  });
+  h += '<h3>🏦 Banco</h3>';
+  const lim = loanLimit(), can = Math.max(0, Math.floor(lim - S.loan));
+  h += `<div class="up"><div class="ic">🏦</div><div class="tx"><b>Empréstimo</b><span>Juros de 1,5% a cada 10 min sobre a dívida</span><small>Limite $${fmt(lim)}${S.loan > 0 ? ` · devendo $${fmt(S.loan)}` : ''}</small></div><div class="btns"><button class="btn gold" data-act="loan" ${can >= 1 ? '' : 'disabled'}>+$${fmt(can)}</button><button class="btn" data-act="pay" ${S.loan > 0 && S.money >= 1 ? '' : 'disabled'}>Pagar</button></div></div>`;
+  $('bizList').innerHTML = h;
+}
+$('bizList').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]'); if (!b || b.disabled) return;
+  ({exp: buyExpand, fac: buyFacade, res: research, loan: takeLoan, pay: payLoan})[b.dataset.act]();
+  renderBiz();
+});
+$('btnBiz').addEventListener('click', () => { initAudio(); renderBiz(); openModal('biz'); });
+
+// ---------- bolsa de valores (empresas fictícias, só dinheiro do jogo) ----------
+// g = crescimento do valor justo por minuto, v = volatilidade, div = dividendo pago a cada DIV_EVERY min (fração do preço)
+const STOCKS = [
+  {s: 'BRGR', n: 'Burguer Brasil', ic: '🍔', p0: 20, g: .0008, v: .035, div: 0},
+  {s: 'BATA', n: 'Batata Dourada Agro', ic: '🥔', p0: 8, g: .0005, v: .09, div: 0},
+  {s: 'REFR', n: 'Refri Gelado S.A.', ic: '🥤', p0: 35, g: .0003, v: .025, div: .01},
+  {s: 'ENTR', n: 'Entrega Já', ic: '🛵', p0: 12, g: .0015, v: .13, div: 0},
+  {s: 'CHAP', n: 'Chapa Quente Equip.', ic: '🔥', p0: 50, g: .0006, v: .05, div: .005},
+  {s: 'IMOV', n: 'Imóveis da Praça', ic: '🏢', p0: 90, g: .0004, v: .02, div: .012},
+];
+const STK_DT = 3, DIV_EVERY = 5, FEE = .005;
+function mkt() {
+  if (!S.stk || !S.stk.c || S.stk.c.length !== STOCKS.length) S.stk = {tm: 0, dv: 0, n: 0, at: Date.now(), c: STOCKS.map(d => ({p: d.p0, tr: 0, own: 0, paid: 0, h: [d.p0]}))};
+  return S.stk;
+}
+const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+// passeio aleatório no log do preço: tendência que muda de vez em quando + volta lenta ao valor justo (que cresce)
+function mktStep(dtMin, quiet) {
+  const m = mkt(); m.tm += dtMin;
+  STOCKS.forEach((d, i) => {
+    const c = m.c[i], fair = Math.log(d.p0) + d.g * m.tm;
+    if (Math.random() < dtMin * .25) c.tr = (Math.random() - .45) * .02;
+    const lx = Math.log(c.p); let x = lx + (c.tr + .03 * (fair - lx)) * dtMin + d.v * Math.sqrt(dtMin) * gauss();
+    if (!quiet && Math.random() < dtMin * .02) { const j = (Math.random() < .5 ? -1 : 1) * (.06 + Math.random() * .08); x += j; toast(`📰 ${d.n} ${j > 0 ? 'dispara 🚀' : 'despenca 📉'} ${j > 0 ? '+' : ''}${Math.round(j * 100)}%`); }
+    c.p = Math.max(.5, Math.exp(x));
+  });
+  if (++m.n % 3 === 0) for (const c of m.c) { c.h.push(c.p); if (c.h.length > 40) c.h.shift(); }
+  let paid = 0; m.dv += dtMin;
+  if (m.dv >= DIV_EVERY) { m.dv -= DIV_EVERY; STOCKS.forEach((d, i) => { paid += m.c[i].own * m.c[i].p * d.div; }); }
+  dirty = true; return paid;
+}
+// chamado a cada STK_DT s; depois de uma ausência simula no máximo 2h, com variação limitada a ±20%. Devolve os dividendos da ausência
+function mktSync() {
+  const m = mkt(), now = Date.now(), gap = (now - (m.at || now)) / 60000; m.at = now;
+  if (gap <= 0) return 0;
+  if (gap < 1) {
+    const d = mktStep(gap);
+    if (d > 0) { addMoney(d); track('earn', d); toast(`💸 Dividendos: +$${fmt(d)}`); }
+    return 0;
+  }
+  const mins = Math.min(gap, 120), p0 = m.c.map(c => c.p); let div = 0;
+  for (let t = 0; t < mins; t++) div += mktStep(Math.min(1, mins - t), true);
+  m.c.forEach((c, i) => { c.p = Math.min(p0[i] * 1.2, Math.max(p0[i] * .8, c.p)); });
+  return div;
+}
+const fmtP = n => n < 1000 ? n.toFixed(2).replace('.', ',') : fmt(n);
+const pct = x => (x >= 0 ? '+' : '') + (x * 100).toFixed(1).replace('.', ',') + '%';
+function spark(h, p) {
+  const a = h.concat([p]), lo = Math.min(...a), hi = Math.max(...a), r = hi - lo || 1;
+  const pts = a.map((v, k) => `${(k / (a.length - 1) * 58 + 1).toFixed(1)},${(28 - (v - lo) / r * 26).toFixed(1)}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 60 30"><polyline points="${pts}" fill="none" stroke="${p >= a[0] ? '#1c8a31' : '#d23c3c'}" stroke-width="2" stroke-linejoin="round"/></svg>`;
+}
+const QTY = [1, 10, 100, 1000, 0]; // 0 = máximo
+let stkQ = 1;
+function stkQty(i, sell) {
+  const c = mkt().c[i];
+  if (!stkQ) return sell ? c.own : Math.floor(S.money / (c.p * (1 + FEE)));
+  return sell ? Math.min(stkQ, c.own) : stkQ;
+}
+function trade(i, sell) {
+  const d = STOCKS[i], c = mkt().c[i], n = stkQty(i, sell); if (n <= 0) return;
+  if (sell) {
+    const got = n * c.p * (1 - FEE), basis = c.paid * n / c.own, gain = got - basis;
+    c.paid -= basis; c.own -= n; addMoney(got); sfx.pay();
+    toast(`📈 Vendeu ${fmt(n)} ${d.s} por $${fmt(got)} (${gain >= 0 ? 'lucro' : 'prejuízo'} $${fmt(Math.abs(gain))})`);
+  } else {
+    const cost = n * c.p * (1 + FEE); if (S.money < cost) { toast('💸 Dinheiro insuficiente'); return; }
+    addMoney(-cost); c.own += n; c.paid += cost; sfx.buy(); toast(`📈 Comprou ${fmt(n)} ${d.s} por $${fmt(cost)}`);
+  }
+  dirty = true; renderStocks();
+}
+function renderStocks() {
+  const m = mkt(), val = stockValue(), paid = m.c.reduce((a, c) => a + c.paid, 0);
+  $('stkSub').innerHTML = `Carteira: <b>$${fmtP(val)}</b>${val > 0 ? ` <span class="${val >= paid ? 'pos' : 'neg'}">(${pct(val / paid - 1)})</span>` : ''} · Caixa $${fmt(S.money)}`;
+  $('stkQty').innerHTML = QTY.map(q => `<button data-q="${q}" class="${q === stkQ ? 'on' : ''}">${q ? 'x' + fmt(q) : 'Máx'}</button>`).join('');
+  $('stkList').innerHTML = STOCKS.map((d, i) => {
+    const c = m.c[i], ch = c.p / c.h[0] - 1, nb = stkQty(i, false), canB = nb > 0 && S.money >= nb * c.p * (1 + FEE);
+    return `<div class="up"><div class="tx"><b>${d.ic} ${d.s} · $${fmtP(c.p)}</b><small>${d.n}${d.div ? ` · paga ${(d.div * 100).toFixed(1).replace('.', ',')}% de dividendos` : ''}</small><span class="${ch >= 0 ? 'pos' : 'neg'}">${pct(ch)} · ${c.own ? `${fmt(c.own)} ações = $${fmtP(c.own * c.p)}` : 'nenhuma ação'}</span></div>${spark(c.h, c.p)}<div class="btns"><button class="btn" data-buy="${i}" ${canB ? '' : 'disabled'}>Comprar</button><button class="btn red" data-sell="${i}" ${c.own ? '' : 'disabled'}>Vender</button></div></div>`;
+  }).join('');
+}
+$('stkQty').addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (b) { stkQ = +b.dataset.q; renderStocks(); } });
+$('stkList').addEventListener('click', e => {
+  const b = e.target.closest('button[data-buy],button[data-sell]'); if (!b || b.disabled) return;
+  if (b.dataset.buy !== undefined) trade(+b.dataset.buy, false); else trade(+b.dataset.sell, true);
+});
+$('btnStk').addEventListener('click', () => { initAudio(); mktSync(); renderStocks(); openModal('stocks'); });
+setInterval(() => {
+  const d = mktSync(); // se o app ficou pausado e o timer rodou antes da tela de boas-vindas, paga aqui mesmo
+  if (d >= 1) { addMoney(d); toast(`💸 Dividendos enquanto você estava fora: +$${fmt(d)}`); }
+  if ($('stocks').classList.contains('open')) renderStocks();
+}, STK_DT * 1000);
+// a cada segundo: obra/pesquisa, juros, botões novos e patrimônio no topo
+setInterval(() => {
+  checkTimers(); loanSync();
+  $('btnBiz').style.display = $('btnStk').style.display = S.tut ? 'grid' : 'none';
+  $('net').textContent = '🏦 ' + fmtS(netWorth());
+  if ($('biz').classList.contains('open') && (R.obra || R.res)) renderBiz();
+}, 1000);
+
 // ---------- avisos, painéis e ganhos enquanto fora ----------
 function refreshBadges() {
   let up = false;
   for (const u of UPS) {
-    const ok = R.lv[u.k] < u.max && S.money >= upCost(u); up = up || ok;
+    const ok = R.lv[u.k] < upMax(u) && S.money >= upCost(u); up = up || ok;
     const b = $('ups').querySelector(`[data-k="${u.k}"]`); if (b) b.disabled = !ok;
   }
   $('bUp').style.display = up ? 'block' : 'none';
+  $('bBiz').style.display = bizReady() ? 'block' : 'none';
   $('bMis').style.display = S.daily && S.daily.list.some(m => !m.claimed && m.p >= m.n) ? 'block' : 'none';
   const nxt = S.r.length, canFr = S.r.some((r, i) => r && complete(r) && r.fr < FR_MAX && S.money >= frCost(i));
   $('bRest').style.display = (RESTS[nxt] && complete(S.r[nxt - 1]) && S.money >= RESTS[nxt].cost) || canFr || doneCount() >= 3 ? 'block' : 'none';
@@ -1236,9 +1631,10 @@ function offlineEarn(ms) {
   return Math.floor(minutes * passiveRate(true));
 }
 let pendingGift = 0;
-function showWelcome(offline, bonus) {
-  if (offline < 5 && bonus <= 0) return;
+function showWelcome(offline, bonus, div = 0) {
+  if (offline < 5 && bonus <= 0 && div < 1) return;
   const rows = [];
+  if (div >= 1) { rows.push(`<div class="row"><span>💸 Dividendos das suas ações</span><b>$${fmt(div)}</b></div>`); pendingGift += div; }
   if (offline >= 5) rows.push(`<div class="row"><span>🕒 Faturou enquanto você estava fora</span><b>$${fmt(offline)}</b></div>`);
   if (bonus > 0) rows.push(`<div class="row"><span>🔥 Bônus diário · dia ${S.streak}</span><b>$${fmt(bonus)}</b></div>`);
   pendingGift += Math.max(0, offline >= 5 ? offline : 0) + bonus;
@@ -1257,7 +1653,8 @@ document.addEventListener('visibilitychange', () => {
   else if (hiddenAt) {
     const away = Date.now() - hiddenAt; hiddenAt = 0; last = performance.now();
     if (ensureDaily()) toast('📋 Novas missões do dia!');
-    showWelcome(FRESH || away < 60000 ? 0 : offlineEarn(away), loginBonus());
+    loanSync(); const div = mktSync(); checkTimers();
+    showWelcome(FRESH || away < 60000 ? 0 : offlineEarn(away), loginBonus(), div);
   }
 });
 
@@ -1374,9 +1771,9 @@ function step(dt) {
   // ajudantes, clientes e renda dos outros estabelecimentos
   for (const h of helpers) updateHelper(h, dt);
   for (const c of cleaners) updateCleaner(c, dt);
-  updateRush(dt); updateGift(dt);
+  updateRush(dt); updateGift(dt); updateInspection(dt); if (neons.length) updateNeon();
   if (combo && (comboT -= dt) <= 0) setCombo(0);
-  const interval = Math.max(1, (3.2 - seats.length * .15) * (1.3 - .1 * R.rep) * Math.pow(.95, R.lv.mkt)) / (rush > 0 ? 2.5 : 1);
+  const interval = Math.max(1, (3.2 - seats.length * .15) * (1.3 - .1 * R.rep) * Math.pow(.95, R.lv.mkt) / (1 + .07 * R.fac)) / (rush > 0 ? 2.5 : 1);
   if (queue.length < 4 + Math.floor(seats.length / 4) + (rush > 0 ? 3 : 0) && (spawnT -= dt) <= 0) { spawnCustomer(); spawnT = interval; }
   for (const c of customers.slice()) updateCustomer(c, dt);
   if ((passiveT += dt) >= 1) {
@@ -1420,18 +1817,25 @@ function frame(now) {
 }
 
 // ---------- início ----------
+buildShell();
 for (const z of ZONES) buildZoneUI(z);
 for (const z of ZONES) if (bought.has(z.id)) { bought.delete(z.id); buyZone(z, false); }
 refreshZones(false); refreshProgress(); refreshHud();
 ensureDaily();
 const away = Date.now() - S.last;
-if (firstRun) { loginBonus(); addMoney(0); } else { addMoney(0); showWelcome(FRESH || away < 60000 ? 0 : offlineEarn(away), loginBonus()); }
+loanSync(); const awayDiv = mktSync(); checkTimers();
+if (firstRun) { loginBonus(); addMoney(0); } else { addMoney(0); showWelcome(FRESH || away < 60000 ? 0 : offlineEarn(away), loginBonus(), awayDiv); }
+$('net').textContent = '🏦 ' + fmtS(netWorth());
 setInterval(() => { if (ensureDaily()) { toast('📋 Novas missões do dia!'); refreshBadges(); const b = loginBonus(); if (b) showWelcome(0, b); } }, 30000);
 requestAnimationFrame(frame);
 Cloud.start();
 startAgeFlow();
 window.__game = {S, R, P, Cloud, Ads, renderAds, adDay, seats, cleaners, queue, get rush() { return rush; }, set rush(v) { rush = v; }, get combo() { return combo; }, renderRests, progressOf, migrate, bought, ZONES, stations, customers, helpers, counters, moneyPile, player, get elapsed() { return elapsed; },
-  tick(n) { for (let i = 0; i < n; i++) step(1 / 30); renderer.render(scene, cam); }}; // usado nos testes
+  tick(n) { for (let i = 0; i < n; i++) step(1 / 30); renderer.render(scene, cam); }, // usado nos testes
+  B, EXP, FAC, MENU, STOCKS, mkt, mktStep, trade, renderBiz, renderStocks, buyExpand, buyFacade, research, takeLoan, payLoan, netWorth, bizValue, stockValue, loanLimit, expReqs, currentRate, passiveRate, addMoney, buildShell, checkTimers,
+  set stkQ(v) { stkQ = v; }, get inspT() { return inspT; }, set inspT(v) { inspT = v; },
+  stockStep(n = 1) { let d = 0; for (let i = 0; i < n; i++) d += mktStep(STK_DT / 60, true); return d; },
+  skipTimers() { if (R.obra) R.obra.end = 0; if (R.res) R.res.end = 0; checkTimers(); }};
 </script>
 </body>
 </html>

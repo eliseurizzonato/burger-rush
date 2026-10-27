@@ -18,6 +18,16 @@ No Burger Rush, você prepara pedidos, atende clientes, melhora equipamentos e c
 
 🏪 Desbloqueie seis negócios com visual, produtos e desafios próprios.
 
+🏗️ Amplie o prédio em quatro fases, da portinha até o anexo com cozinha nova.
+
+🎨 Reforme a fachada com toldo, letreiro, iluminação e neon para atrair mais clientes.
+
+🧪 Pesquise receitas, valorize o cardápio e libere lanches novos.
+
+💹 Invista na bolsa de valores do jogo, receba dividendos e acompanhe seu patrimônio.
+
+🏦 Faça empréstimos no banco e enfrente a fiscalização sanitária.
+
 ⚡ Aproveite combos, clientes VIP, horários de pico e presentes surpresa.
 
 🧑‍🍳 Contrate ajudantes e profissionais de limpeza para automatizar a operação.
@@ -48,6 +58,14 @@ Casual, Simulação, Gerenciamento, Idle, Restaurante
 - Política de privacidade: https://eliseurizzonato.github.io/burger-rush/www/privacy.html
 - Exclusão de dados: https://eliseurizzonato.github.io/burger-rush/www/delete-data.html
 - Site: https://eliseurizzonato.github.io/burger-rush/
+
+## Notas da versão 1.2
+
+- Progressão mais longa e realista: amplie o prédio em 4 fases.
+- Fachada com 5 níveis, de toldo até letreiro neon.
+- Pesquisa de receitas e lanches novos no cardápio.
+- Bolsa de valores com 6 empresas e dividendos.
+- Painel Meu negócio com patrimônio, banco e fiscalização.
 
 ## Notas da versão 1.1
 
