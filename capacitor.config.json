@@ -1,0 +1,7 @@
+{
+  "appId": "io.github.eliseurizzonato.burgerrush",
+  "appName": "Burger Rush",
+  "webDir": "www",
+  "backgroundColor": "#9fdcff",
+  "android": {"allowMixedContent": false}
+}
