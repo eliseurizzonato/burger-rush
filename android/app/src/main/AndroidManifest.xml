@@ -10,8 +10,8 @@
         android:theme="@style/AppTheme">
 
         <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/game_services_project_id" />
-        <!-- AdMob: ID de teste do Google; trocar pelo ID real do app no AdMob -->
-        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-3940256099942544~3347511713" />
+        <!-- AdMob: ID do app "Burger Rush" -->
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-7024720147228578~1467126264" />
 
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"

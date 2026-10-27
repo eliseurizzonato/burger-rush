@@ -1099,9 +1099,9 @@ $('cpLoad').addEventListener('click', () => { closeModal('cloudPick'); Cloud.ado
 $('cpKeep').addEventListener('click', () => { closeModal('cloudPick'); Cloud.st.pending = null; Cloud.push(true); });
 
 // ---------- anúncios (AdMob; só no app Android) ----------
-// IDs de TESTE do Google: antes de lançar, trocar pelos IDs reais do AdMob (e o APPLICATION_ID no AndroidManifest) e pôr AD_TEST = false
-const AD_IDS = {banner: 'ca-app-pub-3940256099942544/9214589741', reward: 'ca-app-pub-3940256099942544/5224354917'};
-const AD_TEST = true, AD_DAY_MAX = 20;
+// IDs reais do AdMob (app "Burger Rush"; o ID do app fica no AndroidManifest). AD_TEST = true troca por anúncios de teste do Google
+const AD_IDS = {banner: 'ca-app-pub-7024720147228578/6827264153', reward: 'ca-app-pub-7024720147228578/1275554579'};
+const AD_TEST = false, AD_DAY_MAX = 20;
 const Ads = (() => {
   const C = window.Capacitor;
   const P = C && C.isNativePlatform && C.isNativePlatform() && C.registerPlugin ? C.registerPlugin('AdMob') : null;
