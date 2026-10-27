@@ -5,5 +5,5 @@
     <string name="package_name">io.github.eliseurizzonato.burgerrush</string>
     <string name="custom_url_scheme">io.github.eliseurizzonato.burgerrush</string>
     <!-- ID do projeto do Play Games Services (Play Console > Play Games Services > Configuração) -->
-    <string name="game_services_project_id" translatable="false">000000000000</string>
+    <string name="game_services_project_id" translatable="false">353942899027</string>
 </resources>
