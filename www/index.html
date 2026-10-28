@@ -103,12 +103,15 @@
   .stk-tabs button.on{background:var(--ink);color:#fff}.stk-pane{display:none}.stk-pane.on{display:block}
   .market-news{border-radius:14px;padding:10px 12px;margin:7px 0;text-align:left;background:#eaf5ff;border-left:5px solid #3498db;font-size:13px}
   .market-news.hot{background:#fff1d5;border-color:#ff9a1a}.market-news.bad{background:#ffe4e4;border-color:#e23d3d}
-  .stock-lock{filter:grayscale(.7);opacity:.72}.stock-actions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
-  .stock-actions .mini{border:0;border-radius:9px;min-width:44px;min-height:44px;padding:5px 9px;background:#eee4f5;color:var(--ink);font:700 12px 'Fredoka',system-ui;cursor:pointer}
+  .stock-card{background:#fff;border:1px solid #eee4f5;border-radius:19px;padding:12px;margin:10px 0;box-shadow:0 3px 0 rgba(43,33,64,.08);text-align:left}
+  .stock-card.lock{display:flex;align-items:center;gap:11px;filter:grayscale(.5);opacity:.72}.stock-card.lock .lock-ic{width:50px;height:50px;border-radius:15px;background:#eee4f5;display:grid;place-items:center;font-size:25px;flex:none}
+  .stock-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.stock-name{min-width:0}.stock-name b{font-size:17px}.stock-name small{display:block;color:#8a7f99;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stock-price{text-align:right;white-space:nowrap}.stock-price b{display:block;font-size:18px}.stock-price span{font-size:12px;font-weight:700}
+  .stock-mid{display:grid;grid-template-columns:minmax(0,1fr) 86px;gap:8px;align-items:center;margin:9px 0}.stock-metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px}.stock-metric{background:#f8f3fb;border-radius:11px;padding:7px 8px;min-width:0}.stock-metric small{display:block;color:#8a7f99;font-size:10px}.stock-metric b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stock-mid .spark{width:86px;height:42px}
+  .stock-actions{display:grid;grid-template-columns:.8fr 1fr 1fr;gap:6px}.stock-actions button{min-height:46px;border:0;border-radius:12px;padding:5px;color:#fff;font:700 13px 'Fredoka',system-ui;cursor:pointer}.stock-actions button small{display:block;color:inherit;opacity:.82}.stock-actions .order{background:#6d6280}.stock-actions .buy{background:var(--green);box-shadow:inset 0 -3px var(--green-d)}.stock-actions .sell{background:#ff6b6b;box-shadow:inset 0 -3px #c83232}.stock-actions button:disabled{background:#d2cbd9;box-shadow:none;color:#81788d}
   .order-form{background:#fff;border-radius:16px;padding:12px;margin:8px 0;text-align:left}
   .order-form label{display:block;font-size:12px;color:#6d6280;margin-top:7px}.order-form input,.order-form select{box-sizing:border-box;width:100%;min-height:44px;border:2px solid #ddd1e8;border-radius:11px;padding:8px;font:700 16px 'Fredoka',system-ui;color:var(--ink);background:#fff}
   .rank-row.me{outline:3px solid #ffcf33;background:#fff8d8}.ach.lock{opacity:.62}.ach.done{background:#e8ffe9}.pill{display:inline-block;border-radius:999px;background:#eee4f5;padding:3px 8px;font-size:11px;font-weight:700}
-  @media(max-width:380px){.modal{padding:8px}.card{padding:14px;border-radius:20px}.card h2{font-size:23px}.up{gap:7px;padding:8px}.spark{width:58px}.up .btns .btn{min-width:58px;padding:5px;font-size:12px}.stk-tabs button{font-size:10px}.qty{gap:4px}.qty button{padding:5px 8px}}
+  @media(max-width:380px){.modal{padding:8px}.card{padding:14px;border-radius:20px}.card h2{font-size:23px}.up{gap:7px;padding:8px}.stk-tabs button{font-size:10px}.qty{gap:4px}.qty button{padding:5px 8px}.stock-card{padding:10px}.stock-mid{grid-template-columns:minmax(0,1fr) 72px}.stock-mid .spark{width:72px}.stock-actions button{font-size:12px}}
 </style>
 <script src="vendor/capacitor.js"></script>
 <script src="vendor/three.min.js"></script>
@@ -1685,14 +1688,12 @@ function renderStocks() {
   $('stkSub').innerHTML = `Carteira: <b>$${fmtP(val)}</b>${val > 0 ? ` <span class="${result >= 0 ? 'pos' : 'neg'}">${result >= 0 ? '+' : '-'}$${fmtP(Math.abs(result))} (${pct(val / paid - 1)})</span>` : ''} · Caixa $${fmt(S.money)}`;
   $('stkQty').innerHTML = QTY.map(q => `<button data-q="${q}" class="${q === stkQ ? 'on' : ''}">${qtyLabel(q)}</button>`).join('');
   $('stkList').innerHTML = STOCKS.map((d, i) => {
-    if (!stockUnlocked(i)) return `<div class="up stock-lock"><div class="ic">🔒</div><div class="tx"><b>${d.ic} ${d.s}</b><small>${d.n}</small><span>Abra ${RESTS[d.unlock].icon} ${RESTS[d.unlock].name} para negociar</span></div></div>`;
+    if (!stockUnlocked(i)) return `<div class="stock-card lock"><div class="lock-ic">🔒</div><div><b>${d.ic} ${d.s} · ${d.n}</b><br><small>Abra ${RESTS[d.unlock].icon} ${RESTS[d.unlock].name} para negociar</small></div></div>`;
     const c = m.c[i], ch = c.p / c.h[0] - 1, nb = stkQty(i, false), ns = stkQty(i, true);
     const buyTotal = nb * c.p * (1 + FEE), sellTotal = ns * c.p * (1 - FEE), canB = nb > 0 && S.money >= buyTotal;
     const avg = c.own ? c.paid / c.own : 0, positionResult = c.own * c.p - c.paid;
-    const position = c.own
-      ? `${fmt(c.own)} ações · médio $${fmtP(avg)} · <span class="${positionResult >= 0 ? 'pos' : 'neg'}">${positionResult >= 0 ? '+' : '-'}$${fmtP(Math.abs(positionResult))}</span>`
-      : 'nenhuma ação';
-    return `<div class="up"><div class="tx"><b>${d.ic} ${d.s} · $${fmtP(c.p)}</b><small>${d.n}${d.div ? ` · paga ${(d.div * 100).toFixed(1).replace('.', ',')}% de dividendos` : ''}</small><span class="${ch >= 0 ? 'pos' : 'neg'}">${pct(ch)}</span><small>${position}</small><div class="stock-actions"><button class="mini" data-order="${i}">🎯 Ordem</button></div></div>${spark(c.h, c.p)}<div class="btns"><button class="btn" data-buy="${i}" ${canB ? '' : 'disabled'}>Comprar<br><small>$${fmt(buyTotal)}</small></button><button class="btn red" data-sell="${i}" ${ns > 0 ? '' : 'disabled'}>Vender<br><small>$${fmt(sellTotal)}</small></button></div></div>`;
+    const current = c.own * c.p;
+    return `<div class="stock-card"><div class="stock-head"><div class="stock-name"><b>${d.ic} ${d.s}</b><small>${d.n}${d.div ? ` · dividendo ${(d.div * 100).toFixed(1).replace('.', ',')}%` : ''}</small></div><div class="stock-price"><b>$${fmtP(c.p)}</b><span class="${ch >= 0 ? 'pos' : 'neg'}">${pct(ch)}</span></div></div><div class="stock-mid"><div class="stock-metrics"><div class="stock-metric"><small>INVESTIDO</small><b>$${fmtP(c.paid)}</b></div><div class="stock-metric"><small>VALOR ATUAL</small><b>$${fmtP(current)}</b></div><div class="stock-metric"><small>POSIÇÃO</small><b>${fmt(c.own)} ações</b></div><div class="stock-metric"><small>RESULTADO</small><b class="${positionResult >= 0 ? 'pos' : 'neg'}">${positionResult >= 0 ? '+' : '-'}$${fmtP(Math.abs(positionResult))}</b></div>${c.own ? `<div class="stock-metric" style="grid-column:1/-1"><small>PREÇO MÉDIO</small><b>$${fmtP(avg)} por ação</b></div>` : ''}</div>${spark(c.h, c.p)}</div><div class="stock-actions"><button class="order" data-order="${i}">🎯<br>Ordem</button><button class="buy" data-buy="${i}" ${canB ? '' : 'disabled'}>Comprar ${qtyLabel(stkQ)}<small>$${fmt(buyTotal)}</small></button><button class="sell" data-sell="${i}" ${ns > 0 ? '' : 'disabled'}>Vender ${qtyLabel(stkQ)}<small>$${fmt(sellTotal)}</small></button></div></div>`;
   }).join('');
   renderMarketExtras();
 }
