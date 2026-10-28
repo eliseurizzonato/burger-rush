@@ -36,6 +36,7 @@ Arraste na tela (ou use WASD / setas) para mover o chef:
 - **Franquias:** até 10 unidades por estabelecimento completo, que rendem mesmo com o app fechado.
 - **Nova cidade:** com 3 estabelecimentos completos, você recomeça do zero com bônus permanente em tudo.
 - **Missões diárias:** 3 por dia, renovadas à meia-noite.
+- **Bolsa de valores evolutiva:** seis empresas liberadas junto com os estabelecimentos, lotes de até 5 mil ações, eventos econômicos temporários, ordens limitadas por 24 horas, notícias antecipadas conquistadas em missões, fundo automático, conquistas e uma liga semanal simulada.
 - **Bônus de dias seguidos:** até 7 dias.
 - **Ganhos offline:** até 2 horas.
 - **Progresso salvo** no aparelho, com versão de formato e migração automática (atualizações não quebram o save).

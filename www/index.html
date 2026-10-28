@@ -36,8 +36,8 @@
   .tot{font-size:30px;font-weight:700;color:var(--green-d);margin:2px 0 4px}
   .neg{color:#d23c3c}.pos{color:var(--green-d)}
   .spark{width:74px;height:30px;flex:none}
-  .qty{display:flex;gap:6px;justify-content:center;margin:4px 0}
-  .qty button{font:700 13px 'Fredoka',system-ui;border:0;border-radius:10px;padding:5px 10px;background:#eee4f5;color:var(--ink);cursor:pointer}
+  .qty{display:flex;gap:6px;justify-content:center;margin:7px 0;flex-wrap:wrap}
+  .qty button{font:700 13px 'Fredoka',system-ui;border:0;border-radius:10px;min-width:44px;min-height:44px;padding:6px 11px;background:#eee4f5;color:var(--ink);cursor:pointer}
   .qty button.on{background:var(--ink);color:#fff}
   .up .btns{display:flex;flex-direction:column;gap:4px;flex:none}
   .up .btns .btn{min-width:64px;padding:5px 8px;font-size:14px}
@@ -98,6 +98,17 @@
   .btn.ad:disabled{background:#c9c1d3;border-bottom-color:#a69db2}
   .chip.boost{background:#7b5cff}
   .link{display:inline-block;margin-top:12px;color:#a397b3;font-size:13px;text-decoration:underline;cursor:pointer;background:none;border:0;font-family:inherit}
+  .stk-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:10px 0;position:sticky;top:-18px;z-index:2;background:#fff8ec;padding:8px 0 5px}
+  .stk-tabs button{border:0;border-radius:11px;min-height:44px;padding:5px 2px;background:#eee4f5;color:var(--ink);font:700 11px 'Fredoka',system-ui;cursor:pointer}
+  .stk-tabs button.on{background:var(--ink);color:#fff}.stk-pane{display:none}.stk-pane.on{display:block}
+  .market-news{border-radius:14px;padding:10px 12px;margin:7px 0;text-align:left;background:#eaf5ff;border-left:5px solid #3498db;font-size:13px}
+  .market-news.hot{background:#fff1d5;border-color:#ff9a1a}.market-news.bad{background:#ffe4e4;border-color:#e23d3d}
+  .stock-lock{filter:grayscale(.7);opacity:.72}.stock-actions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+  .stock-actions .mini{border:0;border-radius:9px;min-width:44px;min-height:44px;padding:5px 9px;background:#eee4f5;color:var(--ink);font:700 12px 'Fredoka',system-ui;cursor:pointer}
+  .order-form{background:#fff;border-radius:16px;padding:12px;margin:8px 0;text-align:left}
+  .order-form label{display:block;font-size:12px;color:#6d6280;margin-top:7px}.order-form input,.order-form select{box-sizing:border-box;width:100%;min-height:44px;border:2px solid #ddd1e8;border-radius:11px;padding:8px;font:700 16px 'Fredoka',system-ui;color:var(--ink);background:#fff}
+  .rank-row.me{outline:3px solid #ffcf33;background:#fff8d8}.ach.lock{opacity:.62}.ach.done{background:#e8ffe9}.pill{display:inline-block;border-radius:999px;background:#eee4f5;padding:3px 8px;font-size:11px;font-weight:700}
+  @media(max-width:380px){.modal{padding:8px}.card{padding:14px;border-radius:20px}.card h2{font-size:23px}.up{gap:7px;padding:8px}.spark{width:58px}.up .btns .btn{min-width:58px;padding:5px;font-size:12px}.stk-tabs button{font-size:10px}.qty{gap:4px}.qty button{padding:5px 8px}}
 </style>
 <script src="vendor/capacitor.js"></script>
 <script src="vendor/three.min.js"></script>
@@ -122,7 +133,7 @@
 <div id="rests" class="modal"><div class="card"><h2 id="cityT">🗺️ Mapa da cidade</h2><p id="rSub"></p><div class="map" id="map"></div><div id="rList"></div><div id="cityBox"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="welcome" class="modal"><div class="card"><h2>Bem-vindo de volta!</h2><div id="wRows"></div><div class="big-num">+<span id="offAmt">0</span></div><button class="btn big ad" id="collect2" style="display:none">📺 Coletar 2x</button><br><button class="btn big" id="collect">Coletar</button></div></div>
 <div id="biz" class="modal"><div class="card"><h2>🏢 Meu negócio</h2><p id="bizSub"></p><div id="bizList"></div><button class="btn big" data-close>Fechar</button></div></div>
-<div id="stocks" class="modal"><div class="card"><h2>📈 Bolsa de valores</h2><p id="stkSub"></p><div class="qty" id="stkQty"></div><div id="stkList"></div><p style="font-size:12px;margin-top:8px">Dinheiro do jogo, sem dinheiro real. Corretagem de 0,5% por operação.</p><button class="btn big" data-close>Fechar</button></div></div>
+<div id="stocks" class="modal"><div class="card"><h2>📈 Bolsa de valores</h2><p id="stkSub"></p><div class="stk-tabs" id="stkTabs"><button data-stab="market" class="on">📊<br>Mercado</button><button data-stab="orders">🎯<br>Ordens</button><button data-stab="ach">🏆<br>Conquistas</button><button data-stab="rank">🥇<br>Ranking</button></div><section id="stk-market" class="stk-pane on"><div id="stkNews"></div><div class="qty" id="stkQty"></div><div id="stkList"></div><div id="stkFund"></div></section><section id="stk-orders" class="stk-pane"><div id="orderForm"></div><div id="orderList"></div></section><section id="stk-ach" class="stk-pane"><div id="achList"></div></section><section id="stk-rank" class="stk-pane"><div id="rankList"></div></section><p style="font-size:12px;margin-top:8px">Dinheiro do jogo, sem dinheiro real. Corretagem de 0,5% por operação.</p><button class="btn big" data-close>Fechar</button></div></div>
 <div id="adShop" class="modal"><div class="card"><h2>🎬 Prêmios grátis</h2><p id="adSub"></p><div id="adList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="cloudPick" class="modal"><div class="card"><h2>☁️ Progresso na nuvem</h2><p>Achamos um progresso maior salvo na sua conta.</p><div class="row" style="flex-direction:column;text-align:left" id="cpTxt"></div><button class="btn big" id="cpLoad">Carregar da nuvem</button><br><button class="link" id="cpKeep">Manter o deste aparelho</button></div></div>
 <div id="ageGate" class="modal"><div class="card"><h2>🎂 Antes de jogar</h2><p>Informe sua data de nascimento. Ela é usada apenas para configurar anúncios adequados à sua idade e não será armazenada.</p><label for="birthDate"><b>Data de nascimento</b></label><br><input id="birthDate" type="date" autocomplete="bday" style="font:700 18px 'Fredoka',system-ui;margin:12px 0;padding:10px;border:2px solid #d8cce2;border-radius:12px;max-width:90%"><p id="ageErr" style="display:none;color:#c83232;font-weight:700">Informe uma data válida.</p><button class="btn big" id="ageGo">Continuar</button></div></div>
@@ -140,7 +151,7 @@ const fmt = n => { if (n < 10000) return String(Math.floor(n)); const u = ['k', 
 const SAVE_KEY = 'burger-rush-save-v1';
 function loadSave() { if (FRESH) return null; try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) { return null; } }
 // formato do save: ao mudar, suba SAVE_VERSION e acrescente um passo em MIGRATIONS (nunca apague os antigos)
-const SAVE_VERSION = 4;
+const SAVE_VERSION = 5;
 // fase do prédio que cada área antiga exige (usado só na migração 3 -> 4)
 const OLD_ZONE_LV = {t3: 1, s1: 1, t4: 1, g3: 1, c1: 1, t5: 2, t6: 2, h2: 2, f2: 2, s2: 2, h3: 2};
 const OLD_ZONES = ['t1', 't2', 'g2', 'f1', 'h1', 't3', 's1', 't4', 'g3', 't5', 't6', 'c1', 'h2', 'f2', 's2', 'h3'];
@@ -159,9 +170,13 @@ const MIGRATIONS = {
     }
     s.stk = null; s.loan = 0;
   },
+  4: s => {
+    s.market = {events: null, orders: [], intel: 0, fund: {on: false, pct: 10, last: 0, invested: 0}, weekly: null, stats: {trades: 0, realized: 0, dividends: 0, divStreak: 0}};
+    s.ach = {};
+  },
 };
 function migrate(s) { s.v = s.v || 1; while (s.v < SAVE_VERSION) { if (MIGRATIONS[s.v]) MIGRATIONS[s.v](s); s.v++; } return s; }
-const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}, ageBand: '', stk: null, loan: 0}, loadSave() || {}));
+const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}, ageBand: '', stk: null, loan: 0, market: null, ach: {}}, loadSave() || {}));
 if (AUTO) S.ageBand = 'adult';
 const LV0 = {cap: 0, speed: 0, price: 0, grill: 0, pat: 0, mkt: 0};
 const R0 = {ex: 0, fac: 0, menu: 0, obra: null, res: null, served: 0, done: false};
@@ -1090,6 +1105,7 @@ function ensureDaily() {
   S.daily = {day: today, list}; dirty = true; return true;
 }
 function track(k, a, isMax) {
+  if (k === 'earn' && a > 0 && !isMax) { const w = marketState().weekly; if (w) w.rest += a; }
   if (!S.daily) return;
   for (const m of S.daily.list) if (m.k === k && !m.claimed && m.p < m.n) {
     const np = Math.min(m.n, isMax ? Math.max(m.p, a) : m.p + a); if (np === m.p) continue; m.p = np; dirty = true;
@@ -1112,7 +1128,9 @@ $('mList').addEventListener('click', e => {
   const b = e.target.closest('button[data-claim]'); if (!b || b.disabled) return;
   const m = S.daily.list[+b.dataset.claim]; if (m.claimed || m.p < m.n) return;
   m.claimed = true; addMoney(m.reward); sfx.buy(); dirty = true;
+  marketState().intel = Math.min(5, marketState().intel + 1);
   burst(player.g.position.clone().add(new V3(0, 1.2, 0)), 30, COINS, {speed: 3.5, up: 7, size: .16});
+  toast('📰 Missão resgatada: você ganhou 1 notícia antecipada');
   if (S.daily.list.every(x => x.claimed)) toast('🎉 Todas as missões feitas! Volte amanhã');
   renderMissions();
 });
@@ -1196,7 +1214,7 @@ $('rests').addEventListener('click', e => {
 });
 
 // ---------- save na nuvem (Google Play Games; só no app Android) ----------
-const progressOf = s => (s && s.r ? (s.city || 0) * 10000 + s.r.reduce((a, r, i) => a + (r ? i * 100 + r.bought.length * 5 + (r.fr || 0) * 3 + (r.ex || 0) * 8 + (r.fac || 0) * 2 + (r.menu || 0) * 3 + Object.values(r.lv || {}).reduce((x, y) => x + y, 0) : 0), 0) : 0);
+const progressOf = s => (s && s.r ? (s.city || 0) * 10000 + s.r.reduce((a, r, i) => a + (r ? i * 100 + r.bought.length * 5 + (r.fr || 0) * 3 + (r.ex || 0) * 8 + (r.fac || 0) * 2 + (r.menu || 0) * 3 + Object.values(r.lv || {}).reduce((x, y) => x + y, 0) : 0), 0) + Object.keys(s.ach || {}).length * 4 + ((s.market && s.market.stats && s.market.stats.trades) || 0) / 100 : 0);
 const describe = s => { const i = s.r.length - 1; return `${s.city ? 'Cidade ' + (s.city + 1) + ' · ' : ''}${RESTS[i] ? RESTS[i].icon + ' ' + RESTS[i].name : ''} · ${s.r[i].bought.length}/${ZONES.length} áreas · prédio ${(s.r[i].ex || 0) + 1}/${EXP.length} · $${fmt(s.money)}`; };
 const Cloud = (() => {
   const C = window.Capacitor, SLOT = 'burger-rush-main';
@@ -1500,14 +1518,75 @@ $('btnBiz').addEventListener('click', () => { initAudio(); renderBiz(); openModa
 // ---------- bolsa de valores (empresas fictícias, só dinheiro do jogo) ----------
 // g = crescimento do valor justo por minuto, v = volatilidade, div = dividendo pago a cada DIV_EVERY min (fração do preço)
 const STOCKS = [
-  {s: 'BRGR', n: 'Burguer Brasil', ic: '🍔', p0: 20, g: .0008, v: .035, div: 0},
-  {s: 'BATA', n: 'Batata Dourada Agro', ic: '🥔', p0: 8, g: .0005, v: .09, div: 0},
-  {s: 'REFR', n: 'Refri Gelado S.A.', ic: '🥤', p0: 35, g: .0003, v: .025, div: .01},
-  {s: 'ENTR', n: 'Entrega Já', ic: '🛵', p0: 12, g: .0015, v: .13, div: 0},
-  {s: 'CHAP', n: 'Chapa Quente Equip.', ic: '🔥', p0: 50, g: .0006, v: .05, div: .005},
-  {s: 'IMOV', n: 'Imóveis da Praça', ic: '🏢', p0: 90, g: .0004, v: .02, div: .012},
+  {s: 'BRGR', n: 'Burguer Brasil', ic: '🍔', p0: 20, g: .0008, v: .035, div: 0, unlock: 0},
+  {s: 'BATA', n: 'Batata Dourada Agro', ic: '🥔', p0: 8, g: .0005, v: .09, div: 0, unlock: 0},
+  {s: 'REFR', n: 'Refri Gelado S.A.', ic: '🥤', p0: 35, g: .0003, v: .025, div: .01, unlock: 1},
+  {s: 'ENTR', n: 'Entrega Já', ic: '🛵', p0: 12, g: .0015, v: .13, div: 0, unlock: 2},
+  {s: 'CHAP', n: 'Chapa Quente Equip.', ic: '🔥', p0: 50, g: .0006, v: .05, div: .005, unlock: 3},
+  {s: 'IMOV', n: 'Imóveis da Praça', ic: '🏢', p0: 90, g: .0004, v: .02, div: .012, unlock: 4},
 ];
 const STK_DT = 3, DIV_EVERY = 5, FEE = .005;
+const ECON_EVENTS = [
+  {id: 'food', icon: '🌾', name: 'Alta dos alimentos', text: 'Alimentos e equipamentos valorizados', hit: [0, 1, 4], drift: .075, tone: 'hot'},
+  {id: 'delivery', icon: '🚧', name: 'Crise nas entregas', text: 'Entrega Já pressionada pela crise', hit: [3], drift: -.11, tone: 'bad'},
+  {id: 'tourism', icon: '✈️', name: 'Temporada de turismo', text: 'Consumo e imóveis em alta', hit: [0, 2, 5], drift: .065, tone: 'hot'},
+  {id: 'festival', icon: '🎪', name: 'Festival gastronômico', text: 'Restaurantes e entregas recebem mais pedidos', hit: [0, 1, 2, 3], drift: .055, tone: 'hot'},
+];
+const ACHIEVEMENTS = [
+  {id: 'million', icon: '💎', name: 'Primeiro milhão', desc: 'Alcance $1M de patrimônio', reward: 100000, ok: () => netWorth() >= 1e6},
+  {id: 'diverse', icon: '🧺', name: 'Carteira diversificada', desc: 'Tenha ações de 4 empresas', reward: 25000, ok: () => mkt().c.filter(c => c.own > 0).length >= 4},
+  {id: 'divs', icon: '💸', name: 'Renda recorrente', desc: 'Receba dividendos 3 vezes seguidas', reward: 15000, ok: () => marketState().stats.divStreak >= 3},
+  {id: 'trader', icon: '🔁', name: 'Operador experiente', desc: 'Conclua 50 operações', reward: 50000, ok: () => marketState().stats.trades >= 50},
+  {id: 'whale', icon: '🐋', name: 'Grande investidor', desc: 'Tenha $500k aplicados em ações', reward: 75000, ok: () => stockValue() >= 500000},
+];
+const weekKey = (t = Date.now()) => { const d = new Date(t), x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + 4 - (x.getDay() || 7)); const y = new Date(x.getFullYear(), 0, 1), w = Math.ceil((((x - y) / 86400000) + 1) / 7); return `${x.getFullYear()}-W${String(w).padStart(2, '0')}`; };
+const hash32 = s => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
+function marketState() {
+  if (!S.market) S.market = {};
+  const m = S.market;
+  if (!Array.isArray(m.orders)) m.orders = [];
+  if (!m.fund) m.fund = {on: false, pct: 10, last: 0, invested: 0};
+  if (!m.stats) m.stats = {trades: 0, realized: 0, dividends: 0, divStreak: 0};
+  if (!Number.isFinite(m.intel)) m.intel = 0;
+  if (!S.ach) S.ach = {};
+  ensureWeekly(m); ensureEvent(m);
+  return m;
+}
+function makeRivals(key, base) {
+  let h = hash32(key), rnd = () => (h = Math.imul(h ^ (h >>> 15), 2246822519) >>> 0) / 4294967296;
+  const names = ['Chef Luna', 'Rei do Pastel', 'Mestre Bacon', 'Dona Pizza', 'Café Turbo', 'Império Gelado', 'Capitão Açaí', 'Food Boss', 'Ninja do Refri'];
+  return names.map((name, i) => ({name, seed: .65 + rnd() * 1.25, mix: [rnd(), rnd(), rnd()], base: Math.max(3000, base * (.45 + rnd() * .9)), icon: ['🍕', '🥓', '🥟', '☕', '🍨', '🍇', '🍔', '🥤', '🌭'][i]}));
+}
+function ensureWeekly(m = S.market || {}) {
+  const key = weekKey();
+  if (m.weekly && m.weekly.key === key) return m.weekly;
+  if (m.weekly) {
+    const old = rankRows(m.weekly, true), pos = old.findIndex(x => x.me) + 1;
+    if (pos && pos <= 3) { const prize = Math.round([75000, 40000, 20000][pos - 1] * bestVal()); S.money += prize; m.lastPrize = {pos, prize}; }
+  }
+  const base = Math.max(500 * bestVal(), netWorth());
+  m.weekly = {key, start: Date.now(), base, rest: 0, stock: 0, startWorth: netWorth(), rivals: makeRivals(key, base)}; dirty = true;
+  return m.weekly;
+}
+function weekProgress(w, finish) { if (finish) return 1; const d = new Date(), day = (d.getDay() + 6) % 7; return Math.min(1, (day + d.getHours() / 24) / 7); }
+function rankRows(w = marketState().weekly, finish = false) {
+  const p = weekProgress(w, finish), mine = {name: 'Você', icon: '👑', me: true, worth: netWorth(), rest: w.rest, stock: w.stock};
+  const rivals = w.rivals.map(r => { const growth = r.base * r.seed * (.18 + p * 1.25); return {name: r.name, icon: r.icon, worth: r.base + growth * (r.mix[0] + .4), rest: growth * (r.mix[1] + .25), stock: growth * (r.mix[2] - .18)}; });
+  return [mine, ...rivals].map(x => Object.assign(x, {score: x.worth + x.rest * .4 + x.stock * 1.5})).sort((a, b) => b.score - a.score);
+}
+function ensureEvent(ms = S.market || {}) {
+  const now = Date.now();
+  if (!ms.events) scheduleEvent(ms, now);
+  const e = ms.events;
+  if (e && now >= e.end) { ms.events = null; scheduleEvent(ms, now); dirty = true; }
+  const n = ms.events;
+  if (n && !n.revealed && now >= n.start - 60000 && now < n.start && ms.intel > 0) { n.revealed = true; ms.intel--; dirty = true; toast(`🔎 Notícia antecipada: ${ECON_EVENTS[n.kind].name} em breve`); }
+  if (n && !n.started && now >= n.start && now < n.end) { n.started = true; dirty = true; const d = ECON_EVENTS[n.kind]; toast(`${d.icon} Evento: ${d.name}!`); }
+  return n;
+}
+function scheduleEvent(ms, now = Date.now()) { const test = AUTO; ms.events = {kind: Math.floor(Math.random() * ECON_EVENTS.length), start: now + (test ? 4000 : 180000 + Math.random() * 180000), end: 0, revealed: test, started: false}; ms.events.end = ms.events.start + (test ? 20000 : 90000); }
+const activeEvent = () => { const e = ensureEvent(marketState()), n = Date.now(); return e && n >= e.start && n < e.end ? e : null; };
+const stockUnlocked = i => !STOCKS[i].unlock || !!S.r[STOCKS[i].unlock];
 function mkt() {
   if (!S.stk || !S.stk.c || S.stk.c.length !== STOCKS.length) S.stk = {tm: 0, dv: 0, n: 0, at: Date.now(), c: STOCKS.map(d => ({p: d.p0, tr: 0, own: 0, paid: 0, h: [d.p0]}))};
   return S.stk;
@@ -1515,18 +1594,19 @@ function mkt() {
 const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
 // passeio aleatório no log do preço: tendência que muda de vez em quando + volta lenta ao valor justo (que cresce)
 function mktStep(dtMin, quiet) {
-  const m = mkt(); m.tm += dtMin;
+  const m = mkt(), ms = marketState(), ev = activeEvent(); m.tm += dtMin;
   STOCKS.forEach((d, i) => {
     const c = m.c[i], fair = Math.log(d.p0) + d.g * m.tm;
     if (Math.random() < dtMin * .25) c.tr = (Math.random() - .45) * .02;
     const lx = Math.log(c.p); let x = lx + (c.tr + .03 * (fair - lx)) * dtMin + d.v * Math.sqrt(dtMin) * gauss();
+    if (ev && ECON_EVENTS[ev.kind].hit.includes(i)) x += ECON_EVENTS[ev.kind].drift * dtMin;
     if (!quiet && Math.random() < dtMin * .02) { const j = (Math.random() < .5 ? -1 : 1) * (.06 + Math.random() * .08); x += j; toast(`📰 ${d.n} ${j > 0 ? 'dispara 🚀' : 'despenca 📉'} ${j > 0 ? '+' : ''}${Math.round(j * 100)}%`); }
     c.p = Math.max(.5, Math.exp(x));
   });
   if (++m.n % 3 === 0) for (const c of m.c) { c.h.push(c.p); if (c.h.length > 40) c.h.shift(); }
   let paid = 0; m.dv += dtMin;
-  if (m.dv >= DIV_EVERY) { m.dv -= DIV_EVERY; STOCKS.forEach((d, i) => { paid += m.c[i].own * m.c[i].p * d.div; }); }
-  dirty = true; return paid;
+  if (m.dv >= DIV_EVERY) { m.dv -= DIV_EVERY; STOCKS.forEach((d, i) => { paid += m.c[i].own * m.c[i].p * d.div; }); if (paid > 0) { ms.stats.dividends += paid; ms.stats.divStreak++; ms.weekly.stock += paid; checkAchievements(); } }
+  processOrders(quiet); dirty = true; return paid;
 }
 // chamado a cada STK_DT s; depois de uma ausência simula no máximo 2h, com variação limitada a ±20%. Devolve os dividendos da ausência
 function mktSync() {
@@ -1549,44 +1629,117 @@ function spark(h, p) {
   const pts = a.map((v, k) => `${(k / (a.length - 1) * 58 + 1).toFixed(1)},${(28 - (v - lo) / r * 26).toFixed(1)}`).join(' ');
   return `<svg class="spark" viewBox="0 0 60 30"><polyline points="${pts}" fill="none" stroke="${p >= a[0] ? '#1c8a31' : '#d23c3c'}" stroke-width="2" stroke-linejoin="round"/></svg>`;
 }
-const QTY = [1, 10, 100, 1000, 0]; // 0 = máximo
+const QTY = [1, 10, 100, 1000, 5000, 0]; // 0 = máximo
+const qtyLabel = q => q === 0 ? 'Máx' : `x${q >= 1000 ? `${q / 1000}k` : q}`;
 let stkQ = 1;
 function stkQty(i, sell) {
   const c = mkt().c[i];
   if (!stkQ) return sell ? c.own : Math.floor(S.money / (c.p * (1 + FEE)));
   return sell ? Math.min(stkQ, c.own) : stkQ;
 }
-function trade(i, sell) {
-  const d = STOCKS[i], c = mkt().c[i], n = stkQty(i, sell); if (n <= 0) return;
+function doTrade(i, sell, amount, quiet) {
+  if (!stockUnlocked(i)) return false;
+  const d = STOCKS[i], c = mkt().c[i], n = sell ? Math.min(amount, c.own) : amount; if (n <= 0) return false;
+  const ms = marketState();
   if (sell) {
     const got = n * c.p * (1 - FEE), basis = c.paid * n / c.own, gain = got - basis;
     c.paid -= basis; c.own -= n; addMoney(got); sfx.pay();
-    toast(`📈 Vendeu ${fmt(n)} ${d.s} por $${fmt(got)} (${gain >= 0 ? 'lucro' : 'prejuízo'} $${fmt(Math.abs(gain))})`);
+    ms.stats.realized += gain; ms.weekly.stock += gain;
+    if (!quiet) toast(`📈 Vendeu ${fmt(n)} ${d.s} por $${fmt(got)} (${gain >= 0 ? 'lucro' : 'prejuízo'} $${fmt(Math.abs(gain))})`);
   } else {
-    const cost = n * c.p * (1 + FEE); if (S.money < cost) { toast('💸 Dinheiro insuficiente'); return; }
-    addMoney(-cost); c.own += n; c.paid += cost; sfx.buy(); toast(`📈 Comprou ${fmt(n)} ${d.s} por $${fmt(cost)}`);
+    const cost = n * c.p * (1 + FEE); if (S.money < cost) { if (!quiet) toast('💸 Dinheiro insuficiente'); return false; }
+    addMoney(-cost); c.own += n; c.paid += cost; sfx.buy(); if (!quiet) toast(`📈 Comprou ${fmt(n)} ${d.s} por $${fmt(cost)}`);
   }
-  dirty = true; renderStocks();
+  ms.stats.trades++; dirty = true; checkAchievements(); return true;
+}
+function trade(i, sell) {
+  const n = stkQty(i, sell); if (doTrade(i, sell, n, false)) renderStocks();
+}
+function createOrder() {
+  const ms = marketState(), i = +$('ordStock').value, side = $('ordSide').value, qty = Math.max(1, Math.floor(+$('ordQty').value)), limit = +String($('ordPrice').value).replace(',', '.');
+  if (!stockUnlocked(i) || !Number.isFinite(limit) || limit <= 0 || qty <= 0) return toast('⚠️ Confira empresa, quantidade e preço');
+  if (ms.orders.length >= 12) return toast('🎯 Limite de 12 ordens abertas');
+  ms.orders.push({id: Date.now() + Math.random(), i, side, qty, limit, at: Date.now(), exp: Date.now() + 86400000}); dirty = true; sfx.buy(); toast('🎯 Ordem criada por 24 horas'); renderOrders();
+}
+function processOrders(quiet) {
+  const ms = marketState(), now = Date.now(); let changed = false;
+  for (const o of [...ms.orders]) {
+    if (now >= o.exp || !stockUnlocked(o.i)) { ms.orders.splice(ms.orders.indexOf(o), 1); changed = true; continue; }
+    const c = mkt().c[o.i], hit = o.side === 'buy' ? c.p <= o.limit : c.p >= o.limit;
+    if (hit && doTrade(o.i, o.side === 'sell', o.qty, true)) { ms.orders.splice(ms.orders.indexOf(o), 1); changed = true; if (!quiet) toast(`🎯 Ordem executada: ${o.side === 'buy' ? 'compra' : 'venda'} de ${fmt(o.qty)} ${STOCKS[o.i].s}`); }
+  }
+  if (changed) dirty = true;
+}
+function checkAchievements() {
+  for (const a of ACHIEVEMENTS) if (!S.ach[a.id] && a.ok()) { S.ach[a.id] = Date.now(); S.money += a.reward * bestVal(); dirty = true; toast(`🏆 Conquista: ${a.name}! +$${fmt(a.reward * bestVal())}`); sfx.done(); }
+}
+function fundRun(force) {
+  const ms = marketState(), f = ms.fund, now = Date.now(); if (!f.on || (!force && now - f.last < 60000)) return;
+  f.last = now; const ids = STOCKS.map((_, i) => i).filter(stockUnlocked), reserve = 200 * bestVal(); let budget = Math.max(0, (S.money - reserve) * f.pct / 100), spent = 0;
+  for (const i of ids) { const c = mkt().c[i], part = budget / ids.length, n = Math.floor(part / (c.p * (1 + FEE))); if (n > 0) { const cost = n * c.p * (1 + FEE); S.money -= cost; c.own += n; c.paid += cost; spent += cost; } }
+  if (spent > 0) { f.invested += spent; ms.stats.trades++; dirty = true; checkAchievements(); if (force) toast(`🤖 Fundo investiu $${fmt(spent)} em ${ids.length} empresas`); }
 }
 function renderStocks() {
   const m = mkt(), val = stockValue(), paid = m.c.reduce((a, c) => a + c.paid, 0);
-  $('stkSub').innerHTML = `Carteira: <b>$${fmtP(val)}</b>${val > 0 ? ` <span class="${val >= paid ? 'pos' : 'neg'}">(${pct(val / paid - 1)})</span>` : ''} · Caixa $${fmt(S.money)}`;
-  $('stkQty').innerHTML = QTY.map(q => `<button data-q="${q}" class="${q === stkQ ? 'on' : ''}">${q ? 'x' + fmt(q) : 'Máx'}</button>`).join('');
+  const result = val - paid;
+  $('stkSub').innerHTML = `Carteira: <b>$${fmtP(val)}</b>${val > 0 ? ` <span class="${result >= 0 ? 'pos' : 'neg'}">${result >= 0 ? '+' : '-'}$${fmtP(Math.abs(result))} (${pct(val / paid - 1)})</span>` : ''} · Caixa $${fmt(S.money)}`;
+  $('stkQty').innerHTML = QTY.map(q => `<button data-q="${q}" class="${q === stkQ ? 'on' : ''}">${qtyLabel(q)}</button>`).join('');
   $('stkList').innerHTML = STOCKS.map((d, i) => {
-    const c = m.c[i], ch = c.p / c.h[0] - 1, nb = stkQty(i, false), canB = nb > 0 && S.money >= nb * c.p * (1 + FEE);
-    return `<div class="up"><div class="tx"><b>${d.ic} ${d.s} · $${fmtP(c.p)}</b><small>${d.n}${d.div ? ` · paga ${(d.div * 100).toFixed(1).replace('.', ',')}% de dividendos` : ''}</small><span class="${ch >= 0 ? 'pos' : 'neg'}">${pct(ch)} · ${c.own ? `${fmt(c.own)} ações = $${fmtP(c.own * c.p)}` : 'nenhuma ação'}</span></div>${spark(c.h, c.p)}<div class="btns"><button class="btn" data-buy="${i}" ${canB ? '' : 'disabled'}>Comprar</button><button class="btn red" data-sell="${i}" ${c.own ? '' : 'disabled'}>Vender</button></div></div>`;
+    if (!stockUnlocked(i)) return `<div class="up stock-lock"><div class="ic">🔒</div><div class="tx"><b>${d.ic} ${d.s}</b><small>${d.n}</small><span>Abra ${RESTS[d.unlock].icon} ${RESTS[d.unlock].name} para negociar</span></div></div>`;
+    const c = m.c[i], ch = c.p / c.h[0] - 1, nb = stkQty(i, false), ns = stkQty(i, true);
+    const buyTotal = nb * c.p * (1 + FEE), sellTotal = ns * c.p * (1 - FEE), canB = nb > 0 && S.money >= buyTotal;
+    const avg = c.own ? c.paid / c.own : 0, positionResult = c.own * c.p - c.paid;
+    const position = c.own
+      ? `${fmt(c.own)} ações · médio $${fmtP(avg)} · <span class="${positionResult >= 0 ? 'pos' : 'neg'}">${positionResult >= 0 ? '+' : '-'}$${fmtP(Math.abs(positionResult))}</span>`
+      : 'nenhuma ação';
+    return `<div class="up"><div class="tx"><b>${d.ic} ${d.s} · $${fmtP(c.p)}</b><small>${d.n}${d.div ? ` · paga ${(d.div * 100).toFixed(1).replace('.', ',')}% de dividendos` : ''}</small><span class="${ch >= 0 ? 'pos' : 'neg'}">${pct(ch)}</span><small>${position}</small><div class="stock-actions"><button class="mini" data-order="${i}">🎯 Ordem</button></div></div>${spark(c.h, c.p)}<div class="btns"><button class="btn" data-buy="${i}" ${canB ? '' : 'disabled'}>Comprar<br><small>$${fmt(buyTotal)}</small></button><button class="btn red" data-sell="${i}" ${ns > 0 ? '' : 'disabled'}>Vender<br><small>$${fmt(sellTotal)}</small></button></div></div>`;
   }).join('');
+  renderMarketExtras();
+}
+function renderMarketExtras() {
+  const ms = marketState(), e = ensureEvent(ms), now = Date.now(); let news;
+  if (e && now >= e.start && now < e.end) { const d = ECON_EVENTS[e.kind]; news = `<div class="market-news ${d.tone}"><b>${d.icon} ${d.name}</b><br>${d.text} · termina em ${hms(Math.ceil((e.end - now) / 1000))}</div>`; }
+  else if (e && e.revealed) { const d = ECON_EVENTS[e.kind]; news = `<div class="market-news"><b>🔎 Informação antecipada</b><br>${d.icon} ${d.name} começa em ${hms(Math.ceil((e.start - now) / 1000))}. ${d.text}.</div>`; }
+  else news = `<div class="market-news"><b>📰 Radar de mercado</b><br>${ms.intel ? `${ms.intel} notícia(s) guardada(s). O próximo evento será revelado 1 min antes.` : 'Resgate missões diárias para antecipar o próximo evento.'}</div>`;
+  $('stkNews').innerHTML = news;
+  const f = ms.fund;
+  $('stkFund').innerHTML = `<h3>🤖 Fundo automático</h3><div class="up"><div class="ic">🤖</div><div class="tx"><b>${f.on ? 'Investimento automático ativo' : 'Invista sem operar manualmente'}</b><span>A cada minuto aplica ${f.pct}% do caixa disponível, mantendo uma reserva.</span><small>Total aplicado: $${fmt(f.invested || 0)}</small><div class="qty">${[5, 10, 20].map(p => `<button data-fpct="${p}" class="${p === f.pct ? 'on' : ''}">${p}%</button>`).join('')}</div></div><button class="btn ${f.on ? 'red' : ''}" data-fund>${f.on ? 'Pausar' : 'Ativar'}</button></div>`;
+}
+let orderStock = 0;
+function renderOrders() {
+  const ms = marketState(), unlocked = STOCKS.map((d, i) => ({d, i})).filter(x => stockUnlocked(x.i)); if (!stockUnlocked(orderStock)) orderStock = unlocked[0].i;
+  const c = mkt().c[orderStock];
+  $('orderForm').innerHTML = `<div class="order-form"><b>Nova ordem limitada</b><label>Empresa</label><select id="ordStock">${unlocked.map(x => `<option value="${x.i}" ${x.i === orderStock ? 'selected' : ''}>${x.d.ic} ${x.d.s} · $${fmtP(mkt().c[x.i].p)}</option>`).join('')}</select><label>Operação</label><select id="ordSide"><option value="buy">Comprar quando cair até</option><option value="sell">Vender quando subir até</option></select><label>Quantidade</label><select id="ordQty">${QTY.filter(Boolean).map(q => `<option value="${q}" ${q === (stkQ || 1) ? 'selected' : ''}>${qtyLabel(q)}</option>`).join('')}</select><label>Preço-alvo</label><input id="ordPrice" inputmode="decimal" value="${c.p.toFixed(2)}"><button class="btn big" id="ordCreate">Criar ordem</button></div>`;
+  $('orderList').innerHTML = `<h3>Ordens abertas (${ms.orders.length}/12)</h3>` + (ms.orders.length ? ms.orders.map(o => `<div class="up"><div class="ic">${o.side === 'buy' ? '🟢' : '🔴'}</div><div class="tx"><b>${o.side === 'buy' ? 'Comprar' : 'Vender'} ${fmt(o.qty)} ${STOCKS[o.i].s}</b><span>Preço-alvo $${fmtP(o.limit)} · atual $${fmtP(mkt().c[o.i].p)}</span><small>Expira em ${hms(Math.ceil((o.exp - Date.now()) / 1000))}</small></div><button class="btn red" data-cancel="${o.id}">×</button></div>`).join('') : '<p>Nenhuma ordem aberta. Elas ficam ativas por 24 horas.</p>');
+}
+function renderAchievements() {
+  $('achList').innerHTML = `<p>Conquistas dão recompensas automáticas.</p>` + ACHIEVEMENTS.map(a => `<div class="up ach ${S.ach[a.id] ? 'done' : 'lock'}"><div class="ic">${S.ach[a.id] ? '✅' : a.icon}</div><div class="tx"><b>${a.name}</b><span>${a.desc}</span><small>Prêmio: $${fmt(a.reward * bestVal())}</small></div><span class="here">${S.ach[a.id] ? 'Feito' : 'Em curso'}</span></div>`).join('');
+}
+function renderRanking() {
+  const w = marketState().weekly, rows = rankRows(w), pos = rows.findIndex(x => x.me) + 1;
+  $('rankList').innerHTML = `<div class="market-news"><b>🏁 Liga simulada semanal</b><br>Você está em ${pos}º. Pontos combinam patrimônio, restaurantes e resultado da bolsa. Reinicia na segunda-feira.</div>` + rows.map((x, i) => `<div class="row rank-row ${x.me ? 'me' : ''}"><span><b>${i + 1}º ${x.icon} ${x.name}</b><br><small>🏦 $${fmt(x.worth)} · 🍔 $${fmt(x.rest)} · 📈 ${x.stock >= 0 ? '+' : '-'}$${fmt(Math.abs(x.stock))}</small></span><b>${fmt(x.score)} pts</b></div>`).join('');
+}
+function setStockTab(tab) {
+  document.querySelectorAll('#stkTabs button').forEach(b => b.classList.toggle('on', b.dataset.stab === tab));
+  document.querySelectorAll('#stocks .stk-pane').forEach(p => p.classList.toggle('on', p.id === 'stk-' + tab));
+  if (tab === 'orders') renderOrders(); else if (tab === 'ach') renderAchievements(); else if (tab === 'rank') renderRanking(); else renderStocks();
 }
 $('stkQty').addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (b) { stkQ = +b.dataset.q; renderStocks(); } });
 $('stkList').addEventListener('click', e => {
-  const b = e.target.closest('button[data-buy],button[data-sell]'); if (!b || b.disabled) return;
-  if (b.dataset.buy !== undefined) trade(+b.dataset.buy, false); else trade(+b.dataset.sell, true);
+  const b = e.target.closest('button[data-buy],button[data-sell],button[data-order]'); if (!b || b.disabled) return;
+  if (b.dataset.buy !== undefined) trade(+b.dataset.buy, false); else if (b.dataset.sell !== undefined) trade(+b.dataset.sell, true); else { orderStock = +b.dataset.order; setStockTab('orders'); }
 });
-$('btnStk').addEventListener('click', () => { initAudio(); mktSync(); renderStocks(); openModal('stocks'); });
+$('stkTabs').addEventListener('click', e => { const b = e.target.closest('[data-stab]'); if (b) setStockTab(b.dataset.stab); });
+$('stkFund').addEventListener('click', e => { const ms = marketState(), p = e.target.closest('[data-fpct]'); if (p) { ms.fund.pct = +p.dataset.fpct; dirty = true; renderMarketExtras(); } if (e.target.closest('[data-fund]')) { ms.fund.on = !ms.fund.on; dirty = true; if (ms.fund.on) fundRun(true); renderMarketExtras(); } });
+$('orderForm').addEventListener('change', e => { if (e.target.id === 'ordStock') { orderStock = +e.target.value; renderOrders(); } });
+$('orderForm').addEventListener('click', e => { if (e.target.closest('#ordCreate')) createOrder(); });
+$('orderList').addEventListener('click', e => { const b = e.target.closest('[data-cancel]'); if (!b) return; const ms = marketState(); ms.orders = ms.orders.filter(o => String(o.id) !== b.dataset.cancel); dirty = true; renderOrders(); });
+$('btnStk').addEventListener('click', () => { initAudio(); mktSync(); setStockTab('market'); openModal('stocks'); });
 setInterval(() => {
   const d = mktSync(); // se o app ficou pausado e o timer rodou antes da tela de boas-vindas, paga aqui mesmo
   if (d >= 1) { addMoney(d); toast(`💸 Dividendos enquanto você estava fora: +$${fmt(d)}`); }
-  if ($('stocks').classList.contains('open')) renderStocks();
+  ensureWeekly(marketState()); fundRun(false); checkAchievements();
+  if ($('stocks').classList.contains('open')) { const on = document.querySelector('#stkTabs button.on'); setStockTab(on ? on.dataset.stab : 'market'); }
 }, STK_DT * 1000);
 // a cada segundo: obra/pesquisa, juros, botões novos e patrimônio no topo
 setInterval(() => {
@@ -1832,7 +1985,7 @@ Cloud.start();
 startAgeFlow();
 window.__game = {S, R, P, Cloud, Ads, renderAds, adDay, seats, cleaners, queue, get rush() { return rush; }, set rush(v) { rush = v; }, get combo() { return combo; }, renderRests, progressOf, migrate, bought, ZONES, stations, customers, helpers, counters, moneyPile, player, get elapsed() { return elapsed; },
   tick(n) { for (let i = 0; i < n; i++) step(1 / 30); renderer.render(scene, cam); }, // usado nos testes
-  B, EXP, FAC, MENU, STOCKS, mkt, mktStep, trade, renderBiz, renderStocks, buyExpand, buyFacade, research, takeLoan, payLoan, netWorth, bizValue, stockValue, loanLimit, expReqs, currentRate, passiveRate, addMoney, buildShell, checkTimers,
+  B, EXP, FAC, MENU, STOCKS, ECON_EVENTS, ACHIEVEMENTS, mkt, mktStep, trade, doTrade, createOrder, processOrders, fundRun, marketState, rankRows, renderBiz, renderStocks, renderOrders, renderAchievements, renderRanking, setStockTab, buyExpand, buyFacade, research, takeLoan, payLoan, netWorth, bizValue, stockValue, loanLimit, expReqs, currentRate, passiveRate, addMoney, buildShell, checkTimers,
   set stkQ(v) { stkQ = v; }, get inspT() { return inspT; }, set inspT(v) { inspT = v; },
   stockStep(n = 1) { let d = 0; for (let i = 0; i < n; i++) d += mktStep(STK_DT / 60, true); return d; },
   skipTimers() { if (R.obra) R.obra.end = 0; if (R.res) R.res.end = 0; checkTimers(); }};
