@@ -118,6 +118,7 @@
 <script src="vendor/firebase-app-compat.js"></script>
 <script src="vendor/firebase-auth-compat.js"></script>
 <script src="vendor/firebase-firestore-compat.js"></script>
+<script src="https://accounts.google.com/gsi/client"></script>
 </head>
 <body>
 <div id="cash" class="ui"><div class="coin"></div><span id="money">0</span></div>
@@ -1235,11 +1236,12 @@ $('rests').addEventListener('click', e => {
 const progressOf = s => (s && s.r ? (s.city || 0) * 10000 + s.r.reduce((a, r, i) => a + (r ? i * 100 + r.bought.length * 5 + (r.fr || 0) * 3 + (r.ex || 0) * 8 + (r.fac || 0) * 2 + (r.menu || 0) * 3 + Object.values(r.lv || {}).reduce((x, y) => x + y, 0) : 0), 0) + Object.keys(s.ach || {}).length * 4 + ((s.market && s.market.stats && s.market.stats.trades) || 0) / 100 : 0);
 const describe = s => { const i = s.r.length - 1; return `${s.city ? 'Cidade ' + (s.city + 1) + ' · ' : ''}${RESTS[i] ? RESTS[i].icon + ' ' + RESTS[i].name : ''} · ${s.r[i].bought.length}/${ZONES.length} áreas · prédio ${(s.r[i].ex || 0) + 1}/${EXP.length} · $${fmt(s.money)}`; };
 const FIREBASE_CONFIG = {apiKey: 'AIzaSyB8mKgepINmKLz5ydj9m2x1Jll1dmG2SBU', authDomain: 'burger-rush-512916.firebaseapp.com', projectId: 'burger-rush-512916', storageBucket: 'burger-rush-512916.firebasestorage.app', messagingSenderId: '353942899027', appId: '1:353942899027:web:d3b2d0d689f1b1ae5979a6'};
+const GOOGLE_WEB_CLIENT_ID = '353942899027-4dekn577kq0ugdmvkh57h49bbq2d4pca.apps.googleusercontent.com';
 const Cloud = (() => {
   const C = window.Capacitor, native = !!(C && C.isNativePlatform && C.isNativePlatform()), META_KEY = 'burger-rush-sync-v1';
   const NA = native && C.registerPlugin ? C.registerPlugin('FirebaseAuthentication') : null;
   const ND = native && C.registerPlugin ? C.registerPlugin('FirebaseFirestore') : null;
-  let WA = null, WD = null, redirectChecked = false;
+  let WA = null, WD = null;
   if (!native && window.firebase) { if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG); WA = firebase.auth(); WD = firebase.firestore(); }
   const st = {available: !!((NA && ND) || (WA && WD)), signedIn: false, uid: '', name: '', email: '', photo: '', busy: false, lastPush: 0, pending: null, error: ''};
   const deviceId = (() => { let x = localStorage.getItem('burger-rush-device'); if (!x) { x = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random()); localStorage.setItem('burger-rush-device', x); } return x; })();
@@ -1249,21 +1251,42 @@ const Cloud = (() => {
   const userFrom = u => { st.signedIn = !!u; st.uid = u ? u.uid : ''; st.name = u ? (u.displayName || u.name || '') : ''; st.email = u ? (u.email || '') : ''; st.photo = u ? (u.photoURL || u.photoUrl || '') : ''; };
   async function current() {
     if (native) { const r = await NA.getCurrentUser(); return r.user; }
-    if (!redirectChecked) {
-      redirectChecked = true;
-      try { const r = await WA.getRedirectResult(); if (r && r.user) return r.user; }
-      catch (e) { st.error = e && (e.message || e.code) || 'Falha ao concluir login'; }
-    }
     if (WA.currentUser) return WA.currentUser;
     // Aguarda o Firebase restaurar a sessao antes de concluir que o jogador e visitante.
     return new Promise(resolve => { const off = WA.onAuthStateChanged(u => { off(); resolve(u); }, () => { off(); resolve(null); }); });
   }
+  function webGoogleSignIn() {
+    return new Promise((resolve, reject) => {
+      if (!window.google || !google.accounts || !google.accounts.id) return reject(new Error('Google Identity indisponivel'));
+      let done = false;
+      const finish = (fn, value) => { if (done) return; done = true; clearTimeout(timer); fn(value); };
+      const timer = setTimeout(() => finish(reject, new Error('Tempo de login esgotado')), 60000);
+      google.accounts.id.initialize({
+        client_id: GOOGLE_WEB_CLIENT_ID,
+        context: 'signin',
+        auto_select: false,
+        cancel_on_tap_outside: false,
+        use_fedcm_for_prompt: true,
+        callback: async response => {
+          try {
+            const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
+            const result = await WA.signInWithCredential(credential);
+            finish(resolve, result.user);
+          } catch (e) { finish(reject, e); }
+        }
+      });
+      google.accounts.id.prompt(note => {
+        if (note && note.isNotDisplayed && note.isNotDisplayed()) finish(reject, new Error('Login Google nao exibido'));
+        else if (note && note.isSkippedMoment && note.isSkippedMoment()) finish(reject, new Error('Login Google cancelado'));
+      });
+    });
+  }
   async function signIn(interactive) {
     try {
       let u;
-      // Redirect funciona em navegadores mobile, webviews e bloqueadores de popup.
-      // O retorno e reconciliado por start() quando o Firebase restaura a sessao.
-      if (!native && interactive && !WA.currentUser) { await WA.signInWithRedirect(new firebase.auth.GoogleAuthProvider()); return false; }
+      // Recebe o token do Google no proprio dominio e evita o isolamento de
+      // cookies entre GitHub Pages e o authDomain do Firebase.
+      if (!native && interactive && !WA.currentUser) u = await webGoogleSignIn();
       else {
         u = await current();
         if (!u && interactive && native) u = (await NA.signInWithGoogle()).user;
