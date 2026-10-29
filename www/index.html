@@ -1083,7 +1083,8 @@ function upgradeROI(u) {
   const gain = {price: .2 / (1 + .2 * l), speed: .045, grill: .06, cap: .025, pat: .02, mkt: .055}[u.k] || .02;
   const perMin = base * gain, mins = c / Math.max(.01, perMin);
   if (mins > 720) return 'Retorno longo — melhore o gargalo da loja primeiro';
-  return `retorno estimado em ${mins < 60 ? Math.ceil(mins) + ' min' : (mins / 60).toFixed(1).replace('.', ',') + ' h'} · +$${fmt(perMin)}/min`;
+  const gainText = perMin < 10 ? perMin.toFixed(1).replace('.', ',') : fmt(perMin);
+  return `retorno estimado em ${mins < 60 ? Math.ceil(mins) + ' min' : (mins / 60).toFixed(1).replace('.', ',') + ' h'} · +$${gainText}/min`;
 }
 $('ups').addEventListener('click', e => {
   const b = e.target.closest('button[data-k]'); if (!b || b.disabled) return;
