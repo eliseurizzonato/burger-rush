@@ -96,6 +96,32 @@
   .link{display:inline-block;margin-top:12px;color:#a397b3;font-size:13px;text-decoration:underline;cursor:pointer;background:none;border:0;font-family:inherit}
   .stk-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:10px 0;position:sticky;top:-18px;z-index:2;background:#fff8ec;padding:8px 0 5px}
   .stk-tabs button{border:0;border-radius:11px;min-height:44px;padding:5px 2px;background:#eee4f5;color:var(--ink);font:700 11px 'Fredoka',system-ui;cursor:pointer}
+  #btnCfg{left:12px;top:calc(12px + env(safe-area-inset-top))}
+  #btnTeam{background:#b8f0e6}
+  .stk-tabs.two{grid-template-columns:1fr 1fr}
+  .neck{display:flex;flex-direction:column;gap:2px;text-align:left;background:#fff1d6;border:2px solid #ffb648;border-radius:14px;padding:9px 12px;margin:6px 0 10px;font-size:13px}
+  .neck b{font-size:15px}.neck small{color:#a0621a;font-weight:700}.neck.ok{background:#e8f8ea;border-color:#7fd28a}
+  .up.rec{box-shadow:0 0 0 3px #ffb648}.up.locked{opacity:.6}
+  .up small.perk,.perk{display:block;text-align:right;color:#8a7f99;font-size:12px;margin:-2px 4px 4px}
+  .av{position:relative;width:46px;height:46px;flex:none;border-radius:14px;overflow:hidden;background:linear-gradient(var(--sh),var(--sh)) bottom/100% 30% no-repeat,#ffefc2}
+  .av i{position:absolute;left:50%;top:9px;width:24px;height:24px;margin-left:-12px;border-radius:50%;background:var(--sk);border-top:6px solid var(--hr);box-sizing:border-box}
+  .av.big{width:84px;height:84px;border-radius:22px}.av.big i{top:15px;width:44px;height:44px;margin-left:-22px;border-top-width:11px}
+  button.up.emp{width:100%;border:0;font:inherit;color:inherit;cursor:pointer}.up.emp .go{font-size:28px;color:#b3a6c4}
+  .xpbar{height:8px;background:#eee4f5;border-radius:8px;overflow:hidden;margin:4px 0 1px}.xpbar i{display:block;height:100%;background:linear-gradient(90deg,#7fb2ff,#4f8ff7)}
+  .ficha{display:flex;gap:14px;align-items:center;text-align:left;margin:6px 0}.ficha h3{margin:0;font-size:22px}.ficha b,.ficha small{display:block}
+  .specs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .spec{display:flex;flex-direction:column;gap:2px;text-align:left;border:2px solid #eee4f5;border-radius:14px;background:#fff;padding:8px;font:inherit;color:inherit;cursor:pointer;min-height:44px}
+  .spec small{font-size:11px;color:#8a7f99}.spec i{font-style:normal;font-weight:700;color:var(--green-d);font-size:13px}
+  .spec.on{border-color:var(--green)}.spec:disabled{cursor:default}.spec:disabled:not(.on){opacity:.55}
+  .hist{text-align:left;font-size:13px;background:#fff;border-radius:12px;padding:8px 12px}.hist div{padding:3px 0;border-bottom:1px solid #f1eaf6}.hist div:last-child{border:0}
+  .back{margin:0 0 4px;display:block}
+  .row small{display:block;font-size:11px;color:#8a7f99}.row.lvl{background:#eef4ff}
+  label.cfg{cursor:pointer;position:relative}.cfg input{position:absolute;opacity:0;pointer-events:none}
+  .sw{flex:none;width:50px;height:30px;border-radius:30px;background:#c9c1d3;position:relative;transition:background .2s}
+  .sw::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .2s}
+  .cfg input:checked+.sw{background:var(--green)}.cfg input:checked+.sw::after{left:23px}
+  .cfg input:focus-visible+.sw{outline:3px solid #4f8ff7;outline-offset:2px}
+  body.rm *,body.rm *::before,body.rm *::after{animation:none!important;transition:none!important}
   .stk-tabs button.on{background:var(--ink);color:#fff}.stk-pane{display:none}.stk-pane.on{display:block}
   .market-news{border-radius:14px;padding:10px 12px;margin:7px 0;text-align:left;background:#eaf5ff;border-left:5px solid #3498db;font-size:13px}
   .market-news.hot{background:#fff1d5;border-color:#ff9a1a}.market-news.bad{background:#ffe4e4;border-color:#e23d3d}
@@ -115,6 +141,7 @@
 </style>
 <script src="vendor/capacitor.js"></script>
 <script src="vendor/three.min.js"></script>
+<script src="staff.js"></script>
 <script src="vendor/firebase-app-compat.js"></script>
 <script src="vendor/firebase-auth-compat.js"></script>
 <script src="vendor/firebase-firestore-compat.js"></script>
@@ -127,15 +154,18 @@
 <div id="rush" class="ui"></div>
 <div id="toast" class="ui"></div>
 <button id="btnMute" class="ui round" aria-label="Som">🔊</button>
-<div class="game-actions"><button id="btnUp" class="round side" aria-label="Melhorias"><span><b>⬆</b>Melhorias</span><i class="badge" id="bUp"></i></button><button id="btnMis" class="round side" aria-label="Missões"><span><b>📋</b>Missões</span><i class="badge" id="bMis"></i></button><button id="btnRest" class="round side" aria-label="Mapa"><span><b>🗺️</b>Mapa</span><i class="badge" id="bRest"></i></button><button id="btnBiz" class="round side" aria-label="Negócio"><span><b>🏢</b>Negócio</span><i class="badge" id="bBiz"></i></button><button id="btnStk" class="round side" aria-label="Bolsa de valores"><span><b>📈</b>Bolsa</span><i class="badge" id="bStk"></i></button><button id="btnAd" class="round side" aria-label="Prêmios grátis"><span><b>🎬</b>Grátis</span><i class="badge" id="bAd"></i></button></div>
+<button id="btnCfg" class="ui round" aria-label="Configurações">⚙️</button>
+<div class="game-actions"><button id="btnUp" class="round side" aria-label="Melhorias"><span><b>⬆</b>Melhorias</span><i class="badge" id="bUp"></i></button><button id="btnMis" class="round side" aria-label="Missões"><span><b>📋</b>Missões</span><i class="badge" id="bMis"></i></button><button id="btnTeam" class="round side" aria-label="Equipe" style="display:none"><span><b>👥</b>Equipe</span><i class="badge" id="bTeam"></i></button><button id="btnRest" class="round side" aria-label="Mapa"><span><b>🗺️</b>Mapa</span><i class="badge" id="bRest"></i></button><button id="btnBiz" class="round side" aria-label="Negócio"><span><b>🏢</b>Negócio</span><i class="badge" id="bBiz"></i></button><button id="btnStk" class="round side" aria-label="Bolsa de valores"><span><b>📈</b>Bolsa</span><i class="badge" id="bStk"></i></button><button id="btnAd" class="round side" aria-label="Prêmios grátis"><span><b>🎬</b>Grátis</span><i class="badge" id="bAd"></i></button></div>
 <div id="tut" class="ui"><div class="hand">👆</div><div>ARRASTE PARA MOVER</div></div>
 <div id="joy" class="ui"><div id="knob"></div></div>
-<div id="panel" class="modal"><div class="card"><h2>Melhorias</h2><p id="upSub">Valem só para este restaurante</p><div id="ups"></div><div class="up" id="cloudRow"></div><button class="btn big" data-close>Fechar</button><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a><br><button class="link" id="reset">Recomeçar do zero</button></div></div>
+<div id="panel" class="modal"><div class="card"><h2>Melhorias</h2><p id="upSub">Valem só para este restaurante</p><div id="upNeck"></div><div id="ups"></div><div class="up" id="cloudRow"></div><button class="btn big" data-close>Fechar</button><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a><br><button class="link" id="reset">Recomeçar do zero</button></div></div>
 <div id="missions" class="modal"><div class="card"><h2>Missões do dia</h2><p id="mSub"></p><div id="mList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="rests" class="modal"><div class="card"><h2 id="cityT">🗺️ Mapa da cidade</h2><p id="rSub"></p><div class="map" id="map"></div><div id="rList"></div><div id="cityBox"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="welcome" class="modal"><div class="card"><h2>Bem-vindo de volta!</h2><div id="wRows"></div><div class="big-num">+<span id="offAmt">0</span></div><button class="btn big ad" id="collect2" style="display:none">📺 Coletar 2x</button><br><button class="btn big" id="collect">Coletar</button></div></div>
 <div id="biz" class="modal"><div class="card"><h2>🏢 Meu negócio</h2><p id="bizSub"></p><div id="bizList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="stocks" class="modal"><div class="card"><h2>📈 Economia</h2><p id="stkSub"></p><div class="stk-tabs" id="stkTabs"><button data-stab="market" class="on">📊<br>Mercado</button><button data-stab="production">🌱<br>Produção</button><button data-stab="orders">🎯<br>Ordens</button><button data-stab="ach">🏆<br>Conquistas</button><button data-stab="rank">🥇<br>Ranking</button></div><section id="stk-market" class="stk-pane on"><div id="stkNews"></div><div class="qty" id="stkQty"></div><div id="stkList"></div><div id="stkFund"></div></section><section id="stk-production" class="stk-pane"><div id="prodList"></div></section><section id="stk-orders" class="stk-pane"><div id="orderForm"></div><div id="orderList"></div></section><section id="stk-ach" class="stk-pane"><div id="achList"></div></section><section id="stk-rank" class="stk-pane"><div id="rankList"></div></section><p style="font-size:12px;margin-top:8px">Economia fictícia, sem dinheiro real. Corretagem de 0,5% por operação.</p><button class="btn big" data-close>Fechar</button></div></div>
+<div id="team" class="modal"><div class="card"><h2>👥 Equipe</h2><p id="teamSub"></p><div class="stk-tabs two" id="teamTabs"><button data-ttab="staff" class="on">🧑‍🍳<br>Funcionários</button><button data-ttab="syn">🤝<br>Sinergias</button></div><div id="teamBody"></div><button class="btn big" data-close>Fechar</button></div></div>
+<div id="cfg" class="modal"><div class="card"><h2>⚙️ Configurações</h2><div id="cfgList"></div><button class="btn big" data-close>Fechar</button><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a></div></div>
 <div id="adShop" class="modal"><div class="card"><h2>🎬 Prêmios grátis</h2><p id="adSub"></p><div id="adList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="cloudPick" class="modal"><div class="card"><h2>☁️ Progresso na nuvem</h2><p>Achamos um progresso maior salvo na sua conta.</p><div class="row" style="flex-direction:column;text-align:left" id="cpTxt"></div><button class="btn big" id="cpLoad">Carregar da nuvem</button><br><button class="link" id="cpKeep">Manter o deste aparelho</button></div></div>
 <div id="ageGate" class="modal"><div class="card"><h2>🎂 Antes de jogar</h2><p>Informe sua data de nascimento. Ela é usada apenas para configurar anúncios adequados à sua idade e não será armazenada.</p><label for="birthDate"><b>Data de nascimento</b></label><br><input id="birthDate" type="date" autocomplete="bday" style="font:700 18px 'Fredoka',system-ui;margin:12px 0;padding:10px;border:2px solid #d8cce2;border-radius:12px;max-width:90%"><p id="ageErr" style="display:none;color:#c83232;font-weight:700">Informe uma data válida.</p><button class="btn big" id="ageGo">Continuar</button></div></div>
@@ -153,7 +183,7 @@ const fmt = n => { if (n < 10000) return String(Math.floor(n)); const u = ['k', 
 const SAVE_KEY = 'burger-rush-save-v1';
 function loadSave() { if (FRESH) return null; try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) { return null; } }
 // formato do save: ao mudar, suba SAVE_VERSION e acrescente um passo em MIGRATIONS (nunca apague os antigos)
-const SAVE_VERSION = 6;
+const SAVE_VERSION = 7;
 // fase do prédio que cada área antiga exige (usado só na migração 3 -> 4)
 const OLD_ZONE_LV = {t3: 1, s1: 1, t4: 1, g3: 1, c1: 1, t5: 2, t6: 2, h2: 2, f2: 2, s2: 2, h3: 2};
 const OLD_ZONES = ['t1', 't2', 'g2', 'f1', 'h1', 't3', 's1', 't4', 'g3', 't5', 't6', 'c1', 'h2', 'f2', 's2', 'h3'];
@@ -179,19 +209,31 @@ const MIGRATIONS = {
   5: s => {
     s.prod = {lines: {greens: {end: 0, ready: 0}, potato: {end: 0, ready: 0}, cheese: {end: 0, ready: 0}}, stats: {batches: 0, profit: 0}};
   },
+  // equipe: ajudantes e faxineiros já contratados viram funcionários; quem tinha prédio maior começa mais experiente
+  6: s => {
+    s.team = {}; s.pend = 0; s.offLv = 0; s.clk = s.last || 0;
+    (s.r || []).forEach((r, i) => { if (r) for (const id of r.bought || []) if (/^[hc]\d$/.test(id)) Staff.hire(s.team, i + ':' + id, id[0] === 'h' ? 'helper' : 'cleaner', s.last || Date.now(), 1 + 3 * Math.min(3, r.ex || 0)); });
+  },
 };
 function migrate(s) { s.v = s.v || 1; while (s.v < SAVE_VERSION) { if (MIGRATIONS[s.v]) MIGRATIONS[s.v](s); s.v++; } return s; }
-const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}, ageBand: '', stk: null, loan: 0, market: null, ach: {}, prod: null}, loadSave() || {}));
+const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}, ageBand: '', stk: null, loan: 0, market: null, ach: {}, prod: null, team: {}, pend: 0, offLv: 0, clk: 0, cfg: null}, loadSave() || {}));
 if (AUTO) S.ageBand = 'adult';
-const LV0 = {cap: 0, speed: 0, price: 0, grill: 0, pat: 0, mkt: 0};
+const LV0 = {cap: 0, speed: 0, price: 0, grill: 0, pat: 0, mkt: 0, par: 0, auto: 0};
 const R0 = {ex: 0, fac: 0, menu: 0, obra: null, res: null, served: 0, done: false};
-for (const r of S.r) if (r) { r.lv = Object.assign({}, LV0, r.lv); r.rep = r.rep || 3; r.fr = r.fr || 0; for (const k in R0) if (r[k] === undefined) r[k] = R0[k]; }
+for (const r of S.r) if (r) { r.lv = Object.assign({}, LV0, r.lv); r.rep = r.rep || 3; r.fr = r.fr || 0; for (const k in R0) if (r[k] === undefined) r[k] = R0[k]; r.ms = r.ms || {}; }
 S.loan = S.loan || 0;
+S.team = S.team || {}; S.pend = S.pend || 0; S.offLv = S.offLv || 0;
+// preferências: movimento reduzido (segue o sistema na 1ª vez) e gráfico econômico
+if (!S.cfg) S.cfg = {rm: !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches), lo: false};
 if (!S.r[S.cur]) S.cur = 0;
 const R = S.r[S.cur];
+// equipe da loja atual e seus bônus (TB é recalculado em refreshTeam quando alguém sobe de nível)
+const teamOf = (k = S.cur) => Object.values(S.team).filter(e => e.r === k);
+let TB = Staff.bonus(teamOf());
+const msMult = () => 1 + .03 * Object.values(R.ms).reduce((a, n) => a + n, 0); // maestria das melhorias
 const firstRun = !S.tut;
 let dirty = false, cloudDirty = true, lockSave = false;
-function persist() { if (FRESH || lockSave) return; S.last = Date.now(); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); cloudDirty = true; } catch (e) {} }
+function persist() { if (FRESH || lockSave) return; S.last = Date.now(); S.clk = Math.max(S.clk || 0, S.last); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); cloudDirty = true; } catch (e) {} }
 setInterval(() => { if (dirty) { dirty = false; persist(); } }, 2000);
 addEventListener('pagehide', persist);
 
@@ -233,7 +275,7 @@ const speed = () => 5.5 * (1 + .1 * R.lv.speed);
 // receita pesquisada: o produto da casa vira versão especial (+50%); os lanches novos já valem bem mais
 const prem = type => { const i = P.indexOf(type); return i < 3 ? (R.menu > i ? 1.5 : 1) : i === 3 ? 2.5 : 4; };
 const facMult = () => 1 + .04 * R.fac; // fachada bonita: clientes pagam um pouco mais
-const value = type => PRODUCTS[type].base * prem(type) * T.val * (1 + .2 * R.lv.price) * cityMult();
+const value = type => PRODUCTS[type].base * prem(type) * T.val * (1 + .2 * R.lv.price) * cityMult() * (1 + TB.price) * msMult();
 const prepTime = (type, l) => PRODUCTS[type].time * Math.pow(.88, l);
 
 // ---------- vida de empresário: prédio, fachada e cardápio ----------
@@ -273,7 +315,7 @@ const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 200);
 const CAM_OFF = new V3(10, 13, 10);
 function resize() {
   const vv = window.visualViewport, w = Math.max(1, vv ? vv.width : innerWidth), h = Math.max(1, vv ? vv.height : innerHeight), a = w / h;
-  renderer.setPixelRatio(Math.min(devicePixelRatio, w * h > 1600000 ? 1.5 : 2));
+  renderer.setPixelRatio(S.cfg.lo ? 1 : Math.min(devicePixelRatio, w * h > 1600000 ? 1.5 : 2));
   // Atualiza buffer e tamanho CSS juntos. Sem isso, DPR 2x/3x amplia o canvas
   // além do viewport e desloca câmera e personagem para fora da tela.
   renderer.setSize(w, h, true);
@@ -412,6 +454,7 @@ setMuted(S.muted);
 const parts = [];
 const PG = new THREE.BoxGeometry(1, 1, 1), SG = new THREE.SphereGeometry(1, 10, 8);
 function burst(pos, n, colors, o = {}) {
+  if (S.cfg.rm) n = Math.min(n, 4);
   for (let i = 0; i < n; i++) {
     const m = new THREE.Mesh(PG, basic(colors[i % colors.length])); const s = o.size || .12;
     m.scale.setScalar(s); m.position.copy(pos); scene.add(m);
@@ -420,6 +463,7 @@ function burst(pos, n, colors, o = {}) {
   }
 }
 function puff(pos) {
+  if (S.cfg.rm || S.cfg.lo) return;
   const m = new THREE.Mesh(SG, new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: .5, depthWrite: false}));
   m.position.copy(pos); m.scale.setScalar(.15); scene.add(m);
   parts.push({m, v: new V3((Math.random() - .5) * .3, 1.1, (Math.random() - .5) * .3), life: 1.4, t: 0, s: .15, g: 0, smoke: true});
@@ -558,7 +602,7 @@ function transfer(from, to) {
 }
 const drop = o => o.parent && o.parent.remove(o); // r128 não tem removeFromParent
 const pops = [];
-function popIn(obj) { obj.scale.setScalar(0.01); pops.push({obj, t: 0}); }
+function popIn(obj) { if (S.cfg.rm) return; obj.scale.setScalar(0.01); pops.push({obj, t: 0}); }
 
 // ---------- colisão do jogador ----------
 const colliders = [];
@@ -672,17 +716,19 @@ const pick = a => a[Math.random() * a.length | 0];
 function makeChar({shirt, skin = SKINS[0], hair = pick(HAIRS), chef = false, pants = 0x2d3142}) {
   const g = new THREE.Group(); const body = new THREE.Group(); g.add(body);
   const legs = [-1, 1].map(s => { const p = at(new THREE.Group(), s * .13, .38, 0, g); at(cyl(.09, .36, pants), 0, -.18, 0, p); at(box(.16, .08, .24, 0x3a2a20), 0, -.36, .04, p); return p; });
-  at(cyl(.3, .44, shirt), 0, .66, 0, body);
+  const torso = at(cyl(.3, .44, shirt), 0, .66, 0, body);
   const hip = at(ball(.3, shirt), 0, .46, 0, body); hip.scale.y = .55;
-  if (chef) { at(cyl(.305, .12, T.trim), 0, .84, 0, body); at(box(.4, .38, .04, 0xffffff), 0, .6, .29, body); }
+  let band = null; // faixa do avental: no uniforme da equipe ganha a cor do cargo
+  if (chef) { band = at(cyl(.305, .12, T.trim), 0, .84, 0, body); at(box(.4, .38, .04, 0xffffff), 0, .6, .29, body); }
   at(ball(.28, skin), 0, 1.13, 0, body);
   for (const s of [-1, 1]) { at(ball(.045, 0x1d1d2b), s * .1, 1.16, .25, body); at(ball(.04, 0xff9a9a), s * .17, 1.06, .22, body).scale.set(1, .6, .5); }
   if (chef) { at(cyl(.2, .22, 0xffffff), 0, 1.45, 0, body); at(ball(.26, 0xffffff), 0, 1.62, 0, body).scale.y = .7; }
   else { const h = at(mesh(new THREE.SphereGeometry(.295, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2.1), hair), 0, 1.14, -.02, body); h.rotation.x = -.3; }
   const arms = [-1, 1].map(s => { const p = at(new THREE.Group(), s * .36, .82, 0, body); at(cyl(.07, .34, chef ? 0xffffff : shirt), 0, -.17, 0, p); at(ball(.085, skin), 0, -.36, 0, p); return p; });
   const hand = new Stack(g, column(0, .38)); hand.group.position.set(0, .78, .55);
-  scene.add(g); return {g, body, legs, arms, hand, walk: 0, moving: false, sitting: false};
+  scene.add(g); return {g, body, legs, arms, hand, walk: 0, moving: false, sitting: false, shirts: band ? [torso, hip, band] : [torso, hip]};
 }
+function setShirt(ch, c) { for (const m of ch.shirts) m.material = mat(c); }
 function moveTo(ch, tx, tz, spd, dt) {
   const dx = tx - ch.g.position.x, dz = tz - ch.g.position.z, d = Math.hypot(dx, dz);
   if (d < .05) { ch.moving = false; return true; }
@@ -822,39 +868,68 @@ const canDrop = st => st.ready && counters[st.top.type].count < COUNTER_MAX;
 
 // ---------- ajudantes ----------
 const helpers = [];
-function addHelper(x, z) {
+const crew = () => helpers.concat(cleaners);
+function hireChar(ch, id, role) {
+  const e = ch.emp = Staff.hire(S.team, S.cur + ':' + id, role);
+  setShirt(ch, Staff.rankOf(e).shirt); dirty = true; return e;
+}
+function refreshTeam() {
+  TB = Staff.bonus(teamOf());
+  for (const c of crew()) if (c.emp) setShirt(c, Staff.rankOf(c.emp).shirt);
+}
+// XP do trabalho; subir de nível e ser promovido aparece na tela
+function empXP(e, amount, quiet) {
+  if (!e) return [];
+  const k = e.r === S.cur ? TB : Staff.bonus(teamOf(e.r)), ev = Staff.gainXP(e, amount * (1 + k.xp));
+  dirty = true;
+  if (ev.length) {
+    if (ev.some(x => x.promo)) S.teamNew = true;
+    refreshTeam(); if (!quiet && e.r === S.cur) ev.forEach(celebrate); refreshBadges();
+  }
+  return ev;
+}
+function celebrate(x) {
+  const ch = crew().find(c => c.emp === x.e), pos = ch ? ch.g.position : player.g.position;
+  if (x.promo) {
+    floatText(`🎉 ${x.e.n}: ${x.rank}!`, pos, 'rgba(224,154,0,.95)'); sfx.done();
+    burst(pos.clone().add(new V3(0, 1.2, 0)), 30, CONFETTI, {speed: 3, up: 6}); toast(`🎉 Promoção! ${x.e.n} agora é ${x.rank}`);
+  } else floatText(`⬆️ ${x.e.n} · nível ${x.lv}`, pos, 'rgba(79,143,247,.95)');
+}
+function addHelper(x, z, id) {
   const h = makeChar({shirt: 0x4f8ff7, skin: SKINS[helpers.length % 2 ? 2 : 1], chef: true});
   h.g.position.set(x, 0, z); h.pickT = 0; h.dropT = 0; h.n = helpers.length; helpers.push(h); popIn(h.g);
+  if (id) hireChar(h, id, 'helper');
 }
 function updateHelper(h, dt) {
-  const hc = 3 + Math.floor(R.lv.cap / 2), p = h.g.position;
+  const e = h.emp, hc = 3 + Math.floor(R.lv.cap / 2) + (e ? Staff.carryBonus(e) : 0), p = h.g.position, sp = 4 * (e ? Staff.agility(e, TB) : 1);
   const usable = stations.filter(s => counters[s.type].count < COUNTER_MAX);
   const best = usable.length ? usable.reduce((a, b) => (b.stack.count > a.stack.count ? b : a)) : null;
   const top = h.hand.top, okDrop = top && counters[top.type].count < COUNTER_MAX;
   const deliver = okDrop && (h.hand.count >= hc || !best || !best.stack.count);
-  if (deliver) moveTo(h, SECTIONS[top.type], -2.2, 4, dt);
-  else if (best) { if (moveTo(h, best.front.x + (h.n ? .3 : -.3), best.front.z, 4, dt)) turn(h, Math.atan2(best.pos.x - p.x, best.pos.z - p.z), dt); }
+  if (deliver) moveTo(h, SECTIONS[top.type], -2.2, sp, dt);
+  else if (best) { if (moveTo(h, best.front.x + (h.n ? .3 : -.3), best.front.z, sp, dt)) turn(h, Math.atan2(best.pos.x - p.x, best.pos.z - p.z), dt); }
   else h.moving = false;
-  if (inDrop(p) && canDrop(h.hand) && (h.dropT -= dt) <= 0 && transfer(h.hand, counters[top.type])) h.dropT = .1;
+  if (inDrop(p) && canDrop(h.hand) && (h.dropT -= dt) <= 0 && transfer(h.hand, counters[top.type])) { h.dropT = .1; empXP(e, 1); }
   h.pickT -= dt;
   for (const s of stations) if (p.distanceTo(s.pos) < 1.9 && h.hand.count < hc && counters[s.type].count < COUNTER_MAX && h.pickT <= 0 && transfer(s.stack, h.hand)) h.pickT = .15;
   animChar(h, dt);
 }
 // faxineiro: vai até a mesa suja mais próxima e limpa
 const cleaners = [];
-function addCleaner(x, z) {
+function addCleaner(x, z, id) {
   const c = makeChar({shirt: 0x2bb3a3, skin: SKINS[2], chef: true}); c.g.position.set(x, 0, z); c.home = new V3(x, 0, z); c.t = 0; cleaners.push(c); popIn(c.g);
+  if (id) hireChar(c, id, 'cleaner');
 }
 function updateCleaner(c, dt) {
   const d = dirtyTables(), p = c.g.position;
   if (d.length) {
     const [tbl, tb] = d.reduce((a, b) => (Math.hypot(b[1].x - p.x, b[1].z - p.z) < Math.hypot(a[1].x - p.x, a[1].z - p.z) ? b : a));
-    if (moveTo(c, tb.x, tb.z + .95, 3.2 * (1 + .1 * R.lv.speed), dt)) { turn(c, Math.PI, dt); if ((c.t += dt) > .7) { c.t = 0; for (const s of seats) if (s.table === tbl) cleanSeat(s); } }
+    if (moveTo(c, tb.x, tb.z + .95, 3.2 * (1 + .1 * R.lv.speed) * (c.emp ? Staff.agility(c.emp, TB, true) : 1), dt)) { turn(c, Math.PI, dt); if ((c.t += dt) > .7) { c.t = 0; for (const s of seats) if (s.table === tbl && s.dirty) { cleanSeat(s); empXP(c.emp, 3); } } }
   } else moveTo(c, c.home.x, c.home.z, 3, dt);
   animChar(c, dt);
 }
 // $/min sem o jogador (usado nos ganhos parados e nos outros estabelecimentos)
-function currentRate() { return (seats.length / 2 + helpers.length * 3 + cleaners.length * 2) * value(P[0]) * .8 * (.7 + .1 * R.rep) * facMult() * (1 + .2 * stations.filter(s => P.indexOf(s.type) > 2).length); }
+function currentRate() { return Staff.rateMult(teamOf(), TB) * (seats.length / 2 + helpers.length * 3 + cleaners.length * 2) * value(P[0]) * .8 * (.7 + .1 * R.rep) * facMult() * (1 + .2 * stations.filter(s => P.indexOf(s.type) > 2).length); }
 
 // ---------- áreas de compra ----------
 const ZTEX = canvasTex(128, 128, g => { g.fillStyle = 'rgba(255,255,255,.3)'; roundRect(g, 6, 6, 116, 116, 18); g.fill(); g.setLineDash([16, 10]); g.lineWidth = 8; g.strokeStyle = '#fff'; g.stroke(); });
@@ -894,8 +969,8 @@ const bought = new Set(R.bought);
 const complete = r => !!r && (!!r.done || ZONES.every(z => r.bought.includes(z.id)));
 function makeZone(z) {
   if (z.kind === 'table') addTable(z.x, z.z);
-  else if (z.kind === 'helper') addHelper(z.x, z.z);
-  else if (z.kind === 'cleaner') addCleaner(z.x, z.z);
+  else if (z.kind === 'helper') addHelper(z.x, z.z, z.id);
+  else if (z.kind === 'cleaner') addCleaner(z.x, z.z, z.id);
   else addStation(P[+z.kind[1]], z.x, z.z, z.rot || 0);
 }
 function buildZoneUI(z) {
@@ -936,7 +1011,7 @@ const queue = [], customers = [];
 let spawnT = 0, combo = 0, comboT = 0, rush = 0, rushNext = 75;
 const comboMult = () => 1 + Math.min(combo, 20) * .05;
 const payMult = () => (.7 + .1 * R.rep) * facMult();
-const patience = () => (S.tut ? 28 : 45) * (1 + .15 * R.lv.pat) * (rush > 0 ? .8 : 1);
+const patience = () => (S.tut ? 28 : 45) * (1 + .15 * R.lv.pat) * (1 + TB.pat) * (rush > 0 ? .8 : 1);
 function makeOrder(vip) {
   const has = P.filter(k => stations.some(s => s.type === k)), o = {[P[0]]: 1 + (Math.random() * 2 | 0)};
   for (const t of has.slice(1)) if (Math.random() < .6) o[t] = 1 + (Math.random() < .25 ? 1 : 0);
@@ -966,7 +1041,7 @@ function setCombo(n) {
 function angry(c, msg, rep) {
   const i = queue.indexOf(c); if (i >= 0) queue.splice(i, 1);
   c.state = 'leave'; c.t = 1.8; c.bubble.set(msg, 'rgba(230,60,60,.95)', '#fff'); c.bubble.visible = true;
-  addRep(rep); if (combo) { floatText('Combo perdido 💔', c.g.position, 'rgba(230,60,60,.95)'); setCombo(0); }
+  neck.wait += 4; addRep(rep); if (combo) { floatText('Combo perdido 💔', c.g.position, 'rgba(230,60,60,.95)'); setCombo(0); }
 }
 function updateCustomer(c, dt) {
   if (c.pay > 0 && (c.payT -= dt) <= 0) {
@@ -1060,40 +1135,87 @@ function refreshHud(pop) {
 }
 
 // ---------- melhorias (por restaurante) ----------
+// g = quanto o preço cresce por nível (melhorias de ganho grande crescem mais rápido); ex = fase do prédio que libera
 const UPS = [
-  {k: 'cap', icon: '💪', name: 'Braços fortes', desc: l => `Carrega ${5 + l} → ${6 + l} itens`, base: 60, max: 10},
-  {k: 'speed', icon: '👟', name: 'Tênis novo', desc: l => `Velocidade +${l * 10}% → +${(l + 1) * 10}%`, base: 50, max: 8},
-  {k: 'price', icon: '💲', name: 'Ingredientes melhores', desc: l => `Lanches valem +${l * 20}% → +${(l + 1) * 20}%`, base: 120, max: 20},
-  {k: 'grill', icon: '🔥', name: 'Cozinha turbo', desc: l => `Preparo ${Math.round((1 - Math.pow(.88, l)) * 100)}% → ${Math.round((1 - Math.pow(.88, l + 1)) * 100)}% mais rápido`, base: 80, max: 8},
-  {k: 'pat', icon: '🛋️', name: 'Ambiente aconchegante', desc: l => `Clientes esperam +${l * 15}% → +${(l + 1) * 15}%`, base: 100, max: 8},
-  {k: 'mkt', icon: '📣', name: 'Marketing', desc: l => `Mais clientes e VIPs (nível ${l} → ${l + 1})`, base: 150, max: 10},
+  {k: 'cap', icon: '💪', name: 'Braços fortes', desc: l => `Carrega ${5 + l} → ${6 + l} itens`, base: 60, max: 10, g: 1.5},
+  {k: 'speed', icon: '👟', name: 'Tênis novo', desc: l => `Velocidade +${l * 10}% → +${(l + 1) * 10}%`, base: 50, max: 8, g: 1.55},
+  {k: 'price', icon: '💲', name: 'Ingredientes melhores', desc: l => `Lanches valem +${l * 20}% → +${(l + 1) * 20}%`, base: 120, max: 20, g: 1.4},
+  {k: 'grill', icon: '🔥', name: 'Cozinha turbo', desc: l => `Preparo ${Math.round((1 - Math.pow(.88, l)) * 100)}% → ${Math.round((1 - Math.pow(.88, l + 1)) * 100)}% mais rápido`, base: 80, max: 8, g: 1.55},
+  {k: 'pat', icon: '🛋️', name: 'Ambiente aconchegante', desc: l => `Clientes esperam +${l * 15}% → +${(l + 1) * 15}%`, base: 100, max: 8, g: 1.45},
+  {k: 'mkt', icon: '📣', name: 'Marketing', desc: l => `Mais clientes e VIPs (nível ${l} → ${l + 1})`, base: 150, max: 10, g: 1.5},
+  {k: 'par', icon: '🍳', name: 'Preparo paralelo', desc: l => `Chance de sair 2 lanches por vez: ${Math.round(l / 3 * 100)}% → ${Math.round((l + 1) / 3 * 100)}%`, base: 3000, max: 3, g: 2.6, ex: 1},
+  {k: 'auto', icon: '🤖', name: 'Esteira automática', desc: l => `Leva lanches da cozinha ao balcão ${l ? `a cada ${Math.round(AUTO_EVERY / l)} s` : '(desligada)'} → a cada ${Math.round(AUTO_EVERY / (l + 1))} s`, base: 6000, max: 3, g: 2.6, ex: 1},
 ];
-const UP_COST_GROWTH = 1.55;
-const upCost = u => Math.round(u.base * T.mult * Math.pow(UP_COST_GROWTH, R.lv[u.k]));
+const AUTO_EVERY = 12, MS_MAX = 5;
+const upCost = u => Math.round(u.base * T.mult * Math.pow(u.g, R.lv[u.k]) * (1 - TB.upCost));
+// maestria: depois do nível máximo, cada melhoria pode ganhar até 5 estrelas (+3% no faturamento da loja cada)
+const msCost = u => Math.round(u.base * T.mult * Math.pow(u.g, u.max) * Math.pow(2, (R.ms[u.k] || 0) + 1) * (1 - TB.upCost));
+const upLocked = u => (u.ex || 0) > R.ex;
 // o nível máximo de cada melhoria cresce com o prédio (fase 1: 1/4 do total ... fase 4: tudo)
-const upMax = u => Math.min(u.max, Math.ceil(u.max * (R.ex + 1) / EXP.length));
+const upMax = u => upLocked(u) ? 0 : Math.min(u.max, Math.ceil(u.max * (R.ex + 1) / EXP.length));
+const upState = u => {
+  const l = R.lv[u.k], maxed = l >= u.max, ms = R.ms[u.k] || 0;
+  if (maxed) return {mode: 'ms', cost: ms >= MS_MAX ? 0 : msCost(u), done: ms >= MS_MAX};
+  return {mode: 'up', cost: upCost(u), capped: l >= upMax(u)};
+};
+const canBuyUp = u => { const st = upState(u); return !st.done && !st.capped && S.money >= st.cost; };
+
+// gargalo: o que mais travou a loja no último minuto (cada valor decai sozinho)
+const neck = {carry: 0, prod: 0, clean: 0, wait: 0};
+const NECKS = {
+  carry: {txt: 'A cozinha enche e ninguém leva os lanches ao balcão', rec: ['cap', 'speed', 'auto']},
+  prod: {txt: 'Os clientes esperam lanches que ainda não ficaram prontos', rec: ['grill', 'par']},
+  clean: {txt: 'Mesas sujas seguram os próximos clientes', rec: ['speed']},
+  wait: {txt: 'Clientes estão indo embora sem paciência', rec: ['pat', 'grill']},
+};
+function trackNeck(dt, dirtyN) {
+  const k = Math.exp(-dt / 60); for (const n in neck) neck[n] *= k;
+  if (stations.some(s => s.stack.count >= 6)) neck.carry += dt;
+  if (queue.length && stations.some(s => !s.stack.count && !counters[s.type].count)) neck.prod += dt;
+  if (dirtyN) neck.clean += dt * .6;
+}
+function bottleneck() {
+  const [k, v] = Object.entries(neck).sort((a, b) => b[1] - a[1])[0];
+  if (v < 3) return null;
+  const rec = NECKS[k].rec.map(id => UPS.find(u => u.k === id)).filter(u => !upLocked(u) && !upState(u).capped && !upState(u).done && upState(u).mode === 'up');
+  return {k, txt: NECKS[k].txt, rec};
+}
+
 function renderUps() {
   $('upSub').textContent = `Valem só para ${T.name}`;
+  const bn = bottleneck(), recK = bn && bn.rec[0] ? bn.rec[0].k : null;
+  $('upNeck').innerHTML = bn ? `<div class="neck"><b>🎯 Gargalo agora</b><span>${bn.txt}.</span><small>${recK ? `Melhor compra: ${bn.rec[0].icon} ${bn.rec[0].name}` : bn.k === 'clean' ? 'Contrate um faxineiro ou suba o nível da equipe' : 'Amplie o prédio para liberar mais melhorias'}</small></div>` : '<div class="neck ok"><b>✅ Loja sem gargalo</b><span>Tudo fluindo. Invista no que tiver o retorno mais rápido.</span></div>';
   $('ups').innerHTML = UPS.map(u => {
-    const l = R.lv[u.k], maxed = l >= u.max, capped = !maxed && l >= upMax(u);
-    const roi = !maxed && !capped ? upgradeROI(u) : '';
-    return `<div class="up"><div class="ic">${u.icon}</div><div class="tx"><b>${u.name}</b><small>Nível ${l + 1}${maxed ? ' · máximo' : ` · limite da fase: ${upMax(u) + 1}`}</small><span>${maxed ? 'Já está no máximo' : capped ? '🏗️ Amplie o prédio para melhorar mais' : u.desc(l)}</span>${roi ? `<small>⏱️ ${roi}</small>` : ''}</div><button class="btn" data-k="${u.k}">${maxed ? 'MAX' : capped ? '🔒' : '$' + fmt(upCost(u))}</button></div>`;
-  }).join('');
+    const l = R.lv[u.k], st = upState(u), ms = R.ms[u.k] || 0;
+    if (upLocked(u)) return `<div class="up locked"><div class="ic">${u.icon}</div><div class="tx"><b>${u.name}</b><span>🏗️ Libera na fase ${u.ex + 1} do prédio</span></div><button class="btn" disabled>🔒</button></div>`;
+    if (st.mode === 'ms') return `<div class="up"><div class="ic">${u.icon}</div><div class="tx"><b>${u.name}</b><small>Nível máximo · Maestria ${'★'.repeat(ms)}${'☆'.repeat(MS_MAX - ms)}</small><span>${st.done ? 'Maestria completa' : 'Próxima estrela: +3% no faturamento da loja'}</span>${st.done ? '' : `<small>⏱️ ${roiText(st.cost, .03)}</small>`}</div><button class="btn gold" data-k="${u.k}">${st.done ? 'MAX' : '★ $' + fmt(st.cost)}</button></div>`;
+    return `<div class="up${u.k === recK ? ' rec' : ''}"><div class="ic">${u.icon}</div><div class="tx"><b>${u.k === recK ? '🎯 ' : ''}${u.name}</b><small>Nível ${l + 1} · limite da fase: ${upMax(u) + 1}</small><span>${st.capped ? '🏗️ Amplie o prédio para melhorar mais' : u.desc(l)}</span>${st.capped ? '' : `<small>⏱️ ${upgradeROI(u)}</small>`}</div><button class="btn" data-k="${u.k}">$${fmt(st.cost)}</button></div>`;
+  }).join('') + offUpCard();
   refreshBadges();
 }
-function upgradeROI(u) {
-  const l = R.lv[u.k], c = upCost(u), base = Math.max(1, currentRate());
-  const gain = {price: .2 / (1 + .2 * l), speed: .045, grill: .06, cap: .025, pat: .02, mkt: .055}[u.k] || .02;
-  const perMin = base * gain, mins = c / Math.max(.01, perMin);
-  if (mins > 720) return 'Retorno longo — melhore o gargalo da loja primeiro';
+// ganho estimado de cada melhoria em fração do faturamento por minuto
+const UP_GAIN = {speed: .045, grill: .06, cap: .025, pat: .02, mkt: .055, par: .07, auto: .06};
+function roiText(cost, gain) {
+  const perMin = Math.max(1, currentRate()) * gain, mins = cost / Math.max(.01, perMin);
   const gainText = perMin < 10 ? perMin.toFixed(1).replace('.', ',') : fmt(perMin);
-  return `retorno estimado em ${mins < 60 ? Math.ceil(mins) + ' min' : (mins / 60).toFixed(1).replace('.', ',') + ' h'} · +$${gainText}/min`;
+  if (mins > 720) return `+$${gainText}/min · retorno longo (${(mins / 60).toFixed(0)} h) — resolva o gargalo primeiro`;
+  return `+$${gainText}/min · se paga em ${mins < 60 ? Math.ceil(mins) + ' min' : (mins / 60).toFixed(1).replace('.', ',') + ' h'}`;
+}
+function upgradeROI(u) { const l = R.lv[u.k]; return roiText(upCost(u), u.k === 'price' ? .2 / (1 + .2 * l) : UP_GAIN[u.k] || .02); }
+// turno estendido: aumenta o limite dos ganhos offline (vale para todas as lojas)
+const offCost = () => Math.round(20000 * bestVal() * Math.pow(4, S.offLv));
+function offUpCard() {
+  const lv = S.offLv, max = lv >= Staff.OFF_LV_MAX;
+  return `<h3>🌙 Para todas as lojas</h3><div class="up"><div class="ic">🌙</div><div class="tx"><b>Turno estendido</b><small>Ganhos offline acumulam até ${Staff.offCapH(lv)} h</small><span>${max ? 'Já está no máximo' : `${Staff.offCapH(lv)} h → ${Staff.offCapH(lv + 1)} h de ganhos enquanto você está fora`}</span></div><button class="btn" data-off="1" ${max || S.money < offCost() ? 'disabled' : ''}>${max ? 'MAX' : '$' + fmt(offCost())}</button></div>`;
 }
 $('ups').addEventListener('click', e => {
+  const o = e.target.closest('button[data-off]');
+  if (o && !o.disabled) { const c = offCost(); if (S.money < c || S.offLv >= Staff.OFF_LV_MAX) return; S.offLv++; addMoney(-c); sfx.buy(); toast(`🌙 Ganhos offline agora acumulam até ${Staff.offCapH(S.offLv)} h`); return renderUps(); }
   const b = e.target.closest('button[data-k]'); if (!b || b.disabled) return;
-  const u = UPS.find(x => x.k === b.dataset.k), c = upCost(u);
-  if (S.money < c || R.lv[u.k] >= upMax(u)) return;
-  R.lv[u.k]++; addMoney(-c); sfx.buy(); track('upgrade', 1); renderUps();
+  const u = UPS.find(x => x.k === b.dataset.k), st = upState(u);
+  if (!canBuyUp(u)) return;
+  if (st.mode === 'ms') R.ms[u.k] = (R.ms[u.k] || 0) + 1; else R.lv[u.k]++;
+  addMoney(-st.cost); sfx.buy(); track('upgrade', 1); renderUps(); drawSign();
   burst(player.g.position.clone().add(new V3(0, 1, 0)), 24, CONFETTI, {speed: 3, up: 6});
 });
 
@@ -1878,9 +2000,11 @@ setInterval(() => {
 function refreshBadges() {
   let up = false;
   for (const u of UPS) {
-    const ok = R.lv[u.k] < upMax(u) && S.money >= upCost(u); up = up || ok;
+    const ok = !upLocked(u) && canBuyUp(u); up = up || (ok && upState(u).mode === 'up');
     const b = $('ups').querySelector(`[data-k="${u.k}"]`); if (b) b.disabled = !ok;
   }
+  $('btnTeam').style.display = teamOf().length ? '' : 'none';
+  $('bTeam').style.display = S.teamNew ? 'block' : 'none';
   $('bUp').style.display = up ? 'block' : 'none';
   $('bBiz').style.display = bizReady() ? 'block' : 'none';
   $('bMis').style.display = S.daily && S.daily.list.some(m => !m.claimed && m.p >= m.n) ? 'block' : 'none';
@@ -1903,38 +2027,136 @@ $('reset').addEventListener('click', async () => {
   await Cloud.wipe(); location.reload();
 });
 
+// ganhos enquanto fora: até o limite do turno (2 h cheias, depois metade); a equipe treina com XP reduzido
 function offlineEarn(ms) {
   R.rate = currentRate();
-  const minutes = Math.min(ms / 60000, 120);
-  return Math.floor(minutes * passiveRate(true));
+  const capH = Staff.offCapH(S.offLv), m = Staff.offMinutes(ms, capH);
+  const money = Math.floor(m.eff * (passiveRate(true) + R.rate * TB.offline));
+  const ev = []; let xp = 0;
+  for (const e of Object.values(S.team)) {
+    const k = e.r === S.cur ? TB : Staff.bonus(teamOf(e.r)), g = m.real * Staff.XP_ONLINE_MIN * Staff.XP_OFF_K * (1 + k.xp);
+    if (e.lv < Staff.LV_MAX) xp += g; ev.push(...Staff.gainXP(e, g));
+  }
+  if (ev.length) { if (ev.some(x => x.promo)) S.teamNew = true; refreshTeam(); }
+  return {money, real: m.real, capH, xp: Math.round(xp), ev};
 }
-let pendingGift = 0;
-function showWelcome(offline, bonus, div = 0) {
-  if (offline < 5 && bonus <= 0 && div < 1) return;
-  const rows = [];
-  if (div >= 1) { rows.push(`<div class="row"><span>💸 Dividendos das suas ações</span><b>$${fmt(div)}</b></div>`); pendingGift += div; }
-  if (offline >= 5) rows.push(`<div class="row"><span>🕒 Faturou enquanto você estava fora</span><b>$${fmt(offline)}</b></div>`);
-  if (bonus > 0) rows.push(`<div class="row"><span>🔥 Bônus diário · dia ${S.streak}</span><b>$${fmt(bonus)}</b></div>`);
-  pendingGift += Math.max(0, offline >= 5 ? offline : 0) + bonus;
-  $('wRows').innerHTML = rows.join(''); $('offAmt').textContent = '$' + fmt(pendingGift);
-  $('collect2').style.display = Ads.st.available && adDay().n < AD_DAY_MAX ? '' : 'none';
+const fmtMin = m => m >= 60 ? `${Math.floor(m / 60)} h${m % 60 >= 1 ? ' ' + Math.floor(m % 60) + ' min' : ''}` : `${Math.max(1, Math.floor(m))} min`;
+// o prêmio fica guardado em S.pend até ser coletado: fechar o app não perde nem duplica
+function showWelcome(off, bonus, div = 0) {
+  const rows = [], kept = S.pend;
+  if (kept >= 1) rows.push(`<div class="row"><span>💰 Ganhos guardados</span><b>$${fmt(kept)}</b></div>`);
+  if (div >= 1) { rows.push(`<div class="row"><span>💸 Dividendos das suas ações</span><b>$${fmt(div)}</b></div>`); S.pend += div; }
+  if (off && off.money >= 5) { rows.push(`<div class="row"><span>🕒 Faturou em ${fmtMin(off.real)} fora<small>limite atual: ${off.capH} h</small></span><b>$${fmt(off.money)}</b></div>`); S.pend += off.money; }
+  if (bonus > 0) { rows.push(`<div class="row"><span>🔥 Bônus diário · dia ${S.streak}</span><b>$${fmt(bonus)}</b></div>`); S.pend += bonus; }
+  if (off && off.xp >= 1) rows.push(`<div class="row"><span>👥 Equipe treinou</span><b>+${fmt(off.xp)} XP</b></div>`);
+  if (off && off.ev.length) {
+    const best = new Map(); for (const x of off.ev) best.set(x.e, {lv: x.lv, promo: (best.get(x.e) || {}).promo || x.promo, rank: x.rank});
+    for (const [e, x] of best) rows.push(`<div class="row lvl"><span>${x.promo ? '🎉' : '⬆️'} ${e.n}</span><b>${x.promo ? x.rank + ' · ' : ''}nível ${x.lv}</b></div>`);
+  }
+  if (S.pend < 1 && !(off && off.ev.length)) return;
+  persist();
+  $('wRows').innerHTML = rows.join(''); $('offAmt').textContent = '$' + fmt(S.pend);
+  $('collect2').style.display = S.pend >= 1 && Ads.st.available && adDay().n < AD_DAY_MAX ? '' : 'none';
+  $('collect').textContent = S.pend >= 1 ? 'Coletar' : 'Continuar';
   openModal('welcome');
 }
-$('collect2').addEventListener('click', () => { initAudio(); Ads.show(() => { claimAd(); pendingGift *= 2; $('collect').click(); toast('📺 Ganhos dobrados!'); }); });
+$('collect2').addEventListener('click', () => { initAudio(); Ads.show(() => { claimAd(); S.pend *= 2; $('collect').click(); toast('📺 Ganhos dobrados!'); }); });
 $('collect').addEventListener('click', () => {
-  initAudio(); closeModal('welcome'); addMoney(pendingGift); pendingGift = 0; sfx.buy();
-  burst(player.g.position.clone().add(new V3(0, 1.2, 0)), 30, COINS, {speed: 3.5, up: 7, size: .16});
+  initAudio(); closeModal('welcome'); const g = S.pend; S.pend = 0; addMoney(g); persist(); if (g >= 1) sfx.buy();
+  if (g >= 1) burst(player.g.position.clone().add(new V3(0, 1.2, 0)), 30, COINS, {speed: 3.5, up: 7, size: .16});
 });
+// volta ao jogo: o relógio só conta para frente (voltar a hora do aparelho não gera ganhos)
+function awayGains() {
+  const g = Staff.clockGuard(S);
+  if (g.back) { toast('⏰ Relógio voltou: sem ganhos offline'); return null; }
+  return FRESH || g.away < 60000 ? null : offlineEarn(g.away);
+}
 let hiddenAt = 0;
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) { hiddenAt = Date.now(); R.rate = currentRate(); persist(); Cloud.push(true); }
   else if (hiddenAt) {
-    const away = Date.now() - hiddenAt; hiddenAt = 0; last = performance.now();
+    hiddenAt = 0; last = performance.now();
     if (ensureDaily()) toast('📋 Novas missões do dia!');
     loanSync(); const div = mktSync(); checkTimers();
-    showWelcome(FRESH || away < 60000 ? 0 : offlineEarn(away), loginBonus(), div);
+    showWelcome(awayGains(), loginBonus(), div);
   }
 });
+
+// ---------- equipe: lista, ficha e sinergias ----------
+const SPEC_BASE = 2000;
+let teamTab = 'staff', teamSel = null;
+const avatar = (e, big) => `<div class="av${big ? ' big' : ''}" style="--sk:${hex(SKINS[e.av])};--hr:${hex(HAIRS[e.hair])};--sh:${hex(Staff.rankOf(e).shirt)}"><i></i></div>`;
+const xpBar = e => e.lv >= Staff.LV_MAX ? '<div class="xpbar"><i style="width:100%"></i></div><small>Nível máximo</small>'
+  : `<div class="xpbar"><i style="width:${Math.min(100, e.xp / Staff.xpNeed(e.lv) * 100).toFixed(1)}%"></i></div><small>${fmt(e.xp)} / ${fmt(Staff.xpNeed(e.lv))} XP</small>`;
+const roleName = e => e.role === 'helper' ? 'Ajudante' : 'Faxineiro';
+function renderTeam() {
+  const t = teamOf(), syn = TB.syn;
+  $('teamSub').textContent = `${T.icon} ${T.name} · ${t.length} funcionário${t.length === 1 ? '' : 's'} · ${syn.length}/${Staff.MAX_SYN} combos ativos`;
+  document.querySelectorAll('#teamTabs button').forEach(b => b.classList.toggle('on', b.dataset.ttab === teamTab));
+  const body = $('teamBody');
+  if (teamTab === 'syn') {
+    const act = new Set(syn.map(x => x.id));
+    body.innerHTML = '<p>Combinações de cargos e habilidades na mesma loja dão bônus. Até 3 ficam ativas ao mesmo tempo.</p>' + Staff.SYNERGIES.map(x => {
+      const ok = x.ok(t), on = act.has(x.id);
+      return `<div class="up syn${on ? ' on' : ''}"><div class="ic">${x.icon}</div><div class="tx"><b>${x.name}</b><span>${x.txt}</span><small>${on ? '✅ Ativa' : ok ? '⚠️ Requisito cumprido, mas o limite de 3 combos já foi atingido' : '⏳ Precisa de: ' + x.req}</small></div></div>`;
+    }).join('');
+    return;
+  }
+  const e = teamSel && S.team[teamSel];
+  if (!e) {
+    body.innerHTML = t.length ? t.sort((a, b) => b.lv - a.lv).map(e => `<button class="up emp" data-emp="${e.id}">${avatar(e)}<div class="tx"><b>${e.n} · ${Staff.rankOf(e).name}</b><small>${roleName(e)} · Nível ${e.lv} · ${Staff.SKILLS[e.sk].icon} ${Staff.SKILLS[e.sk].name}</small>${xpBar(e)}</div><span class="go">›</span></button>`).join('')
+      : '<p>Compre a área de 🧑‍🍳 AJUDANTE no salão para contratar o primeiro funcionário.</p>';
+    const others = Object.values(S.team).length - t.length;
+    if (others > 0) body.innerHTML += `<p><small>+${others} em outras lojas, treinando no ritmo do offline.</small></p>`;
+    return;
+  }
+  // ficha individual
+  const sk = Staff.SKILLS[e.sk], sl = Staff.skillLv(e), nr = Staff.nextRank(e), cost = Staff.specCost(e, SPEC_BASE * RESTS[e.r].mult);
+  const ag = Math.round((Staff.agility(e, TB, e.role === 'cleaner') - 1) * 100);
+  body.innerHTML = `<button class="link back" data-back>‹ Equipe</button>
+    <div class="ficha">${avatar(e, true)}<div><h3>${e.n}</h3><b>${Staff.rankOf(e).name}</b><small>${roleName(e)} · Nível ${e.lv}</small></div></div>
+    ${xpBar(e)}
+    <div class="row"><span>🎖️ Próxima promoção</span><b>${nr ? `Nível ${nr.lv}: ${nr.name}` : 'Cargo máximo'}</b></div>${nr ? `<small class="perk">${nr.perk}</small>` : ''}
+    <h3>Atributos</h3>
+    <div class="row"><span>🏃 Agilidade</span><b>+${ag}%</b></div>
+    ${e.role === 'helper' ? `<div class="row"><span>🧺 Carga extra</span><b>+${Staff.carryBonus(e)} ${Staff.carryBonus(e) === 1 ? 'item' : 'itens'}</b></div>` : ''}
+    <div class="row"><span>👌 Qualidade</span><b>+${(.25 * (e.lv - 1)).toFixed(1).replace('.', ',')}% no valor</b></div>
+    <h3>Habilidade exclusiva</h3>
+    <div class="up"><div class="ic">${sk.icon}</div><div class="tx"><b>${sk.name} · Nv ${sl}</b><span>${sk.desc(sl)}</span><small>Sobe de nível nas promoções e nunca é perdida</small></div></div>
+    <h3>Especialização</h3>
+    <div class="specs">${Object.entries(Staff.SPECS).map(([k, sp]) => `<button class="spec${k === e.spec ? ' on' : ''}" data-spec="${k}" ${k === e.spec || S.money < cost ? 'disabled' : ''}><b>${sp.icon} ${sp.name}</b><small>${sp.desc}</small>${k === e.spec ? '<i>Atual</i>' : `<i>$${fmt(cost)}</i>`}</button>`).join('')}</div>
+    <h3>Histórico</h3>
+    <div class="hist">${e.hist.map(h => `<div><small>${new Date(h.t).toLocaleDateString('pt-BR')}</small> ${h.txt}</div>`).join('')}</div>`;
+}
+$('teamTabs').addEventListener('click', e => { const b = e.target.closest('[data-ttab]'); if (!b) return; teamTab = b.dataset.ttab; teamSel = null; renderTeam(); });
+$('teamBody').addEventListener('click', ev => {
+  const em = ev.target.closest('[data-emp]'); if (em) { teamSel = em.dataset.emp; renderTeam(); $('team').querySelector('.card').scrollTop = 0; return; }
+  if (ev.target.closest('[data-back]')) { teamSel = null; return renderTeam(); }
+  const sp = ev.target.closest('[data-spec]'); if (!sp || sp.disabled) return;
+  const e = S.team[teamSel], cost = Staff.specCost(e, SPEC_BASE * RESTS[e.r].mult); if (!e || S.money < cost) return;
+  addMoney(-cost); e.spec = sp.dataset.spec; e.specN = (e.specN || 0) + 1; Staff.log(e, Date.now(), `Nova especialização: ${Staff.SPECS[e.spec].name}`);
+  refreshTeam(); sfx.buy(); dirty = true; renderTeam();
+});
+$('btnTeam').addEventListener('click', () => { initAudio(); S.teamNew = false; teamSel = null; refreshBadges(); renderTeam(); openModal('team'); });
+
+// ---------- configurações: som, movimento e gráfico ----------
+function applyCfg() {
+  document.body.classList.toggle('rm', !!S.cfg.rm);
+  sun.castShadow = !S.cfg.lo;
+  resize();
+}
+function renderCfg() {
+  const opt = (k, on, title, sub) => `<label class="up cfg"><div class="tx"><b>${title}</b><small>${sub}</small></div><input type="checkbox" data-cfg="${k}" ${on ? 'checked' : ''}><i class="sw"></i></label>`;
+  $('cfgList').innerHTML = opt('snd', !S.muted, '🔊 Sons', 'Efeitos de moedas, compras e promoções')
+    + opt('rm', S.cfg.rm, '🌀 Reduzir animações', 'Menos confete, sem fumaça e sem objetos quicando')
+    + opt('lo', S.cfg.lo, '🔋 Modo econômico', 'Sem sombras e resolução menor: poupa bateria em aparelhos simples');
+}
+$('cfgList').addEventListener('change', e => {
+  const k = e.target.dataset.cfg; if (!k) return;
+  if (k === 'snd') setMuted(!e.target.checked); else { S.cfg[k] = e.target.checked; applyCfg(); }
+  dirty = true;
+});
+$('btnCfg').addEventListener('click', () => { initAudio(); renderCfg(); openModal('cfg'); });
 
 // ---------- entrada (joystick + teclado) ----------
 const input = {x: 0, y: 0}; let drag = null, started = !firstRun;
@@ -1989,7 +2211,7 @@ function guideTarget() {
 }
 
 // ---------- loop ----------
-let pickT = 0, dropT = 0, cashT = 0, cleanT = 0, elapsed = 0, passiveT = 0;
+let pickT = 0, dropT = 0, cashT = 0, cleanT = 0, elapsed = 0, passiveT = 0, teamT = 0;
 const camTarget = new V3(2, 0, -2);
 const SQ = Math.SQRT1_2;
 function step(dt) {
@@ -2015,8 +2237,10 @@ function step(dt) {
   // estações
   for (const s of stations) {
     if (s.stack.count < 6 && (s.t += dt) > prepTime(s.type, R.lv.grill)) {
-      s.t = 0; const it = makeItem(s.type); s.stack.group.add(it.mesh); it.mesh.position.copy(s.stack.slot(s.stack.count)); s.stack.items.push(it); popIn(it.mesh);
+      s.t = 0;
+      for (let n = R.lv.par && Math.random() < R.lv.par / 3 ? 2 : 1; n > 0 && s.stack.count < 6; n--) { const it = makeItem(s.type); s.stack.group.add(it.mesh); it.mesh.position.copy(s.stack.slot(s.stack.count)); s.stack.items.push(it); popIn(it.mesh); }
     }
+    if (R.lv.auto && (s.at = (s.at || 0) + dt) > AUTO_EVERY / R.lv.auto && s.stack.ready && counters[s.type].count < COUNTER_MAX && transfer(s.stack, counters[s.type])) s.at = 0;
     if (s.smoky && (s.smokeT -= dt) <= 0) { s.smokeT = .5 + Math.random() * .4; puff(s.pos.clone().add(new V3((Math.random() - .5) * 1, 1.1, (Math.random() - .5) * .6))); }
     s.max.visible = s.stack.count >= 6;
     if (p.distanceTo(s.pos) < 1.9 && player.hand.count < cap() && (pickT -= dt) <= 0 && transfer(s.stack, player.hand)) { pickT = .12; sfx.pick(); }
@@ -2047,13 +2271,14 @@ function step(dt) {
     }
   }
   // limpar mesas: basta ficar perto
-  for (const [tbl, tb] of dirtyTables()) if (Math.abs(p.x - tb.x) < 1.9 && Math.abs(p.z - tb.z) < 1.3) {
+  const dirtyNow = dirtyTables(); trackNeck(dt, dirtyNow.length);
+  for (const [tbl, tb] of dirtyNow) if (Math.abs(p.x - tb.x) < 1.9 && Math.abs(p.z - tb.z) < 1.3) {
     if ((cleanT += dt) > .3) { cleanT = 0; for (const s of seats) if (s.table === tbl && s.dirty) { cleanSeat(s); tone(700, .08, 'triangle', .08, 1.5); } }
   }
   // ajudantes, clientes e renda dos outros estabelecimentos
   for (const h of helpers) updateHelper(h, dt);
   for (const c of cleaners) updateCleaner(c, dt);
-  updateRush(dt); updateGift(dt); updateInspection(dt); if (neons.length) updateNeon();
+  updateRush(dt); updateGift(dt); updateInspection(dt); if (neons.length && !S.cfg.rm) updateNeon();
   if (combo && (comboT -= dt) <= 0) setCombo(0);
   const interval = Math.max(1, (3.2 - seats.length * .15) * (1.3 - .1 * R.rep) * Math.pow(.95, R.lv.mkt) / (1 + .07 * R.fac)) / (rush > 0 ? 2.5 : 1);
   if (queue.length < 4 + Math.floor(seats.length / 4) + (rush > 0 ? 3 : 0) && (spawnT -= dt) <= 0) { spawnCustomer(); spawnT = interval; }
@@ -2062,6 +2287,8 @@ function step(dt) {
     passiveT = 0; R.rate = currentRate();
     const others = passiveRate(false);
     if (others > 0) addMoney(others / 60 * boostMult(), true);
+    // quem trabalha nas outras lojas também treina, no ritmo reduzido do offline
+    if ((teamT += 1) >= 10) { teamT = 0; for (const e of Object.values(S.team)) if (e.r !== S.cur) empXP(e, Staff.XP_ONLINE_MIN * Staff.XP_OFF_K / 6, true); }
   }
 
   // animações
@@ -2080,10 +2307,10 @@ function step(dt) {
     if (f.t > 2.2) { scene.remove(f.s); floats.splice(i, 1); }
   }
   updateParts(dt);
-  for (const z of ZONES) if (z.g.visible) z.title.position.y = 1.3 + Math.sin(elapsed * 3 + z.x) * .06;
+  if (!S.cfg.rm) for (const z of ZONES) if (z.g.visible) z.title.position.y = 1.3 + Math.sin(elapsed * 3 + z.x) * .06;
   const gtg = started ? guideTarget() : null;
   arrow.visible = !!gtg;
-  if (gtg) { arrow.position.set(gtg.x, 2.3 + Math.abs(Math.sin(elapsed * 4)) * .5, gtg.z); arrow.rotation.y += dt * 2; }
+  if (gtg) { arrow.position.set(gtg.x, 2.3 + (S.cfg.rm ? .25 : Math.abs(Math.sin(elapsed * 4)) * .5), gtg.z); if (!S.cfg.rm) arrow.rotation.y += dt * 2; }
   dropZone.material.opacity = .3 + Math.sin(elapsed * 5) * .15;
   pileMark.material.opacity = moneyPile.count ? .3 + Math.sin(elapsed * 5) * .15 : .12;
 
@@ -2104,15 +2331,15 @@ for (const z of ZONES) buildZoneUI(z);
 for (const z of ZONES) if (bought.has(z.id)) { bought.delete(z.id); buyZone(z, false); }
 refreshZones(false); refreshProgress(); refreshHud();
 ensureDaily();
-const away = Date.now() - S.last;
+refreshTeam(); applyCfg();
 loanSync(); const awayDiv = mktSync(); syncProduction(); checkTimers();
-if (firstRun) { loginBonus(); addMoney(0); } else { addMoney(0); showWelcome(FRESH || away < 60000 ? 0 : offlineEarn(away), loginBonus(), awayDiv); }
+if (firstRun) { Staff.clockGuard(S); loginBonus(); addMoney(0); } else { addMoney(0); showWelcome(awayGains(), loginBonus(), awayDiv); }
 $('net').textContent = '🏦 ' + fmtS(netWorth());
 setInterval(() => { if (ensureDaily()) { toast('📋 Novas missões do dia!'); refreshBadges(); const b = loginBonus(); if (b) showWelcome(0, b); } }, 30000);
 requestAnimationFrame(frame);
 Cloud.start();
 startAgeFlow();
-window.__game = {S, R, P, Cloud, Ads, renderAds, adDay, seats, cleaners, queue, get rush() { return rush; }, set rush(v) { rush = v; }, get combo() { return combo; }, renderRests, progressOf, migrate, bought, ZONES, stations, customers, helpers, counters, moneyPile, player, get elapsed() { return elapsed; },
+window.__game = {S, R, P, Cloud, Ads, teamOf, empXP, refreshTeam, offlineEarn, awayGains, neck, bottleneck, renderUps, renderTeam, renderCfg, applyCfg, UPS, upState, get TB() { return TB; }, renderAds, adDay, seats, cleaners, queue, get rush() { return rush; }, set rush(v) { rush = v; }, get combo() { return combo; }, renderRests, progressOf, migrate, bought, ZONES, stations, customers, helpers, counters, moneyPile, player, get elapsed() { return elapsed; },
   tick(n) { for (let i = 0; i < n; i++) step(1 / 30); renderer.render(scene, cam); }, // usado nos testes
   B, EXP, FAC, MENU, STOCKS, ECON_EVENTS, ACHIEVEMENTS, PRODUCTION_LINES, mkt, mktStep, trade, doTrade, createOrder, processOrders, fundRun, marketState, rankRows, renderBiz, renderStocks, renderOrders, renderAchievements, renderRanking, renderProduction, startProduction, collectProduction, syncProduction, setStockTab, buyExpand, buyFacade, research, takeLoan, payLoan, netWorth, bizValue, stockValue, loanLimit, expReqs, currentRate, passiveRate, addMoney, buildShell, checkTimers,
   set stkQ(v) { stkQ = v; }, get inspT() { return inspT; }, set inspT(v) { inspT = v; },
