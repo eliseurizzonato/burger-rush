@@ -1246,13 +1246,18 @@ const Cloud = (() => {
   const saveMeta = () => localStorage.setItem(META_KEY, JSON.stringify(meta));
   const hash = x => { const s = JSON.stringify(x); let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return (h >>> 0).toString(16); };
   const userFrom = u => { st.signedIn = !!u; st.uid = u ? u.uid : ''; st.name = u ? (u.displayName || u.name || '') : ''; st.email = u ? (u.email || '') : ''; st.photo = u ? (u.photoURL || u.photoUrl || '') : ''; };
-  async function current() { if (native) { const r = await NA.getCurrentUser(); return r.user; } return WA.currentUser; }
+  async function current() {
+    if (native) { const r = await NA.getCurrentUser(); return r.user; }
+    if (WA.currentUser) return WA.currentUser;
+    // Aguarda o Firebase restaurar a sessao antes de concluir que o jogador e visitante.
+    return new Promise(resolve => { const off = WA.onAuthStateChanged(u => { off(); resolve(u); }, () => { off(); resolve(null); }); });
+  }
   async function signIn(interactive) {
     try {
-      // No navegador, o popup precisa nascer diretamente do clique. Um `await`
-      // anterior consome a ativação do usuário e faz alguns browsers bloquearem a janela.
       let u;
-      if (!native && interactive && !WA.currentUser) u = (await WA.signInWithPopup(new firebase.auth.GoogleAuthProvider())).user;
+      // Redirect funciona em navegadores mobile, webviews e bloqueadores de popup.
+      // O retorno e reconciliado por start() quando o Firebase restaura a sessao.
+      if (!native && interactive && !WA.currentUser) { await WA.signInWithRedirect(new firebase.auth.GoogleAuthProvider()); return false; }
       else {
         u = await current();
         if (!u && interactive && native) u = (await NA.signInWithGoogle()).user;
