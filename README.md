@@ -12,6 +12,12 @@ Arraste na tela (ou use WASD / setas) para mover o chef:
 
 ## Conteúdo
 
+- Login Google opcional pelo Firebase: o visitante joga normalmente e, ao entrar, sincroniza o mesmo progresso entre navegadores e aparelhos. Conflitos entre dois saves nunca são mesclados ou sobrescritos sem escolha do jogador.
+- Produção ativa na área Economia: horta urbana, batatal e queijaria geram lotes com ciclos próprios, e o preço de venda acompanha as cotações da bolsa em até ±25%.
+- Melhorias com curva de custo mais equilibrada, limite por fase e estimativa de retorno antes da compra.
+- Cenário externo procedural e reproduzível, renovado por dia, cidade e estabelecimento sem alterar os pontos de colisão do mapa.
+- Interface adaptável para celular, tablet, desktop/ChromeOS e janelas redimensionáveis. No Android, a orientação não é mais travada em retrato.
+
 - **6 negócios no mapa da cidade**, cada um com 3 produtos e tema próprio:
 
   | Negócio | Produtos |

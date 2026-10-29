@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#9fdcff">
 <title>Burger Rush</title>
 <style>
@@ -22,15 +22,11 @@
   .round{width:50px;height:50px;border-radius:16px;border:0;background:#fff;font-size:22px;box-shadow:0 4px 0 rgba(0,0,0,.18);cursor:pointer;display:grid;place-items:center;padding:0}
   .round:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
   #btnMute{right:12px;top:calc(12px + env(safe-area-inset-top))}
-  .side{right:14px;width:66px;height:66px;border-radius:20px;font:700 11px 'Fredoka',system-ui;color:var(--ink);line-height:1}
+  .game-actions{position:fixed;z-index:2;right:max(14px,env(safe-area-inset-right));bottom:calc(20px + var(--ad) + env(safe-area-inset-bottom));display:flex;flex-direction:column-reverse;gap:12px}
+  .side{position:relative!important;right:auto!important;bottom:auto!important;width:66px;height:66px;border-radius:20px;font:700 11px 'Fredoka',system-ui;color:var(--ink);line-height:1}
   .side b{font-size:26px;display:block;margin-bottom:2px}
   :root{--ad:0px}
-  #btnUp{bottom:calc(20px + var(--ad) + env(safe-area-inset-bottom));background:#ffcf33}
-  #btnMis{bottom:calc(98px + var(--ad) + env(safe-area-inset-bottom));background:#8fd8ff}
-  #btnRest{bottom:calc(176px + var(--ad) + env(safe-area-inset-bottom));background:#ffb3c7}
-  #btnBiz{bottom:calc(254px + var(--ad) + env(safe-area-inset-bottom));background:#9fe6a8;display:none}
-  #btnStk{bottom:calc(332px + var(--ad) + env(safe-area-inset-bottom));background:#ffd9a0;display:none}
-  #btnAd{bottom:calc(410px + var(--ad) + env(safe-area-inset-bottom));background:#c9b8ff;display:none}
+  #btnUp{background:#ffcf33}#btnMis{background:#8fd8ff}#btnRest{background:#ffb3c7}#btnBiz{background:#9fe6a8;display:none}#btnStk{background:#ffd9a0;display:none}#btnAd{background:#c9b8ff;display:none}
   .card h3{margin:14px 0 2px;font-size:17px;text-align:left}
   .req{display:block;font-size:12px;color:#8a7f99}.req.ok{color:var(--green-d)}
   .tot{font-size:30px;font-weight:700;color:var(--green-d);margin:2px 0 4px}
@@ -98,7 +94,7 @@
   .btn.ad:disabled{background:#c9c1d3;border-bottom-color:#a69db2}
   .chip.boost{background:#7b5cff}
   .link{display:inline-block;margin-top:12px;color:#a397b3;font-size:13px;text-decoration:underline;cursor:pointer;background:none;border:0;font-family:inherit}
-  .stk-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:10px 0;position:sticky;top:-18px;z-index:2;background:#fff8ec;padding:8px 0 5px}
+  .stk-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:10px 0;position:sticky;top:-18px;z-index:2;background:#fff8ec;padding:8px 0 5px}
   .stk-tabs button{border:0;border-radius:11px;min-height:44px;padding:5px 2px;background:#eee4f5;color:var(--ink);font:700 11px 'Fredoka',system-ui;cursor:pointer}
   .stk-tabs button.on{background:var(--ink);color:#fff}.stk-pane{display:none}.stk-pane.on{display:block}
   .market-news{border-radius:14px;padding:10px 12px;margin:7px 0;text-align:left;background:#eaf5ff;border-left:5px solid #3498db;font-size:13px}
@@ -111,10 +107,17 @@
   .order-form{background:#fff;border-radius:16px;padding:12px;margin:8px 0;text-align:left}
   .order-form label{display:block;font-size:12px;color:#6d6280;margin-top:7px}.order-form input,.order-form select{box-sizing:border-box;width:100%;min-height:44px;border:2px solid #ddd1e8;border-radius:11px;padding:8px;font:700 16px 'Fredoka',system-ui;color:var(--ink);background:#fff}
   .rank-row.me{outline:3px solid #ffcf33;background:#fff8d8}.ach.lock{opacity:.62}.ach.done{background:#e8ffe9}.pill{display:inline-block;border-radius:999px;background:#eee4f5;padding:3px 8px;font-size:11px;font-weight:700}
+  .prod-card{background:#fff;border-radius:16px;padding:11px;margin:8px 0;text-align:left}.prod-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.prod-head b{font-size:17px}.prod-bar{height:9px;background:#eee4f5;border-radius:9px;overflow:hidden;margin:8px 0}.prod-bar i{display:block;height:100%;background:linear-gradient(90deg,#9cf08b,var(--green));border-radius:9px}.account-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#eee4f5}.sync-state{font-size:12px;color:#8a7f99}
+  button:focus-visible,input:focus-visible,select:focus-visible{outline:4px solid #2b2140;outline-offset:3px}
+  @media(min-width:700px){.card{width:min(720px,calc(100vw - 64px))}#rests .card,#stocks .card{width:min(900px,calc(100vw - 64px))}.stock-metrics{grid-template-columns:repeat(4,1fr)}.stock-mid{grid-template-columns:minmax(0,1fr) 130px}.stock-mid .spark{width:130px;height:52px}}
+  @media(max-height:620px) and (orientation:landscape){.game-actions{left:50%;right:auto;bottom:calc(10px + var(--ad) + env(safe-area-inset-bottom));transform:translateX(-50%);flex-direction:row-reverse;max-width:calc(100vw - 28px);overflow-x:auto;padding:0 4px}.side{width:58px;height:58px;flex:0 0 auto}.side b{font-size:21px}.card{max-height:92vh}}
   @media(max-width:380px){.modal{padding:8px}.card{padding:14px;border-radius:20px}.card h2{font-size:23px}.up{gap:7px;padding:8px}.stk-tabs button{font-size:10px}.qty{gap:4px}.qty button{padding:5px 8px}.stock-card{padding:10px}.stock-mid{grid-template-columns:minmax(0,1fr) 72px}.stock-mid .spark{width:72px}.stock-actions button{font-size:12px}}
 </style>
 <script src="vendor/capacitor.js"></script>
 <script src="vendor/three.min.js"></script>
+<script src="vendor/firebase-app-compat.js"></script>
+<script src="vendor/firebase-auth-compat.js"></script>
+<script src="vendor/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <div id="cash" class="ui"><div class="coin"></div><span id="money">0</span></div>
@@ -123,12 +126,7 @@
 <div id="rush" class="ui"></div>
 <div id="toast" class="ui"></div>
 <button id="btnMute" class="ui round" aria-label="Som">🔊</button>
-<button id="btnAd" class="ui round side" aria-label="Prêmios grátis"><span><b>🎬</b>Grátis</span><i class="badge" id="bAd"></i></button>
-<button id="btnStk" class="ui round side" aria-label="Bolsa de valores"><span><b>📈</b>Bolsa</span><i class="badge" id="bStk"></i></button>
-<button id="btnBiz" class="ui round side" aria-label="Negócio"><span><b>🏢</b>Negócio</span><i class="badge" id="bBiz"></i></button>
-<button id="btnRest" class="ui round side" aria-label="Mapa"><span><b>🗺️</b>Mapa</span><i class="badge" id="bRest"></i></button>
-<button id="btnMis" class="ui round side" aria-label="Missões"><span><b>📋</b>Missões</span><i class="badge" id="bMis"></i></button>
-<button id="btnUp" class="ui round side" aria-label="Melhorias"><span><b>⬆</b>Melhorias</span><i class="badge" id="bUp"></i></button>
+<div class="game-actions"><button id="btnUp" class="round side" aria-label="Melhorias"><span><b>⬆</b>Melhorias</span><i class="badge" id="bUp"></i></button><button id="btnMis" class="round side" aria-label="Missões"><span><b>📋</b>Missões</span><i class="badge" id="bMis"></i></button><button id="btnRest" class="round side" aria-label="Mapa"><span><b>🗺️</b>Mapa</span><i class="badge" id="bRest"></i></button><button id="btnBiz" class="round side" aria-label="Negócio"><span><b>🏢</b>Negócio</span><i class="badge" id="bBiz"></i></button><button id="btnStk" class="round side" aria-label="Bolsa de valores"><span><b>📈</b>Bolsa</span><i class="badge" id="bStk"></i></button><button id="btnAd" class="round side" aria-label="Prêmios grátis"><span><b>🎬</b>Grátis</span><i class="badge" id="bAd"></i></button></div>
 <div id="tut" class="ui"><div class="hand">👆</div><div>ARRASTE PARA MOVER</div></div>
 <div id="joy" class="ui"><div id="knob"></div></div>
 <div id="panel" class="modal"><div class="card"><h2>Melhorias</h2><p id="upSub">Valem só para este restaurante</p><div id="ups"></div><div class="up" id="cloudRow"></div><button class="btn big" data-close>Fechar</button><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a><br><button class="link" id="reset">Recomeçar do zero</button></div></div>
@@ -136,7 +134,7 @@
 <div id="rests" class="modal"><div class="card"><h2 id="cityT">🗺️ Mapa da cidade</h2><p id="rSub"></p><div class="map" id="map"></div><div id="rList"></div><div id="cityBox"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="welcome" class="modal"><div class="card"><h2>Bem-vindo de volta!</h2><div id="wRows"></div><div class="big-num">+<span id="offAmt">0</span></div><button class="btn big ad" id="collect2" style="display:none">📺 Coletar 2x</button><br><button class="btn big" id="collect">Coletar</button></div></div>
 <div id="biz" class="modal"><div class="card"><h2>🏢 Meu negócio</h2><p id="bizSub"></p><div id="bizList"></div><button class="btn big" data-close>Fechar</button></div></div>
-<div id="stocks" class="modal"><div class="card"><h2>📈 Bolsa de valores</h2><p id="stkSub"></p><div class="stk-tabs" id="stkTabs"><button data-stab="market" class="on">📊<br>Mercado</button><button data-stab="orders">🎯<br>Ordens</button><button data-stab="ach">🏆<br>Conquistas</button><button data-stab="rank">🥇<br>Ranking</button></div><section id="stk-market" class="stk-pane on"><div id="stkNews"></div><div class="qty" id="stkQty"></div><div id="stkList"></div><div id="stkFund"></div></section><section id="stk-orders" class="stk-pane"><div id="orderForm"></div><div id="orderList"></div></section><section id="stk-ach" class="stk-pane"><div id="achList"></div></section><section id="stk-rank" class="stk-pane"><div id="rankList"></div></section><p style="font-size:12px;margin-top:8px">Dinheiro do jogo, sem dinheiro real. Corretagem de 0,5% por operação.</p><button class="btn big" data-close>Fechar</button></div></div>
+<div id="stocks" class="modal"><div class="card"><h2>📈 Economia</h2><p id="stkSub"></p><div class="stk-tabs" id="stkTabs"><button data-stab="market" class="on">📊<br>Mercado</button><button data-stab="production">🌱<br>Produção</button><button data-stab="orders">🎯<br>Ordens</button><button data-stab="ach">🏆<br>Conquistas</button><button data-stab="rank">🥇<br>Ranking</button></div><section id="stk-market" class="stk-pane on"><div id="stkNews"></div><div class="qty" id="stkQty"></div><div id="stkList"></div><div id="stkFund"></div></section><section id="stk-production" class="stk-pane"><div id="prodList"></div></section><section id="stk-orders" class="stk-pane"><div id="orderForm"></div><div id="orderList"></div></section><section id="stk-ach" class="stk-pane"><div id="achList"></div></section><section id="stk-rank" class="stk-pane"><div id="rankList"></div></section><p style="font-size:12px;margin-top:8px">Economia fictícia, sem dinheiro real. Corretagem de 0,5% por operação.</p><button class="btn big" data-close>Fechar</button></div></div>
 <div id="adShop" class="modal"><div class="card"><h2>🎬 Prêmios grátis</h2><p id="adSub"></p><div id="adList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="cloudPick" class="modal"><div class="card"><h2>☁️ Progresso na nuvem</h2><p>Achamos um progresso maior salvo na sua conta.</p><div class="row" style="flex-direction:column;text-align:left" id="cpTxt"></div><button class="btn big" id="cpLoad">Carregar da nuvem</button><br><button class="link" id="cpKeep">Manter o deste aparelho</button></div></div>
 <div id="ageGate" class="modal"><div class="card"><h2>🎂 Antes de jogar</h2><p>Informe sua data de nascimento. Ela é usada apenas para configurar anúncios adequados à sua idade e não será armazenada.</p><label for="birthDate"><b>Data de nascimento</b></label><br><input id="birthDate" type="date" autocomplete="bday" style="font:700 18px 'Fredoka',system-ui;margin:12px 0;padding:10px;border:2px solid #d8cce2;border-radius:12px;max-width:90%"><p id="ageErr" style="display:none;color:#c83232;font-weight:700">Informe uma data válida.</p><button class="btn big" id="ageGo">Continuar</button></div></div>
@@ -154,7 +152,7 @@ const fmt = n => { if (n < 10000) return String(Math.floor(n)); const u = ['k', 
 const SAVE_KEY = 'burger-rush-save-v1';
 function loadSave() { if (FRESH) return null; try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) { return null; } }
 // formato do save: ao mudar, suba SAVE_VERSION e acrescente um passo em MIGRATIONS (nunca apague os antigos)
-const SAVE_VERSION = 5;
+const SAVE_VERSION = 6;
 // fase do prédio que cada área antiga exige (usado só na migração 3 -> 4)
 const OLD_ZONE_LV = {t3: 1, s1: 1, t4: 1, g3: 1, c1: 1, t5: 2, t6: 2, h2: 2, f2: 2, s2: 2, h3: 2};
 const OLD_ZONES = ['t1', 't2', 'g2', 'f1', 'h1', 't3', 's1', 't4', 'g3', 't5', 't6', 'c1', 'h2', 'f2', 's2', 'h3'];
@@ -177,9 +175,12 @@ const MIGRATIONS = {
     s.market = {events: null, orders: [], intel: 0, fund: {on: false, pct: 10, last: 0, invested: 0}, weekly: null, stats: {trades: 0, realized: 0, dividends: 0, divStreak: 0}};
     s.ach = {};
   },
+  5: s => {
+    s.prod = {lines: {greens: {end: 0, ready: 0}, potato: {end: 0, ready: 0}, cheese: {end: 0, ready: 0}}, stats: {batches: 0, profit: 0}};
+  },
 };
 function migrate(s) { s.v = s.v || 1; while (s.v < SAVE_VERSION) { if (MIGRATIONS[s.v]) MIGRATIONS[s.v](s); s.v++; } return s; }
-const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}, ageBand: '', stk: null, loan: 0, market: null, ach: {}}, loadSave() || {}));
+const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}, ageBand: '', stk: null, loan: 0, market: null, ach: {}, prod: null}, loadSave() || {}));
 if (AUTO) S.ageBand = 'adult';
 const LV0 = {cap: 0, speed: 0, price: 0, grill: 0, pat: 0, mkt: 0};
 const R0 = {ex: 0, fac: 0, menu: 0, obra: null, res: null, served: 0, done: false};
@@ -188,8 +189,8 @@ S.loan = S.loan || 0;
 if (!S.r[S.cur]) S.cur = 0;
 const R = S.r[S.cur];
 const firstRun = !S.tut;
-let dirty = false, lockSave = false;
-function persist() { if (FRESH || lockSave) return; S.last = Date.now(); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} }
+let dirty = false, cloudDirty = true, lockSave = false;
+function persist() { if (FRESH || lockSave) return; S.last = Date.now(); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); cloudDirty = true; } catch (e) {} }
 setInterval(() => { if (dirty) { dirty = false; persist(); } }, 2000);
 addEventListener('pagehide', persist);
 
@@ -270,13 +271,14 @@ document.body.style.background = '#' + T.sky.toString(16).padStart(6, '0');
 const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 200);
 const CAM_OFF = new V3(10, 13, 10);
 function resize() {
-  const a = innerWidth / innerHeight;
-  renderer.setSize(innerWidth, innerHeight);
-  const halfH = a < 1 ? 5.2 / a : 6.5;
+  const vv = window.visualViewport, w = Math.max(1, vv ? vv.width : innerWidth), h = Math.max(1, vv ? vv.height : innerHeight), a = w / h;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, w * h > 1600000 ? 1.5 : 2));
+  renderer.setSize(w, h, false);
+  const halfH = Math.max(5.2, Math.min(8, 5.2 / Math.max(.65, a)));
   cam.left = -halfH * a; cam.right = halfH * a; cam.top = halfH; cam.bottom = -halfH;
   cam.updateProjectionMatrix();
 }
-addEventListener('resize', resize); resize();
+addEventListener('resize', resize); if (window.visualViewport) visualViewport.addEventListener('resize', resize); resize();
 
 scene.add(new THREE.HemisphereLight(0xffffff, 0xa08c70, 0.6));
 const sun = new THREE.DirectionalLight(0xfff4e0, 0.65);
@@ -345,8 +347,11 @@ function tree(x, z, s) {
     at(mesh(new THREE.ConeGeometry(.75 * s, 1.3 * s, 8), 0x52b55a), 0, 2.4 * s, 0, g);
   }
 }
-let seed = 7 + S.cur * 13; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-for (let i = 0; i < 70; i++) {
+// O entorno muda a cada dia/restaurante/cidade, sem mexer em colisores ou progresso.
+const sceneryDay = new Date();
+const sceneryKey = sceneryDay.getFullYear() * 10000 + (sceneryDay.getMonth() + 1) * 100 + sceneryDay.getDate() + S.cur * 7919 + (S.city || 0) * 104729;
+let seed = 7 + sceneryKey; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+for (let i = 0, total = 52 + Math.floor(rnd() * 29); i < total; i++) {
   const x = rnd() * 50 - 25, z = rnd() * 50 - 20;
   if ((x > -9 && x < 13.5 && z > -9 && z < 15.5) || (z > 15 && z < 20.5)) continue;
   tree(x, z, .8 + rnd() * .6);
@@ -928,7 +933,7 @@ const queue = [], customers = [];
 let spawnT = 0, combo = 0, comboT = 0, rush = 0, rushNext = 75;
 const comboMult = () => 1 + Math.min(combo, 20) * .05;
 const payMult = () => (.7 + .1 * R.rep) * facMult();
-const patience = () => (S.tut ? 28 : 9999) * (1 + .15 * R.lv.pat) * (rush > 0 ? .8 : 1);
+const patience = () => (S.tut ? 28 : 45) * (1 + .15 * R.lv.pat) * (rush > 0 ? .8 : 1);
 function makeOrder(vip) {
   const has = P.filter(k => stations.some(s => s.type === k)), o = {[P[0]]: 1 + (Math.random() * 2 | 0)};
   for (const t of has.slice(1)) if (Math.random() < .6) o[t] = 1 + (Math.random() < .25 ? 1 : 0);
@@ -1060,16 +1065,25 @@ const UPS = [
   {k: 'pat', icon: '🛋️', name: 'Ambiente aconchegante', desc: l => `Clientes esperam +${l * 15}% → +${(l + 1) * 15}%`, base: 100, max: 8},
   {k: 'mkt', icon: '📣', name: 'Marketing', desc: l => `Mais clientes e VIPs (nível ${l} → ${l + 1})`, base: 150, max: 10},
 ];
-const upCost = u => Math.round(u.base * T.mult * Math.pow(1.85, R.lv[u.k]));
+const UP_COST_GROWTH = 1.55;
+const upCost = u => Math.round(u.base * T.mult * Math.pow(UP_COST_GROWTH, R.lv[u.k]));
 // o nível máximo de cada melhoria cresce com o prédio (fase 1: 1/4 do total ... fase 4: tudo)
 const upMax = u => Math.min(u.max, Math.ceil(u.max * (R.ex + 1) / EXP.length));
 function renderUps() {
   $('upSub').textContent = `Valem só para ${T.name}`;
   $('ups').innerHTML = UPS.map(u => {
     const l = R.lv[u.k], maxed = l >= u.max, capped = !maxed && l >= upMax(u);
-    return `<div class="up"><div class="ic">${u.icon}</div><div class="tx"><b>${u.name}</b><small>Nível ${l + 1}${maxed ? ' · máximo' : ` · limite da fase: ${upMax(u) + 1}`}</small><span>${maxed ? 'Já está no máximo' : capped ? '🏗️ Amplie o prédio para melhorar mais' : u.desc(l)}</span></div><button class="btn" data-k="${u.k}">${maxed ? 'MAX' : capped ? '🔒' : '$' + fmt(upCost(u))}</button></div>`;
+    const roi = !maxed && !capped ? upgradeROI(u) : '';
+    return `<div class="up"><div class="ic">${u.icon}</div><div class="tx"><b>${u.name}</b><small>Nível ${l + 1}${maxed ? ' · máximo' : ` · limite da fase: ${upMax(u) + 1}`}</small><span>${maxed ? 'Já está no máximo' : capped ? '🏗️ Amplie o prédio para melhorar mais' : u.desc(l)}</span>${roi ? `<small>⏱️ ${roi}</small>` : ''}</div><button class="btn" data-k="${u.k}">${maxed ? 'MAX' : capped ? '🔒' : '$' + fmt(upCost(u))}</button></div>`;
   }).join('');
   refreshBadges();
+}
+function upgradeROI(u) {
+  const l = R.lv[u.k], c = upCost(u), base = Math.max(1, currentRate());
+  const gain = {price: .2 / (1 + .2 * l), speed: .045, grill: .06, cap: .025, pat: .02, mkt: .055}[u.k] || .02;
+  const perMin = base * gain, mins = c / Math.max(.01, perMin);
+  if (mins > 720) return 'Retorno longo — melhore o gargalo da loja primeiro';
+  return `retorno estimado em ${mins < 60 ? Math.ceil(mins) + ' min' : (mins / 60).toFixed(1).replace('.', ',') + ' h'} · +$${fmt(perMin)}/min`;
 }
 $('ups').addEventListener('click', e => {
   const b = e.target.closest('button[data-k]'); if (!b || b.disabled) return;
@@ -1216,68 +1230,103 @@ $('rests').addEventListener('click', e => {
   }
 });
 
-// ---------- save na nuvem (Google Play Games; só no app Android) ----------
+// ---------- conta opcional + save na nuvem (Firebase; navegador e Android) ----------
 const progressOf = s => (s && s.r ? (s.city || 0) * 10000 + s.r.reduce((a, r, i) => a + (r ? i * 100 + r.bought.length * 5 + (r.fr || 0) * 3 + (r.ex || 0) * 8 + (r.fac || 0) * 2 + (r.menu || 0) * 3 + Object.values(r.lv || {}).reduce((x, y) => x + y, 0) : 0), 0) + Object.keys(s.ach || {}).length * 4 + ((s.market && s.market.stats && s.market.stats.trades) || 0) / 100 : 0);
 const describe = s => { const i = s.r.length - 1; return `${s.city ? 'Cidade ' + (s.city + 1) + ' · ' : ''}${RESTS[i] ? RESTS[i].icon + ' ' + RESTS[i].name : ''} · ${s.r[i].bought.length}/${ZONES.length} áreas · prédio ${(s.r[i].ex || 0) + 1}/${EXP.length} · $${fmt(s.money)}`; };
+const FIREBASE_CONFIG = {apiKey: 'AIzaSyB8mKgepINmKLz5ydj9m2x1Jll1dmG2SBU', authDomain: 'burger-rush-512916.firebaseapp.com', projectId: 'burger-rush-512916', storageBucket: 'burger-rush-512916.firebasestorage.app', messagingSenderId: '353942899027', appId: '1:353942899027:web:d3b2d0d689f1b1ae5979a6'};
 const Cloud = (() => {
-  const C = window.Capacitor, SLOT = 'burger-rush-main';
-  const P = C && C.isNativePlatform && C.isNativePlatform() && C.registerPlugin ? C.registerPlugin('PlayGamesSaves') : null;
-  const st = {available: !!P, signedIn: false, name: '', busy: false, lastPush: 0, pending: null};
+  const C = window.Capacitor, native = !!(C && C.isNativePlatform && C.isNativePlatform()), META_KEY = 'burger-rush-sync-v1';
+  const NA = native && C.registerPlugin ? C.registerPlugin('FirebaseAuthentication') : null;
+  const ND = native && C.registerPlugin ? C.registerPlugin('FirebaseFirestore') : null;
+  let WA = null, WD = null;
+  if (!native && window.firebase) { if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG); WA = firebase.auth(); WD = firebase.firestore(); }
+  const st = {available: !!((NA && ND) || (WA && WD)), signedIn: false, uid: '', name: '', email: '', photo: '', busy: false, lastPush: 0, pending: null, error: ''};
+  const deviceId = (() => { let x = localStorage.getItem('burger-rush-device'); if (!x) { x = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random()); localStorage.setItem('burger-rush-device', x); } return x; })();
+  const meta = (() => { try { return JSON.parse(localStorage.getItem(META_KEY)) || {}; } catch (e) { return {}; } })();
+  const saveMeta = () => localStorage.setItem(META_KEY, JSON.stringify(meta));
+  const hash = x => { const s = JSON.stringify(x); let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return (h >>> 0).toString(16); };
+  const userFrom = u => { st.signedIn = !!u; st.uid = u ? u.uid : ''; st.name = u ? (u.displayName || u.name || '') : ''; st.email = u ? (u.email || '') : ''; st.photo = u ? (u.photoURL || u.photoUrl || '') : ''; };
+  async function current() { if (native) { const r = await NA.getCurrentUser(); return r.user; } return WA.currentUser; }
   async function signIn(interactive) {
-    try { const r = await P.signIn({interactive}); st.signedIn = !!r.signedIn; st.name = r.name || ''; } catch (e) { st.signedIn = false; }
+    try {
+      let u = await current();
+      if (!u && interactive) { if (native) u = (await NA.signInWithGoogle()).user; else u = (await WA.signInWithPopup(new firebase.auth.GoogleAuthProvider())).user; }
+      userFrom(u); st.error = '';
+    } catch (e) { st.error = e && (e.message || e.code) || 'Falha ao entrar'; if (interactive) toast('☁️ Não foi possível entrar com Google'); }
     renderCloud(); return st.signedIn;
   }
-  async function write(data, desc, progress) { await P.save({name: SLOT, data: JSON.stringify(data), description: desc, progress: Math.round(progress)}); st.lastPush = Date.now(); }
-  async function push(force) {
-    if (!st.signedIn || st.busy || FRESH || (!force && Date.now() - st.lastPush < 60000)) return;
-    st.busy = true; S.last = Date.now();
-    try { await write(S, describe(S), progressOf(S)); } catch (e) {}
+  async function readRemote() {
+    if (!st.uid) return null;
+    if (native) { const r = await ND.getDocument({reference: `users/${st.uid}`}); return r && r.snapshot && r.snapshot.data || null; }
+    const d = await WD.doc(`users/${st.uid}`).get(); return d.exists ? d.data() : null;
+  }
+  async function writeRemote(env) {
+    if (native) await ND.setDocument({reference: `users/${st.uid}`, data: env, merge: false}); else await WD.doc(`users/${st.uid}`).set(env);
+  }
+  async function commit(expected, overwrite) {
+    const remote = await readRemote(), rev = remote && remote.revision || 0;
+    if (!overwrite && rev !== expected) return conflict(remote);
+    S.last = Date.now(); const env = {save: JSON.stringify(S), schemaVersion: SAVE_VERSION, revision: rev + 1, updatedAt: Date.now(), updatedByDevice: deviceId, progress: progressOf(S), summary: describe(S)};
+    await writeRemote(env); meta.uid = st.uid; meta.baseRev = env.revision; meta.hash = hash(S); saveMeta(); st.lastPush = env.updatedAt; cloudDirty = false; st.pending = null; return true;
+  }
+  function remoteSave(env) { try { return env && (typeof env.save === 'string' ? JSON.parse(env.save) : env.save); } catch (e) { return null; } }
+  function conflict(env) {
+    const remote = remoteSave(env); if (!remote || !remote.r) return false;
+    st.pending = env; const at = env.updatedAt ? new Date(env.updatedAt).toLocaleString('pt-BR') : 'data desconhecida';
+    $('cpTxt').innerHTML = `<span><b>Nuvem (${at}):</b> ${describe(remote)}</span><span><b>Este aparelho:</b> ${describe(S)}</span><small>Nada será combinado ou apagado sem sua escolha.</small>`; openModal('cloudPick'); return false;
+  }
+  async function push(force, overwrite = false) {
+    if (!st.signedIn || st.busy || FRESH || (!force && (!cloudDirty || Date.now() - st.lastPush < 60000))) return;
+    st.busy = true; st.error = '';
+    try { await commit(meta.uid === st.uid ? (meta.baseRev || 0) : 0, overwrite); } catch (e) { st.error = navigator.onLine ? 'Falha ao sincronizar' : 'Offline · save pendente'; }
     st.busy = false; renderCloud();
   }
-  // decide qual progresso vale: o com mais avanço; aparelho novo carrega direto, senão pergunta
   async function reconcile() {
-    let remote = null;
-    try { const r = await P.load({name: SLOT}); remote = r && r.data ? JSON.parse(r.data) : null; } catch (e) {}
-    if (!remote || !remote.r) return push(true);
-    if ((remote.v || 1) > SAVE_VERSION) { toast('☁️ Seu save na nuvem é de uma versão mais nova. Atualize o app!'); return; }
-    const pr = progressOf(migrate(remote)), pl = progressOf(S);
-    if (pr <= pl) return push(true);
-    if (pl < 5) return adopt(remote);
-    st.pending = remote;
-    $('cpTxt').innerHTML = `<span><b>Nuvem:</b> ${describe(remote)}</span><span><b>Este aparelho:</b> ${describe(S)}</span>`;
-    openModal('cloudPick');
+    let env = null;
+    try { env = await readRemote(); } catch (e) { st.error = 'Offline · jogando com save local'; return renderCloud(); }
+    if (!env) return commit(0, false);
+    const remote = remoteSave(env); if (!remote || !remote.r) return commit(env.revision || 0, true);
+    if ((remote.v || 1) > SAVE_VERSION) { st.error = 'Save da nuvem exige uma versão mais nova'; return renderCloud(); }
+    const localHash = hash(S), sameUser = meta.uid === st.uid, localChanged = !sameUser || meta.hash !== localHash, remoteChanged = !sameUser || meta.baseRev !== env.revision;
+    if (!localChanged && remoteChanged) return adopt(env);
+    if (localChanged && remoteChanged) { if (progressOf(S) < 5) return adopt(env); return conflict(env); }
+    if (localChanged) return commit(env.revision || 0, false);
+    st.lastPush = env.updatedAt || Date.now(); renderCloud();
   }
-  function adopt(remote) {
+  function adopt(env) {
+    const remote = remoteSave(env); if (!remote) return;
     lockSave = true;
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(remote)); } catch (e) {}
+    meta.uid = st.uid; meta.baseRev = env.revision || 0; meta.hash = hash(remote); saveMeta(); cloudDirty = false;
     $('fade').textContent = '☁️ Carregando seu progresso...'; $('fade').classList.add('on');
     setTimeout(() => location.reload(), 500);
   }
   async function start() {
-    renderCloud();
-    if (!P || FRESH) return;
+    renderCloud(); if (!st.available || FRESH) return;
     if (await signIn(false)) await reconcile();
-    setInterval(() => push(false), 180000);
+    setInterval(() => push(false), 60000);
   }
-  async function wipe() { if (st.signedIn) try { await write({v: SAVE_VERSION, money: 0, city: 0, bonus: 0, loan: 0, stk: null, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0, ex: 0, fac: 0, menu: 0, served: 0}]}, 'Novo jogo', 0); } catch (e) {} }
-  return {st, start, push, wipe, adopt, signInAndSync: async () => { if (await signIn(true)) await reconcile(); }};
+  async function signOut() { try { if (native) await NA.signOut(); else await WA.signOut(); } catch (e) {} userFrom(null); renderCloud(); }
+  async function wipe() { if (!st.signedIn) return; const empty = {v: SAVE_VERSION, money: 0, city: 0, bonus: 0, loan: 0, stk: null, prod: null, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0, ex: 0, fac: 0, menu: 0, served: 0}]}; try { await writeRemote({save: JSON.stringify(empty), schemaVersion: SAVE_VERSION, revision: (meta.baseRev || 0) + 1, updatedAt: Date.now(), updatedByDevice: deviceId, progress: 0, summary: 'Novo jogo'}); } catch (e) {} }
+  return {st, start, push, wipe, adopt, signOut, keepLocal: () => push(true, true), signInAndSync: async () => { if (await signIn(true)) await reconcile(); }};
 })();
 function renderCloud() {
   const st = Cloud.st; let sub, btn = '';
-  if (!st.available) sub = 'Disponível no app Android';
-  else if (!st.signedIn) { sub = 'Entre no Google Play Games para não perder o progresso ao trocar de celular'; btn = '<button class="btn" id="cloudIn">Entrar</button>'; }
+  if (!st.available) sub = 'Jogue como visitante. Login indisponível neste dispositivo.';
+  else if (!st.signedIn) { sub = 'Visitante · entre com Google para jogar com o mesmo progresso em celulares e navegadores'; btn = '<button class="btn" id="cloudIn">Entrar</button>'; }
   else {
     const at = st.lastPush ? ' · salvo às ' + new Date(st.lastPush).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) : '';
-    sub = `Conectado${st.name ? ' como ' + st.name : ''}${at}`; btn = `<button class="btn" id="cloudNow" ${st.busy ? 'disabled' : ''}>Salvar</button>`;
+    sub = `${st.name || st.email || 'Conta Google'}${at}${st.error ? ' · ' + st.error : ''}`; btn = `<div class="btns"><button class="btn" id="cloudNow" ${st.busy ? 'disabled' : ''}>${st.busy ? '...' : 'Salvar'}</button><button class="link" id="cloudOut">Sair</button></div>`;
   }
-  $('cloudRow').innerHTML = `<div class="ic">☁️</div><div class="tx"><b>Save na nuvem</b><span>${sub}</span></div>${btn}`;
+  $('cloudRow').innerHTML = `${st.photo ? `<img class="account-avatar" src="${st.photo}" alt="">` : '<div class="ic">☁️</div>'}<div class="tx"><b>Conta e progresso</b><span>${sub}</span><small>O modo visitante continua disponível e funciona offline.</small></div>${btn}`;
 }
 $('cloudRow').addEventListener('click', e => {
   if (e.target.id === 'cloudIn') Cloud.signInAndSync();
   if (e.target.id === 'cloudNow') Cloud.push(true);
+  if (e.target.id === 'cloudOut') Cloud.signOut();
 });
 $('cpLoad').addEventListener('click', () => { closeModal('cloudPick'); Cloud.adopt(Cloud.st.pending); });
-$('cpKeep').addEventListener('click', () => { closeModal('cloudPick'); Cloud.st.pending = null; Cloud.push(true); });
+$('cpKeep').addEventListener('click', () => { closeModal('cloudPick'); Cloud.keepLocal(); });
 
 // ---------- anúncios (AdMob; só no app Android) ----------
 // IDs reais do AdMob (app "Burger Rush"; o ID do app fica no AndroidManifest). AD_TEST = true troca por anúncios de teste do Google
@@ -1529,6 +1578,11 @@ const STOCKS = [
   {s: 'IMOV', n: 'Imóveis da Praça', ic: '🏢', p0: 90, g: .0004, v: .02, div: .012, unlock: 4},
 ];
 const STK_DT = 3, DIV_EVERY = 5, FEE = .005;
+const PRODUCTION_LINES = [
+  {id: 'greens', icon: '🥬', name: 'Horta urbana', sec: 120, cost: 30, qty: 10, unit: 4, stock: 0, need: 0, text: 'Alface e tomate para restaurantes'},
+  {id: 'potato', icon: '🥔', name: 'Batatal', sec: 300, cost: 80, qty: 20, unit: 5, stock: 1, need: 1, text: 'Fornece a rede e acompanha a agro BATA'},
+  {id: 'cheese', icon: '🧀', name: 'Queijaria', sec: 600, cost: 180, qty: 12, unit: 19, stock: 2, need: 2, text: 'Produto premium ligado ao consumo'},
+];
 const ECON_EVENTS = [
   {id: 'food', icon: '🌾', name: 'Alta dos alimentos', text: 'Alimentos e equipamentos valorizados', hit: [0, 1, 4], drift: .075, tone: 'hot'},
   {id: 'delivery', icon: '🚧', name: 'Crise nas entregas', text: 'Entrega Já pressionada pela crise', hit: [3], drift: -.11, tone: 'bad'},
@@ -1554,6 +1608,41 @@ function marketState() {
   if (!S.ach) S.ach = {};
   ensureWeekly(m); ensureEvent(m);
   return m;
+}
+function productionState() {
+  if (!S.prod) S.prod = {};
+  if (!S.prod.lines) S.prod.lines = {};
+  if (!S.prod.stats) S.prod.stats = {batches: 0, profit: 0};
+  for (const d of PRODUCTION_LINES) if (!S.prod.lines[d.id]) S.prod.lines[d.id] = {end: 0, ready: 0};
+  return S.prod;
+}
+const prodUnlocked = d => d.need === 0 || S.r.some(r => r && (r.ex || 0) >= d.need);
+function syncProduction(now = Date.now()) {
+  const p = productionState(); let changed = false;
+  for (const d of PRODUCTION_LINES) { const x = p.lines[d.id]; if (x.end > 0 && now >= x.end) { x.end = 0; x.ready = 1; changed = true; } }
+  if (changed) { dirty = true; toast('🌱 Produção pronta para coleta!'); }
+  return changed;
+}
+function startProduction(id) {
+  const d = PRODUCTION_LINES.find(x => x.id === id), p = productionState(), x = d && p.lines[id]; if (!d || !x || !prodUnlocked(d) || x.end || x.ready) return;
+  const cost = d.cost * bestVal(); if (S.money < cost) return toast('💸 Dinheiro insuficiente para iniciar o lote');
+  addMoney(-cost); x.end = Date.now() + d.sec * 1000; dirty = true; sfx.buy(); renderProduction();
+}
+function collectProduction(id) {
+  const d = PRODUCTION_LINES.find(x => x.id === id), p = productionState(), x = d && p.lines[id]; if (!d || !x || !x.ready) return;
+  const ratio = Math.max(.75, Math.min(1.25, mkt().c[d.stock].p / STOCKS[d.stock].p0));
+  const revenue = Math.round(d.qty * d.unit * bestVal() * ratio), cost = d.cost * bestVal();
+  x.ready = 0; p.stats.batches++; p.stats.profit += revenue - cost; addMoney(revenue); dirty = true; sfx.done(); toast(`${d.icon} Lote vendido por $${fmt(revenue)}!`); renderProduction();
+}
+function renderProduction() {
+  syncProduction(); const p = productionState(), now = Date.now();
+  $('prodList').innerHTML = `<div class="market-news"><b>🌱 Produza, espere e venda na hora certa</b><br>As cotações influenciam a venda em até ±25%. Produção pronta não expira.</div>` + PRODUCTION_LINES.map(d => {
+    const x = p.lines[d.id], unlocked = prodUnlocked(d), cost = d.cost * bestVal(), total = d.sec * 1000, left = Math.max(0, x.end - now), pc = x.end ? Math.max(0, Math.min(100, (1 - left / total) * 100)) : x.ready ? 100 : 0;
+    const ratio = Math.max(.75, Math.min(1.25, mkt().c[d.stock].p / STOCKS[d.stock].p0)), sale = Math.round(d.qty * d.unit * bestVal() * ratio);
+    let action = `<button class="btn" data-prod-start="${d.id}" ${S.money >= cost && unlocked ? '' : 'disabled'}>Iniciar<br><small>$${fmt(cost)}</small></button>`;
+    if (!unlocked) action = '<button class="btn" disabled>🔒</button>'; else if (x.ready) action = `<button class="btn gold" data-prod-collect="${d.id}">Vender<br><small>$${fmt(sale)}</small></button>`; else if (x.end) action = `<button class="btn" disabled>${hms(Math.ceil(left / 1000))}</button>`;
+    return `<div class="prod-card"><div class="prod-head"><span><b>${d.icon} ${d.name}</b><br><small>${d.text}</small></span>${action}</div><div class="prod-bar"><i style="width:${pc}%"></i></div><small>${!unlocked ? `Amplie um estabelecimento até a fase ${d.need + 1}` : x.ready ? `${d.qty} unidades prontas · cotação ${pct(ratio - 1)}` : x.end ? `Produzindo ${d.qty} unidades` : `Ciclo ${hms(d.sec)} · venda estimada $${fmt(sale)}`}</small></div>`;
+  }).join('') + `<div class="row"><span>Lotes concluídos</span><b>${p.stats.batches}</b></div><div class="row"><span>Lucro produtivo</span><b class="${p.stats.profit >= 0 ? 'pos' : 'neg'}">${p.stats.profit >= 0 ? '+' : '-'}$${fmt(Math.abs(p.stats.profit))}</b></div>`;
 }
 function makeRivals(key, base) {
   let h = hash32(key), rnd = () => (h = Math.imul(h ^ (h >>> 15), 2246822519) >>> 0) / 4294967296;
@@ -1608,7 +1697,7 @@ function mktStep(dtMin, quiet) {
   });
   if (++m.n % 3 === 0) for (const c of m.c) { c.h.push(c.p); if (c.h.length > 40) c.h.shift(); }
   let paid = 0; m.dv += dtMin;
-  if (m.dv >= DIV_EVERY) { m.dv -= DIV_EVERY; STOCKS.forEach((d, i) => { paid += m.c[i].own * m.c[i].p * d.div; }); if (paid > 0) { ms.stats.dividends += paid; ms.stats.divStreak++; ms.weekly.stock += paid; checkAchievements(); } }
+  if (m.dv >= DIV_EVERY) { m.dv -= DIV_EVERY; STOCKS.forEach((d, i) => { paid += m.c[i].own * m.c[i].p * d.div * (DIV_EVERY / 60); }); if (paid > 0) { ms.stats.dividends += paid; ms.stats.divStreak++; ms.weekly.stock += paid; checkAchievements(); } }
   processOrders(quiet); dirty = true; return paid;
 }
 // chamado a cada STK_DT s; depois de uma ausência simula no máximo 2h, com variação limitada a ±20%. Devolve os dividendos da ausência
@@ -1693,7 +1782,7 @@ function renderStocks() {
     const buyTotal = nb * c.p * (1 + FEE), sellTotal = ns * c.p * (1 - FEE), canB = nb > 0 && S.money >= buyTotal;
     const avg = c.own ? c.paid / c.own : 0, positionResult = c.own * c.p - c.paid;
     const current = c.own * c.p;
-    return `<div class="stock-card"><div class="stock-head"><div class="stock-name"><b>${d.ic} ${d.s}</b><small>${d.n}${d.div ? ` · dividendo ${(d.div * 100).toFixed(1).replace('.', ',')}%` : ''}</small></div><div class="stock-price"><b>$${fmtP(c.p)}</b><span class="${ch >= 0 ? 'pos' : 'neg'}">${pct(ch)}</span></div></div><div class="stock-mid"><div class="stock-metrics"><div class="stock-metric"><small>INVESTIDO</small><b>$${fmtP(c.paid)}</b></div><div class="stock-metric"><small>VALOR ATUAL</small><b>$${fmtP(current)}</b></div><div class="stock-metric"><small>POSIÇÃO</small><b>${fmt(c.own)} ações</b></div><div class="stock-metric"><small>RESULTADO</small><b class="${positionResult >= 0 ? 'pos' : 'neg'}">${positionResult >= 0 ? '+' : '-'}$${fmtP(Math.abs(positionResult))}</b></div>${c.own ? `<div class="stock-metric" style="grid-column:1/-1"><small>PREÇO MÉDIO</small><b>$${fmtP(avg)} por ação</b></div>` : ''}</div>${spark(c.h, c.p)}</div><div class="stock-actions"><button class="order" data-order="${i}">🎯<br>Ordem</button><button class="buy" data-buy="${i}" ${canB ? '' : 'disabled'}>Comprar ${qtyLabel(stkQ)}<small>$${fmt(buyTotal)}</small></button><button class="sell" data-sell="${i}" ${ns > 0 ? '' : 'disabled'}>Vender ${qtyLabel(stkQ)}<small>$${fmt(sellTotal)}</small></button></div></div>`;
+    return `<div class="stock-card"><div class="stock-head"><div class="stock-name"><b>${d.ic} ${d.s}</b><small>${d.n}${d.div ? ` · dividendo ${(d.div * 100).toFixed(1).replace('.', ',')}%/h` : ''}</small></div><div class="stock-price"><b>$${fmtP(c.p)}</b><span class="${ch >= 0 ? 'pos' : 'neg'}">${pct(ch)}</span></div></div><div class="stock-mid"><div class="stock-metrics"><div class="stock-metric"><small>INVESTIDO</small><b>$${fmtP(c.paid)}</b></div><div class="stock-metric"><small>VALOR ATUAL</small><b>$${fmtP(current)}</b></div><div class="stock-metric"><small>POSIÇÃO</small><b>${fmt(c.own)} ações</b></div><div class="stock-metric"><small>RESULTADO</small><b class="${positionResult >= 0 ? 'pos' : 'neg'}">${positionResult >= 0 ? '+' : '-'}$${fmtP(Math.abs(positionResult))}</b></div>${c.own ? `<div class="stock-metric" style="grid-column:1/-1"><small>PREÇO MÉDIO</small><b>$${fmtP(avg)} por ação</b></div>` : ''}</div>${spark(c.h, c.p)}</div><div class="stock-actions"><button class="order" data-order="${i}">🎯<br>Ordem</button><button class="buy" data-buy="${i}" ${canB ? '' : 'disabled'}>Comprar ${qtyLabel(stkQ)}<small>$${fmt(buyTotal)}</small></button><button class="sell" data-sell="${i}" ${ns > 0 ? '' : 'disabled'}>Vender ${qtyLabel(stkQ)}<small>$${fmt(sellTotal)}</small></button></div></div>`;
   }).join('');
   renderMarketExtras();
 }
@@ -1723,8 +1812,9 @@ function renderRanking() {
 function setStockTab(tab) {
   document.querySelectorAll('#stkTabs button').forEach(b => b.classList.toggle('on', b.dataset.stab === tab));
   document.querySelectorAll('#stocks .stk-pane').forEach(p => p.classList.toggle('on', p.id === 'stk-' + tab));
-  if (tab === 'orders') renderOrders(); else if (tab === 'ach') renderAchievements(); else if (tab === 'rank') renderRanking(); else renderStocks();
+  if (tab === 'production') renderProduction(); else if (tab === 'orders') renderOrders(); else if (tab === 'ach') renderAchievements(); else if (tab === 'rank') renderRanking(); else renderStocks();
 }
+$('prodList').addEventListener('click', e => { const a = e.target.closest('[data-prod-start]'), b = e.target.closest('[data-prod-collect]'); if (a) startProduction(a.dataset.prodStart); if (b) collectProduction(b.dataset.prodCollect); });
 $('stkQty').addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (b) { stkQ = +b.dataset.q; renderStocks(); } });
 $('stkList').addEventListener('click', e => {
   const b = e.target.closest('button[data-buy],button[data-sell],button[data-order]'); if (!b || b.disabled) return;
@@ -1739,7 +1829,7 @@ $('btnStk').addEventListener('click', () => { initAudio(); mktSync(); setStockTa
 setInterval(() => {
   const d = mktSync(); // se o app ficou pausado e o timer rodou antes da tela de boas-vindas, paga aqui mesmo
   if (d >= 1) { addMoney(d); toast(`💸 Dividendos enquanto você estava fora: +$${fmt(d)}`); }
-  ensureWeekly(marketState()); fundRun(false); checkAchievements();
+  syncProduction(); ensureWeekly(marketState()); fundRun(false); checkAchievements();
   if ($('stocks').classList.contains('open')) { const on = document.querySelector('#stkTabs button.on'); setStockTab(on ? on.dataset.stab : 'market'); }
 }, STK_DT * 1000);
 // a cada segundo: obra/pesquisa, juros, botões novos e patrimônio no topo
@@ -1814,9 +1904,13 @@ document.addEventListener('visibilitychange', () => {
 
 // ---------- entrada (joystick + teclado) ----------
 const input = {x: 0, y: 0}; let drag = null, started = !firstRun;
-const keys = {};
-addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; firstTouch(); });
-addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+const keys = {}, MOVE_KEYS = new Set(['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright']);
+addEventListener('keydown', e => {
+  const k = e.key.toLowerCase(), typing = e.target && e.target.matches('input, textarea, select, [contenteditable="true"]');
+  if (typing || !MOVE_KEYS.has(k)) return;
+  e.preventDefault(); keys[k] = true; firstTouch();
+});
+addEventListener('keyup', e => { const k = e.key.toLowerCase(); if (MOVE_KEYS.has(k)) { e.preventDefault(); keys[k] = false; } });
 function firstTouch() { initAudio(); if (!started) { started = true; $('tut').style.display = 'none'; } }
 if (!started && !AUTO) $('tut').style.display = 'block';
 addEventListener('pointerdown', e => {
@@ -1977,7 +2071,7 @@ for (const z of ZONES) if (bought.has(z.id)) { bought.delete(z.id); buyZone(z, f
 refreshZones(false); refreshProgress(); refreshHud();
 ensureDaily();
 const away = Date.now() - S.last;
-loanSync(); const awayDiv = mktSync(); checkTimers();
+loanSync(); const awayDiv = mktSync(); syncProduction(); checkTimers();
 if (firstRun) { loginBonus(); addMoney(0); } else { addMoney(0); showWelcome(FRESH || away < 60000 ? 0 : offlineEarn(away), loginBonus(), awayDiv); }
 $('net').textContent = '🏦 ' + fmtS(netWorth());
 setInterval(() => { if (ensureDaily()) { toast('📋 Novas missões do dia!'); refreshBadges(); const b = loginBonus(); if (b) showWelcome(0, b); } }, 30000);
@@ -1986,7 +2080,7 @@ Cloud.start();
 startAgeFlow();
 window.__game = {S, R, P, Cloud, Ads, renderAds, adDay, seats, cleaners, queue, get rush() { return rush; }, set rush(v) { rush = v; }, get combo() { return combo; }, renderRests, progressOf, migrate, bought, ZONES, stations, customers, helpers, counters, moneyPile, player, get elapsed() { return elapsed; },
   tick(n) { for (let i = 0; i < n; i++) step(1 / 30); renderer.render(scene, cam); }, // usado nos testes
-  B, EXP, FAC, MENU, STOCKS, ECON_EVENTS, ACHIEVEMENTS, mkt, mktStep, trade, doTrade, createOrder, processOrders, fundRun, marketState, rankRows, renderBiz, renderStocks, renderOrders, renderAchievements, renderRanking, setStockTab, buyExpand, buyFacade, research, takeLoan, payLoan, netWorth, bizValue, stockValue, loanLimit, expReqs, currentRate, passiveRate, addMoney, buildShell, checkTimers,
+  B, EXP, FAC, MENU, STOCKS, ECON_EVENTS, ACHIEVEMENTS, PRODUCTION_LINES, mkt, mktStep, trade, doTrade, createOrder, processOrders, fundRun, marketState, rankRows, renderBiz, renderStocks, renderOrders, renderAchievements, renderRanking, renderProduction, startProduction, collectProduction, syncProduction, setStockTab, buyExpand, buyFacade, research, takeLoan, payLoan, netWorth, bizValue, stockValue, loanLimit, expReqs, currentRate, passiveRate, addMoney, buildShell, checkTimers,
   set stkQ(v) { stkQ = v; }, get inspT() { return inspT; }, set inspT(v) { inspT = v; },
   stockStep(n = 1) { let d = 0; for (let i = 0; i < n; i++) d += mktStep(STK_DT / 60, true); return d; },
   skipTimers() { if (R.obra) R.obra.end = 0; if (R.res) R.res.end = 0; checkTimers(); }};

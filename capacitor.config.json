@@ -3,5 +3,10 @@
   "appName": "Burger Rush",
   "webDir": "www",
   "backgroundColor": "#9fdcff",
-  "android": {"allowMixedContent": false}
+  "android": {"allowMixedContent": false},
+  "plugins": {
+    "FirebaseAuthentication": {
+      "providers": ["google.com"]
+    }
+  }
 }
