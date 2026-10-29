@@ -1243,7 +1243,7 @@ const Cloud = (() => {
   const ND = native && C.registerPlugin ? C.registerPlugin('FirebaseFirestore') : null;
   let WA = null, WD = null;
   if (!native && window.firebase) { if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG); WA = firebase.auth(); WD = firebase.firestore(); }
-  const st = {available: !!((NA && ND) || (WA && WD)), signedIn: false, uid: '', name: '', email: '', photo: '', busy: false, lastPush: 0, pending: null, error: ''};
+  const st = {available: !!((NA && ND) || (WA && WD)), native, signedIn: false, uid: '', name: '', email: '', photo: '', busy: false, lastPush: 0, pending: null, error: ''};
   const deviceId = (() => { let x = localStorage.getItem('burger-rush-device'); if (!x) { x = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random()); localStorage.setItem('burger-rush-device', x); } return x; })();
   const meta = (() => { try { return JSON.parse(localStorage.getItem(META_KEY)) || {}; } catch (e) { return {}; } })();
   const saveMeta = () => localStorage.setItem(META_KEY, JSON.stringify(meta));
@@ -1255,42 +1255,11 @@ const Cloud = (() => {
     // Aguarda o Firebase restaurar a sessao antes de concluir que o jogador e visitante.
     return new Promise(resolve => { const off = WA.onAuthStateChanged(u => { off(); resolve(u); }, () => { off(); resolve(null); }); });
   }
-  function webGoogleSignIn() {
-    return new Promise((resolve, reject) => {
-      if (!window.google || !google.accounts || !google.accounts.id) return reject(new Error('Google Identity indisponivel'));
-      let done = false;
-      const finish = (fn, value) => { if (done) return; done = true; clearTimeout(timer); fn(value); };
-      const timer = setTimeout(() => finish(reject, new Error('Tempo de login esgotado')), 60000);
-      google.accounts.id.initialize({
-        client_id: GOOGLE_WEB_CLIENT_ID,
-        context: 'signin',
-        auto_select: false,
-        cancel_on_tap_outside: false,
-        use_fedcm_for_prompt: true,
-        callback: async response => {
-          try {
-            const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
-            const result = await WA.signInWithCredential(credential);
-            finish(resolve, result.user);
-          } catch (e) { finish(reject, e); }
-        }
-      });
-      google.accounts.id.prompt(note => {
-        if (note && note.isNotDisplayed && note.isNotDisplayed()) finish(reject, new Error('Login Google nao exibido'));
-        else if (note && note.isSkippedMoment && note.isSkippedMoment()) finish(reject, new Error('Login Google cancelado'));
-      });
-    });
-  }
   async function signIn(interactive) {
     try {
       let u;
-      // Recebe o token do Google no proprio dominio e evita o isolamento de
-      // cookies entre GitHub Pages e o authDomain do Firebase.
-      if (!native && interactive && !WA.currentUser) u = await webGoogleSignIn();
-      else {
-        u = await current();
-        if (!u && interactive && native) u = (await NA.signInWithGoogle()).user;
-      }
+      u = await current();
+      if (!u && interactive && native) u = (await NA.signInWithGoogle()).user;
       userFrom(u); st.error = '';
     } catch (e) { st.error = e && (e.message || e.code) || 'Falha ao entrar'; if (interactive) toast('☁️ Não foi possível entrar com Google'); }
     renderCloud(); return st.signedIn;
@@ -1333,6 +1302,28 @@ const Cloud = (() => {
     if (localChanged) return commit(env.revision || 0, false);
     st.lastPush = env.updatedAt || Date.now(); renderCloud();
   }
+  function mountGoogle() {
+    const el = $('cloudGoogle');
+    if (native || !el || st.signedIn || !window.google || !google.accounts || !google.accounts.id) return;
+    google.accounts.id.initialize({
+      client_id: GOOGLE_WEB_CLIENT_ID,
+      context: 'signin',
+      auto_select: false,
+      use_fedcm_for_button: true,
+      callback: async response => {
+        st.busy = true; st.error = ''; renderCloud();
+        try {
+          const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
+          const result = await WA.signInWithCredential(credential);
+          userFrom(result.user); st.busy = false; renderCloud(); await reconcile();
+        } catch (e) {
+          st.busy = false; st.error = e && (e.message || e.code) || 'Falha ao entrar';
+          renderCloud(); toast('☁️ Não foi possível entrar com Google');
+        }
+      }
+    });
+    google.accounts.id.renderButton(el, {type: 'standard', theme: 'outline', size: 'large', text: 'signin_with', shape: 'pill', width: 132});
+  }
   function adopt(env) {
     const remote = remoteSave(env); if (!remote) return;
     lockSave = true;
@@ -1348,17 +1339,18 @@ const Cloud = (() => {
   }
   async function signOut() { try { if (native) await NA.signOut(); else await WA.signOut(); } catch (e) {} userFrom(null); renderCloud(); }
   async function wipe() { if (!st.signedIn) return; const empty = {v: SAVE_VERSION, money: 0, city: 0, bonus: 0, loan: 0, stk: null, prod: null, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0, ex: 0, fac: 0, menu: 0, served: 0}]}; try { await writeRemote({save: JSON.stringify(empty), schemaVersion: SAVE_VERSION, revision: (meta.baseRev || 0) + 1, updatedAt: Date.now(), updatedByDevice: deviceId, progress: 0, summary: 'Novo jogo'}); } catch (e) {} }
-  return {st, start, push, wipe, adopt, signOut, keepLocal: () => push(true, true), signInAndSync: async () => { if (await signIn(true)) await reconcile(); }};
+  return {st, start, push, wipe, adopt, signOut, mountGoogle, keepLocal: () => push(true, true), signInAndSync: async () => { if (await signIn(true)) await reconcile(); }};
 })();
 function renderCloud() {
   const st = Cloud.st; let sub, btn = '';
   if (!st.available) sub = 'Jogue como visitante. Login indisponível neste dispositivo.';
-  else if (!st.signedIn) { sub = 'Visitante · entre com Google para jogar com o mesmo progresso em celulares e navegadores'; btn = '<button class="btn" id="cloudIn">Entrar</button>'; }
+  else if (!st.signedIn) { sub = 'Visitante · entre com Google para jogar com o mesmo progresso em celulares e navegadores'; btn = st.native ? '<button class="btn" id="cloudIn">Entrar</button>' : '<div id="cloudGoogle"></div>'; }
   else {
     const at = st.lastPush ? ' · salvo às ' + new Date(st.lastPush).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) : '';
     sub = `${st.name || st.email || 'Conta Google'}${at}${st.error ? ' · ' + st.error : ''}`; btn = `<div class="btns"><button class="btn" id="cloudNow" ${st.busy ? 'disabled' : ''}>${st.busy ? '...' : 'Salvar'}</button><button class="link" id="cloudOut">Sair</button></div>`;
   }
   $('cloudRow').innerHTML = `${st.photo ? `<img class="account-avatar" src="${st.photo}" alt="">` : '<div class="ic">☁️</div>'}<div class="tx"><b>Conta e progresso</b><span>${sub}</span><small>O modo visitante continua disponível e funciona offline.</small></div>${btn}`;
+  if (!st.signedIn && !st.native) requestAnimationFrame(() => Cloud.mountGoogle());
 }
 $('cloudRow').addEventListener('click', e => {
   if (e.target.id === 'cloudIn') Cloud.signInAndSync();
