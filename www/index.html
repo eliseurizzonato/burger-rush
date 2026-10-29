@@ -10,7 +10,7 @@
   @font-face{font-family:'Fredoka';font-weight:700;font-display:swap;src:url(vendor/fredoka-700.woff2) format('woff2')}
   :root{--ink:#2b2140;--green:#2fbf4a;--green-d:#1c8a31}
   html,body{margin:0;height:100%;overflow:hidden;background:#9fdcff;font-family:'Fredoka',system-ui,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-  canvas{display:block}
+  canvas{display:block;position:fixed;inset:0;width:100%;height:100%}
   .ui{position:fixed;z-index:2}
   #cash{top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:#fff;color:var(--ink);padding:4px 20px 4px 6px;border-radius:999px;font-weight:700;font-size:24px;box-shadow:0 4px 0 rgba(0,0,0,.18);pointer-events:none}
   #cash.pulse{animation:pl .22s}
@@ -274,7 +274,9 @@ const CAM_OFF = new V3(10, 13, 10);
 function resize() {
   const vv = window.visualViewport, w = Math.max(1, vv ? vv.width : innerWidth), h = Math.max(1, vv ? vv.height : innerHeight), a = w / h;
   renderer.setPixelRatio(Math.min(devicePixelRatio, w * h > 1600000 ? 1.5 : 2));
-  renderer.setSize(w, h, false);
+  // Atualiza buffer e tamanho CSS juntos. Sem isso, DPR 2x/3x amplia o canvas
+  // além do viewport e desloca câmera e personagem para fora da tela.
+  renderer.setSize(w, h, true);
   const halfH = Math.max(5.2, Math.min(8, 5.2 / Math.max(.65, a)));
   cam.left = -halfH * a; cam.right = halfH * a; cam.top = halfH; cam.bottom = -halfH;
   cam.updateProjectionMatrix();
