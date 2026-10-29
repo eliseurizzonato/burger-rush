@@ -1239,7 +1239,7 @@ const Cloud = (() => {
   const C = window.Capacitor, native = !!(C && C.isNativePlatform && C.isNativePlatform()), META_KEY = 'burger-rush-sync-v1';
   const NA = native && C.registerPlugin ? C.registerPlugin('FirebaseAuthentication') : null;
   const ND = native && C.registerPlugin ? C.registerPlugin('FirebaseFirestore') : null;
-  let WA = null, WD = null;
+  let WA = null, WD = null, redirectChecked = false;
   if (!native && window.firebase) { if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG); WA = firebase.auth(); WD = firebase.firestore(); }
   const st = {available: !!((NA && ND) || (WA && WD)), signedIn: false, uid: '', name: '', email: '', photo: '', busy: false, lastPush: 0, pending: null, error: ''};
   const deviceId = (() => { let x = localStorage.getItem('burger-rush-device'); if (!x) { x = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random()); localStorage.setItem('burger-rush-device', x); } return x; })();
@@ -1249,6 +1249,11 @@ const Cloud = (() => {
   const userFrom = u => { st.signedIn = !!u; st.uid = u ? u.uid : ''; st.name = u ? (u.displayName || u.name || '') : ''; st.email = u ? (u.email || '') : ''; st.photo = u ? (u.photoURL || u.photoUrl || '') : ''; };
   async function current() {
     if (native) { const r = await NA.getCurrentUser(); return r.user; }
+    if (!redirectChecked) {
+      redirectChecked = true;
+      try { const r = await WA.getRedirectResult(); if (r && r.user) return r.user; }
+      catch (e) { st.error = e && (e.message || e.code) || 'Falha ao concluir login'; }
+    }
     if (WA.currentUser) return WA.currentUser;
     // Aguarda o Firebase restaurar a sessao antes de concluir que o jogador e visitante.
     return new Promise(resolve => { const off = WA.onAuthStateChanged(u => { off(); resolve(u); }, () => { off(); resolve(null); }); });
