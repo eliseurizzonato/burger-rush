@@ -1249,8 +1249,14 @@ const Cloud = (() => {
   async function current() { if (native) { const r = await NA.getCurrentUser(); return r.user; } return WA.currentUser; }
   async function signIn(interactive) {
     try {
-      let u = await current();
-      if (!u && interactive) { if (native) u = (await NA.signInWithGoogle()).user; else u = (await WA.signInWithPopup(new firebase.auth.GoogleAuthProvider())).user; }
+      // No navegador, o popup precisa nascer diretamente do clique. Um `await`
+      // anterior consome a ativação do usuário e faz alguns browsers bloquearem a janela.
+      let u;
+      if (!native && interactive && !WA.currentUser) u = (await WA.signInWithPopup(new firebase.auth.GoogleAuthProvider())).user;
+      else {
+        u = await current();
+        if (!u && interactive && native) u = (await NA.signInWithGoogle()).user;
+      }
       userFrom(u); st.error = '';
     } catch (e) { st.error = e && (e.message || e.code) || 'Falha ao entrar'; if (interactive) toast('☁️ Não foi possível entrar com Google'); }
     renderCloud(); return st.signedIn;
