@@ -153,6 +153,7 @@
 <script src="vendor/three.min.js"></script>
 <script src="staff.js"></script>
 <script src="trading.js"></script>
+<script src="league.js"></script>
 <script src="sync-core.js"></script>
 <script src="enterprise.js"></script>
 <script src="enterprise-ui.js"></script>
@@ -179,20 +180,20 @@
 <div id="guideTxt" class="ui" role="status"></div><div id="tut" class="ui"><div class="hand">👆</div><div>ARRASTE PARA MOVER</div></div>
 <div id="joy" class="ui"><div id="knob"></div></div>
 <div id="panel" class="modal"><div class="card"><h2>Melhorias</h2><p id="upSub">Valem só para este restaurante</p><div id="upNeck"></div><button class="btn" data-activities="layout">🛋️ Organizar o salão (mover mesas e máquinas)</button><div id="ups"></div><div class="up" id="cloudRow"></div><button class="btn big" data-close>Fechar</button><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a><br><button class="link" id="reset">Recomeçar do zero</button></div></div>
-<div id="missions" class="modal"><div class="card"><h2>Missões do dia</h2><p id="mSub"></p><button class="btn" data-activities="journey">🏆 Desafios e temporada</button><div id="mList"></div><button class="btn big" data-close>Fechar</button></div></div>
+<div id="missions" class="modal"><div class="card"><h2>Missões do dia</h2><p id="mSub"></p><button class="btn" data-activities="journey">🏆 Desafios e temporada</button><div id="mList"></div><div id="lgBox"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="rests" class="modal"><div class="card"><h2 id="cityT">🗺️ Mapa da cidade</h2><p id="rSub"></p><div class="map" id="map"></div><div id="rList"></div><div id="cityBox"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="welcome" class="modal"><div class="card"><h2>Bem-vindo de volta!</h2><div id="wRows"></div><div class="big-num">+<span id="offAmt">0</span></div><button class="btn big ad" id="collect2" style="display:none">📺 Coletar 2x</button><br><button class="btn big" id="collect">Coletar</button></div></div>
 <div id="biz" class="modal"><div class="card"><h2>🏢 Meu negócio</h2><p id="bizSub"></p><div class="hub-jumps"><button class="btn" data-activities="enterprise">🌱 Produção e delivery</button><button class="btn" data-activities="journey">🏆 Jornada e decoração</button></div><div id="bizList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="activities" class="modal" role="dialog" aria-modal="true" aria-labelledby="activitiesTitle"><div class="card"><h2 id="activitiesTitle">🌟 Sua rede</h2><div id="featureSummary" class="feature-summary"></div><div class="feature-tabs" role="tablist" aria-label="Atividades da rede"><button data-activity-tab="enterprise" role="tab">🌱 Produção e negócios</button><button data-activity-tab="journey" role="tab">🏆 Jornada e coleção</button></div><div id="enterpriseRoot" class="feature-root"></div><div id="journeyRoot" class="feature-root" hidden></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="stocks" class="modal"><div class="card"><h2>📈 Economia</h2><p id="stkSub"></p><div class="stk-tabs" id="stkTabs"><button data-stab="market" class="on">📊<br>Mercado</button><button data-stab="production">🌱<br>Produção</button><button data-stab="orders">🎯<br>Ordens</button><button data-stab="ach">🏆<br>Conquistas</button><button data-stab="rank">🥇<br>Ranking</button></div><section id="stk-market" class="stk-pane on"><div id="stkNews"></div><div class="qty" id="stkQty"></div><div id="stkList"></div><div id="stkFund"></div></section><section id="stk-production" class="stk-pane"><div id="prodList"></div></section><section id="stk-orders" class="stk-pane"><div id="orderForm"></div><div id="orderList"></div></section><section id="stk-ach" class="stk-pane"><div id="achList"></div></section><section id="stk-rank" class="stk-pane"><div id="rankList"></div></section><p style="font-size:12px;margin-top:8px">Economia fictícia, sem dinheiro real. Corretagem de 0,5% por operação.</p><button class="btn big" data-close>Fechar</button></div></div>
 <div id="team" class="modal"><div class="card"><h2>👥 Equipe</h2><p id="teamSub"></p><div class="stk-tabs two" id="teamTabs"><button data-ttab="staff" class="on">🧑‍🍳<br>Funcionários</button><button data-ttab="syn">🤝<br>Sinergias</button></div><div id="teamBody"></div><button class="btn big" data-close>Fechar</button></div></div>
-<div id="cfg" class="modal"><div class="card"><h2>⚙️ Configurações</h2><button class="btn big" data-help>❓ Como jogar</button><div class="hub-jumps"><button class="btn" data-activities="enterprise">🌱 Produção e delivery</button><button class="btn" data-activities="journey">🏆 Jornada e decoração</button></div><div id="cfgList"></div><button class="btn big" data-close>Fechar</button><p><small>Burger Rush · web 1.5.1 · save v8</small></p><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a></div></div>
+<div id="cfg" class="modal"><div class="card"><h2>⚙️ Configurações</h2><button class="btn big" data-help>❓ Como jogar</button><div class="hub-jumps"><button class="btn" data-activities="enterprise">🌱 Produção e delivery</button><button class="btn" data-activities="journey">🏆 Jornada e decoração</button></div><div id="cfgList"></div><button class="btn big" data-close>Fechar</button><p><small>Burger Rush · web 1.5.2 · save v8</small></p><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a></div></div>
 <div id="help" class="modal"><div class="card"><h2>❓ Como jogar</h2><p>Toque em um tema para ver a explicação.</p>
 <details open><summary>🍔 O básico</summary><ul><li><b>Andar:</b> arraste o dedo em qualquer lugar da tela (no computador, WASD ou setas).</li><li><b>Cozinhar:</b> pare na <b>chapa 🔥</b> e o chef pega os lanches prontos sozinho (cabem poucos na mão no começo).</li><li><b>Vender:</b> leve até o <b>balcão</b> do mesmo produto. Os clientes pegam lá, comem na mesa e pagam.</li><li><b>Dinheiro:</b> as notas caem na <b>pilha 💵</b>. Passe por cima para recolher.</li><li><b>Comprar:</b> fique parado sobre os <b>círculos com preço</b> para liberar mesas, máquinas e funcionários.</li><li><b>Mesa suja 🧽:</b> passe perto para limpar, senão ninguém senta.</li></ul></details>
 <details><summary>⏳ Clientes, rush e VIP</summary><ul><li>Cada cliente tem paciência: se demorar, ele vai embora sem pagar.</li><li>Atender em sequência forma <b>combo</b> e aumenta o pagamento.</li><li><b>Hora do rush 🔥:</b> de tempos em tempos chegam mais clientes, que pagam em dobro por 25 s.</li><li><b>VIP 👑</b> paga 5×. <b>Críticos</b> avaliam a loja e mudam a reputação ⭐.</li></ul></details>
 <details><summary>⬆ Melhorias</summary><ul><li>Valem só para a loja atual: carregar mais, andar mais rápido, cozinhar mais rápido, preço maior, paciência e propaganda.</li><li>O cartão <b>🎯 Gargalo</b> mostra o que está travando a loja e qual compra resolve.</li><li>Cada melhoria mostra em quanto tempo ela se paga.</li></ul></details>
 <details><summary>👥 Equipe</summary><ul><li><b>Ajudantes</b> levam lanches da chapa ao balcão. <b>Faxineiros</b> limpam mesas.</li><li>Eles ganham experiência trabalhando, sobem de nível e são promovidos (a cor do uniforme muda).</li><li>Cada um tem uma habilidade. Algumas combinações na mesma loja ativam <b>sinergias</b> com bônus extras.</li></ul></details>
-<details><summary>📋 Missões e jornada</summary><ul><li>Missões do dia dão dinheiro ao completar. Novas missões chegam todo dia.</li><li>Em <b>Desafios e temporada</b> há baús diários, desafios rápidos, coleção e decoração da loja.</li></ul></details>
+<details><summary>📋 Missões e jornada</summary><ul><li>Missões do dia dão dinheiro ao completar. Novas missões chegam todo dia.</li><li><b>🏁 Liga do dia</b>: o dinheiro que você ganha atendendo vira pontos contra 9 lojas rivais. À meia-noite a sua posição vira prêmio (1º ao 5º ganham mais); resgate em Missões no dia seguinte.</li><li><b>🏙️ Segundo salão</b>: a última expansão abre um salão ao lado com mais 3 mesas e um faxineiro.</li><li>Em <b>Desafios e temporada</b> há baús diários, desafios rápidos, coleção e decoração da loja.</li></ul></details>
 <details><summary>🛋️ Mover mesas e máquinas</summary><ul><li>Em ⬆ Melhorias, toque em <b>Organizar o salão</b>. Escolha o objeto e mova em passos de meio metro ou gire as máquinas.</li><li>O jogo só aceita posições em que clientes e funcionários conseguem passar.</li><li>Quer mais espaço? Em 🏢 Negócio, <b>amplie o prédio</b> para liberar mais mesas e máquinas.</li></ul></details>
 <details><summary>🗺️ Mapa, novas lojas e cidades</summary><ul><li>Quando a loja fica cheia, abra outra no mapa. Cada loja vende produtos diferentes.</li><li>Com 3 lojas completas você pode levar a marca para uma nova cidade: recomeça com bônus permanente.</li></ul></details>
 <details><summary>🏢 Negócio, produção e delivery</summary><ul><li><b>Negócio:</b> amplie o prédio, reforme a fachada, pesquise pratos e pegue empréstimos.</li><li><b>Produção:</b> fazendas e fábricas produzem ingredientes. O laboratório usa ingredientes para criar receitas que vendem mais caro.</li><li><b>Delivery e contratos:</b> entregue pedidos usando o estoque. Cumpra o prazo para receber o pagamento completo.</li></ul></details>
@@ -333,6 +334,7 @@ const EXP = [
   {name: 'Salão ampliado', W: 7, F: 9.7, cost: 2500, serve: 80, rep: 3.5, min: 3, d: '+2 mesas, faxineiro e o 3º produto'},
   {name: 'Salão completo', W: 7, F: 13, cost: 25000, serve: 400, rep: 4, min: 15, d: '+2 mesas, ajudantes e estações extras'},
   {name: 'Anexo com cozinha nova', W: 11.5, F: 13, cost: 300000, serve: 1500, rep: 4.5, min: 60, d: 'Ala nova com balcão 2, lanches novos e +3 mesas'},
+  {name: 'Segundo salão', W: 16, F: 13, cost: 2500000, serve: 5000, rep: 4.6, min: 120, d: 'Salão novo ao lado com +3 mesas e um faxineiro só dele'},
 ];
 const B = {W: EXP[R.ex].W, F: EXP[R.ex].F};
 const FAC = [
@@ -700,6 +702,9 @@ function buildShell() {
   sPlane(W + 7, F + 1, new THREE.MeshToonMaterial({gradientMap: grad, map: canvasTex(64, 64, tiles(T.floor, 'rgba(0,0,0,.05)'), [(W + 7) / 2, (F + 1) / 2])}), cx, (F - 1) / 2);
   sPlane(W + 7, 6, new THREE.MeshToonMaterial({gradientMap: grad, map: canvasTex(64, 64, tiles(T.kitchen, 'rgba(0,0,0,.06)'), [(W + 7) / 2, 3])}), cx, -4, .002);
   sPlane(2.6, 16 - fz, mat(0xd8d2c4), 0, (fz + 16) / 2, -.015);
+  // segundo salão: piso de madeira marca a sala nova ao lado do anexo
+  if (W > 11.5) sPlane(W - 11.5, F + 1, new THREE.MeshToonMaterial({gradientMap: grad, map: canvasTex(64, 64, tiles(['#c99a68', '#b8875a'], 'rgba(60,30,0,.18)'), [(W - 11.5) / 2, (F + 1) / 2])}), (W + 11.5) / 2, (F - 1) / 2, .003);
+  if (W > 11.5) sPlane(.18, F + 1, mat(T.trim), 11.5, (F - 1) / 2, .005);
   sPlane(1.6, 1, mat(T.trim), 0, F - .4, .004);
   // paredes do fundo e da esquerda altas; direita e frente baixas para não tapar a câmera
   sAt(box(W + 7.6, 2.8, .3, T.wall), cx, 1.4, -7.15); sAt(box(W + 7.6, .7, .34, T.trim), cx, .35, -7.13);
@@ -1035,10 +1040,15 @@ const ZONES = [
   {id: 't8', kind: 'table', price: 420000, x: 9.3, z: 7.4, req: ['t7'], lv: 3},
   {id: 'h4', kind: 'helper', price: 600000, x: 8.2, z: 1.4, req: ['x1'], lv: 3},
   {id: 't9', kind: 'table', price: 800000, x: 9.3, z: 10.8, req: ['t8'], lv: 3},
+  // segundo salão (fase 4): mais mesas ao lado do anexo
+  {id: 't10', kind: 'table', price: 1200000, x: 13.8, z: 4, req: ['t9'], lv: 4},
+  {id: 'c2', kind: 'cleaner', price: 1500000, x: 13.6, z: 1.4, req: ['t10'], lv: 4},
+  {id: 't11', kind: 'table', price: 1800000, x: 13.8, z: 7.4, req: ['t10'], lv: 4},
+  {id: 't12', kind: 'table', price: 2600000, x: 13.8, z: 10.8, req: ['t11'], lv: 4},
 ];
 // Mesma semente por loja/cidade: recarregar ou ampliar não embaralha mesas já abertas.
 if (R.layoutSeed == null) { R.layoutSeed = `burger-rush:${S.city}:${S.cur}`; R.layoutVersion = Layout.version; dirty = true; }
-const allLayout = Layout.generate({seed: R.layoutSeed, phase: 3, lot: S.cur, city: S.city});
+const allLayout = Layout.generate({seed: R.layoutSeed, phase: EXP.length - 1, lot: S.cur, city: S.city});
 const layoutSafe = Layout.validate(allLayout).ok;
 if (layoutSafe) for (const z of ZONES) if (z.kind === 'table') Object.assign(z, {x: allLayout.tables[z.id].x, z: allLayout.tables[z.id].z});
 let storeLayout = null;
@@ -1363,7 +1373,7 @@ function ensureDaily() {
 }
 function track(k, a, isMax) {
   if (a > 0 && !isMax && k !== 'earn') recordPlay(k, a);
-  if (k === 'earn' && a > 0 && !isMax) { const w = marketState().weekly; if (w) w.rest += a; }
+  if (k === 'earn' && a > 0 && !isMax) { const w = marketState().weekly; if (w) w.rest += a; League.add(S, a); }
   if (!S.daily) return;
   for (const m of S.daily.list) if (m.k === k && !m.claimed && m.p < m.n) {
     const np = Math.min(m.n, isMax ? Math.max(m.p, a) : m.p + a); if (np === m.p) continue; m.p = np; dirty = true;
@@ -1373,8 +1383,32 @@ function track(k, a, isMax) {
   refreshBadges();
 }
 function untilMidnight() { const d = new Date(), m = new Date(d); m.setHours(24, 0, 0, 0); const s = (m - d) / 1000; return `${Math.floor(s / 3600)}h ${Math.floor(s % 3600 / 60)}min`; }
+// liga do dia: meta fixada quando a liga começa (≈ 20 min de faturamento da loja atual)
+function ensureLeague() {
+  const changed = League.ensure(S, dayKey(), Math.max(300, currentRate() * 1200), dayFrac());
+  if (changed) dirty = true;
+  const l = S.league.last;
+  if (changed && l && !l.claimed && l.prize > 0) toast(`🏁 Liga de ontem: você ficou em ${l.pos}º! Resgate o prêmio em 📋 Missões`);
+  return changed;
+}
+function dayFrac() { const d = new Date(), m = new Date(d); m.setHours(0, 0, 0, 0); return (d - m) / 86400000; }
+function renderLeague() {
+  ensureLeague();
+  const lg = S.league, rows = League.rows(lg, dayFrac()), pos = rows.findIndex(x => x.me) + 1, l = lg.last;
+  const prizes = League.PRIZE.map((_, i) => `${i + 1}º $${fmt(League.prize(lg, i + 1))}`).join(' · ');
+  $('lgBox').innerHTML = `<h3>🏁 Liga do dia</h3>`
+    + (l && !l.claimed && l.prize > 0 ? `<div class="neck ok"><b>🏆 Ontem você ficou em ${l.pos}º</b><span>Prêmio: $${fmt(l.prize)}</span><button class="btn" data-lgclaim>Resgatar</button></div>` : '')
+    + `<div class="market-news">Você está em <b>${pos}º</b>. Pontos = dinheiro ganho atendendo hoje. Os rivais aceleram ao longo do dia. Termina em ${untilMidnight()}.<br><small>Prêmios: ${prizes} · demais: participação</small></div>`
+    + rows.map((x, i) => `<div class="row rank-row ${x.me ? 'me' : ''}"><span><b>${i + 1}º ${x.icon} ${x.name}</b></span><b>$${fmt(x.score)}</b></div>`).join('');
+}
+$('lgBox').addEventListener('click', e => {
+  if (!e.target.closest('[data-lgclaim]')) return;
+  const v = League.claim(S); if (!v) return;
+  addMoney(v); sfx.buy(); dirty = true; burst(player.g.position.clone().add(new V3(0, 1.2, 0)), 30, COINS, {speed: 3.5, up: 7, size: .16});
+  toast(`🏆 Prêmio da liga: +$${fmt(v)}`); renderLeague(); refreshBadges();
+});
 function renderMissions() {
-  ensureDaily();
+  ensureDaily(); renderLeague();
   const all = S.daily.list.every(m => m.claimed);
   $('mSub').textContent = (all ? 'Tudo feito! ' : '') + `Novas missões em ${untilMidnight()} · Sequência: ${S.streak || 1} dia${S.streak > 1 ? 's' : ''} 🔥`;
   $('mList').innerHTML = S.daily.list.map((m, i) => {
@@ -2183,13 +2217,13 @@ function refreshBadges() {
   $('bTeam').style.display = S.teamNew ? 'block' : 'none';
   $('bUp').style.display = up ? 'block' : 'none';
   $('bBiz').style.display = bizReady() ? 'block' : 'none';
-  $('bMis').style.display = S.daily && S.daily.list.some(m => !m.claimed && m.p >= m.n) ? 'block' : 'none';
+  $('bMis').style.display = (S.daily && S.daily.list.some(m => !m.claimed && m.p >= m.n)) || (S.league && S.league.last && !S.league.last.claimed && S.league.last.prize > 0) ? 'block' : 'none';
   const nxt = S.r.length, canFr = S.r.some((r, i) => r && complete(r) && r.fr < FR_MAX && S.money >= frCost(i));
   $('bRest').style.display = (RESTS[nxt] && complete(S.r[nxt - 1]) && S.money >= RESTS[nxt].cost) || canFr || doneCount() >= 3 ? 'block' : 'none';
 }
 const TIPS = {
   panel: ['⬆ Melhorias', 'Gaste o dinheiro para a loja render mais. O cartão 🎯 mostra o que está travando e qual compra ajuda primeiro.'],
-  missions: ['📋 Missões', 'Complete as tarefas do dia para ganhar prêmios. Novas missões chegam todo dia.'],
+  missions: ['📋 Missões', 'Complete as tarefas do dia para ganhar prêmios. Novas missões chegam todo dia. Na Liga do dia você disputa com lojas rivais: quem faturar mais até meia-noite ganha prêmio.'],
   rests: ['🗺️ Mapa', 'Toque em uma loja para ver o que ela vende. Abrir novas lojas multiplica seus ganhos.'],
   biz: ['🏢 Negócio', 'Aqui ficam as obras do prédio, pesquisas e empréstimos. Ampliar o prédio libera mais mesas e máquinas.'],
   stocks: ['📈 Economia', 'Compre ações com o dinheiro do jogo. Os preços mudam a cada poucos segundos e as ações pagam dividendos.'],
@@ -2705,7 +2739,7 @@ for (const z of ZONES) buildZoneUI(z);
 for (const z of ZONES) if (bought.has(z.id)) { bought.delete(z.id); buyZone(z, false); }
 restorePlacements();
 refreshZones(false); refreshProgress(); refreshHud();
-ensureDaily();
+ensureDaily(); ensureLeague();
 refreshTeam(); applyCfg();
 featureHub = FeatureHub.mount({S, context: featureContext, changed: featureChanged, notify: toast, open: openModal, close: closeModal,
   fmt, fmtP, stocks: STOCKS, market: marketState, stockValue, storeName: T.name,
@@ -2714,7 +2748,7 @@ syncFeatures(); applyDecor();
 loanSync(); const awayDiv = mktSync(); syncProduction(); checkTimers();
 if (firstRun) { Staff.clockGuard(S); loginBonus(); addMoney(0); } else { addMoney(0); showWelcome(awayGains(), loginBonus(), awayDiv); }
 $('net').textContent = '🏦 ' + fmtS(netWorth());
-setInterval(() => { if (ensureDaily()) { toast('📋 Novas missões do dia!'); refreshBadges(); const b = loginBonus(); if (b) showWelcome(0, b); } }, 30000);
+setInterval(() => { if (ensureLeague()) refreshBadges(); if (ensureDaily()) { toast('📋 Novas missões do dia!'); refreshBadges(); const b = loginBonus(); if (b) showWelcome(0, b); } }, 30000);
 requestAnimationFrame(frame);
 Cloud.start();
 startAgeFlow();

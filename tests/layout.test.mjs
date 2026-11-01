@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url);
 const Layout = require('../www/layout.js');
 const source = readFileSync(new URL('../www/layout.js', import.meta.url), 'utf8');
 const clone = v => structuredClone(v);
-const generate = (seed = 'test-layout', phase = 3, lot = 0, city = 0) => Layout.generate({seed, phase, lot, city});
+const generate = (seed = 'test-layout', phase = 4, lot = 0, city = 0) => Layout.generate({seed, phase, lot, city});
 const codes = layout => Layout.validate(layout).errors.map(e => e.code);
 const C = Layout.contract;
 const coverage = new Map();
@@ -77,7 +77,7 @@ test('entrada inválida é rejeitada e defaults mantêm seed explícita', () => 
     ...[null, NaN, Infinity, -1, .5, 0x100000000, '', '  ', 'a'.repeat(129), {}].map(seed => ({seed}))]) {
     assert.throws(() => Layout.generate(options), TypeError);
   }
-  for (const phase of [-1, 4, .5, null, '0', NaN, Infinity]) assert.throws(() => Layout.generate({seed: 0, phase}), RangeError);
+  for (const phase of [-1, 5, .5, null, '0', NaN, Infinity]) assert.throws(() => Layout.generate({seed: 0, phase}), RangeError);
   for (const key of ['lot', 'city']) for (const value of [-1, .5, null, '1', false, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
     assert.throws(() => Layout.generate({seed: 0, [key]: value}), RangeError);
   }
@@ -93,8 +93,8 @@ test('geração é pura, independente da ordem de chamadas e estável na amplia�
   first.tables.t1.x = 123; first.decorations.length = 0; first.variants.order.sequence.push(99);
   assert.deepEqual(options, saved);
   assert.deepEqual(Layout.generate(options), Layout.generate(clone(options)));
-  const seed = 'save-id:city:lot', full = generate(seed, 3, 2, 3);
-  for (const phase of [3, 0, 2, 1, 0, 3]) {
+  const seed = 'save-id:city:lot', full = generate(seed, 4, 2, 3);
+  for (const phase of [3, 0, 4, 2, 1, 0, 3]) {
     const current = generate(seed, phase, 2, 3);
     for (const [id, pos] of Object.entries(current.tables)) assert.deepEqual(pos, full.tables[id]);
     for (const d of current.decorations) assert.deepEqual(d, full.decorations.find(x => x.id === d.id));
@@ -111,7 +111,7 @@ test('validate rejeita schemas, IDs, sobreposições, compra, bounds e variantes
   const base = generate();
   const mutations = [
     ['SCHEMA', x => { x.version = 2; }], ['SCHEMA', x => { x.seed = ''; }],
-    ['SCHEMA', x => { x.phase = 4; }], ['SCHEMA', x => { x.lot = -1; }],
+    ['SCHEMA', x => { x.phase = 5; }], ['SCHEMA', x => { x.lot = -1; }],
     ['SCHEMA', x => { x.city = .5; }], ['SCHEMA', x => { x.tables = []; }],
     ['SCHEMA', x => { x.decorations = {}; }], ['SCHEMA', x => { x.variants = null; }],
     ['TABLE_SCHEMA', x => { delete x.tables.t1; }],
@@ -189,7 +189,7 @@ function checkGeometry(layout) {
     assert.ok(a[1] <= b[0] || a[0] >= b[1] || a[3] <= b[2] || a[2] >= b[3], 'mesas sem sobreposição');
   }
   for (const d of layout.decorations) {
-    assert.ok(d.x + d.hw <= -5.85 || (d.x - d.hw >= 5.85 && d.x + d.hw <= 6.6) || (layout.phase === 3 && d.x - d.hw >= 10.6));
+    assert.ok(d.x + d.hw <= -5.85 || (d.x - d.hw >= 5.85 && d.x + d.hw <= 6.6) || (layout.phase >= 3 && d.x - d.hw >= 10.6));
     assert.ok(d.z - d.hd >= 2.9);
   }
 }

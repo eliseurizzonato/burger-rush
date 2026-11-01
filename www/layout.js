@@ -40,13 +40,15 @@
   'use strict';
 
   var VERSION = 1, RADIUS = 0.35, STEP = 0.25, EPS = 1e-8;
-  var PHASES = [{W: 7, F: 6.4}, {W: 7, F: 9.7}, {W: 7, F: 13}, {W: 11.5, F: 13}];
+  var PHASES = [{W: 7, F: 6.4}, {W: 7, F: 9.7}, {W: 7, F: 13}, {W: 11.5, F: 13}, {W: 16, F: 13}];
   var TABLES = [
     {id: 't1', x: -3.8, z: 4, phase: 0}, {id: 't2', x: 3.8, z: 4, phase: 0},
     {id: 't3', x: -3.8, z: 7.3, phase: 1}, {id: 't4', x: 3.8, z: 7.3, phase: 1},
     {id: 't5', x: -3.8, z: 10.6, phase: 2}, {id: 't6', x: 3.8, z: 10.6, phase: 2},
     {id: 't7', x: 9.3, z: 4, phase: 3}, {id: 't8', x: 9.3, z: 7.4, phase: 3},
-    {id: 't9', x: 9.3, z: 10.8, phase: 3}
+    {id: 't9', x: 9.3, z: 10.8, phase: 3},
+    {id: 't10', x: 13.8, z: 4, phase: 4}, {id: 't11', x: 13.8, z: 7.4, phase: 4},
+    {id: 't12', x: 13.8, z: 10.8, phase: 4}
   ];
   // hw/hd já incorporam a rotação da estação (front preserva o original).
   var ZONES = [
@@ -62,7 +64,8 @@
     {id: 'h3', x: 5.4, z: 2.1, phase: 2},
     {id: 'x1', x: 8.6, z: -4.5, phase: 3, hw: .8, hd: .6, dx: 0, dz: 1.25},
     {id: 'x2', x: 10.6, z: -2.5, phase: 3, hw: .6, hd: .8, dx: -1.25, dz: 0},
-    {id: 'h4', x: 8.2, z: 1.4, phase: 3}
+    {id: 'h4', x: 8.2, z: 1.4, phase: 3},
+    {id: 'c2', x: 13.6, z: 1.4, phase: 4}
   ];
   var PADS = [
     {id: 'west-foyer', x: -6.15, z: 4.65, phase: 0},
@@ -70,7 +73,8 @@
     {id: 'west-middle', x: -6.15, z: 7.95, phase: 1},
     {id: 'east-back', x: 6.15, z: 11.25, phase: 2},
     {id: 'annex-middle', x: 10.85, z: 5.9, phase: 3},
-    {id: 'annex-back', x: 10.85, z: 9.1, phase: 3}
+    {id: 'annex-back', x: 10.85, z: 9.1, phase: 3},
+    {id: 'wing-middle', x: 15.35, z: 5.9, phase: 4}
   ];
   var PATTERNS = ['steady', 'staggered', 'waves'];
   var ORDERS = ['balanced', 'alternating', 'batch'];
@@ -118,7 +122,7 @@
       rect('base-station', -3, -4.5, .8, .6), rect('counter', 0, -1, 2.2, .6),
       rect('corner-west', -6.4, b.F - .6, .4, .4), rect('corner-east', b.W - .6, b.F - .6, .4, .4)
     ];
-    if (phase === 3) out.push(rect('annex-counter', 8.9, -1, 1.4, .6));
+    if (phase >= 3) out.push(rect('annex-counter', 8.9, -1, 1.4, .6));
     ZONES.forEach(function (z) { if (z.phase <= phase && z.hw) out.push(rect(z.id, z.x, z.z, z.hw, z.hd)); });
     return out;
   }
@@ -206,7 +210,7 @@
     if (!validSeed(options.seed)) throw new TypeError('seed deve ser uint32 ou string não vazia de até 128 caracteres.');
     var phase = options.phase === undefined ? 0 : options.phase;
     var lot = options.lot === undefined ? 0 : options.lot, city = options.city === undefined ? 0 : options.city;
-    if (!validPhase(phase)) throw new RangeError('phase deve ser inteiro de 0 a 3.');
+    if (!validPhase(phase)) throw new RangeError('phase deve ser inteiro de 0 a 4.');
     if (!ordinal(lot) || !ordinal(city)) throw new RangeError('lot e city devem ser inteiros seguros não negativos.');
     // Tipos e delimitadores preservados; phase não participa das streams espaciais.
     var key = JSON.stringify([VERSION, options.seed, lot, city]), tables = {};
@@ -274,7 +278,7 @@
       var shape = rect('decor:' + d.id, d.x, d.z, d.hw, d.hd); shape.solid = d.solid;
       if (!inside(shape, b)) error('DECOR_BOUNDS', d.id, 'Decoração fora dos limites.');
       if (!(shape.x1 <= -5.85 + EPS || (shape.x0 >= 5.85 - EPS && shape.x1 <= 6.6 + EPS) ||
-          (phase === 3 && shape.x0 >= 10.6 - EPS)) || shape.z0 < 2.9) {
+          (phase >= 3 && shape.x0 >= 10.6 - EPS)) || shape.z0 < 2.9) {
         error('DECOR_AREA', d.id, 'Decoração permitida apenas na periferia do salão.');
       }
       shapes.push(shape);
@@ -332,7 +336,7 @@
     target('kitchen-start', 2, -2);
     target('base-station:front', -3, -3.25);
     [-1.3, -.15, 1].forEach(function (x, i) { target('counter:drop:' + i, x, -2.2); target('counter:serve:' + i, x, .15); });
-    if (phase === 3) [8.3, 9.5].forEach(function (x, i) { target('annex:drop:' + i, x, -2.2); target('annex:serve:' + i, x, .15); });
+    if (phase >= 3) [8.3, 9.5].forEach(function (x, i) { target('annex:drop:' + i, x, -2.2); target('annex:serve:' + i, x, .15); });
     target('entrance', 0, b.z1 - .1);
     for (var z = 1.5; z < b.z1; z += 1) target('queue:' + z, 0, z);
     active.forEach(function (t) {
