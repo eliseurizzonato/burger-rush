@@ -42,6 +42,7 @@
   #toast{top:calc(160px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-20px);background:#fff;color:var(--ink);font-weight:700;font-size:15px;padding:8px 16px;border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.15);opacity:0;transition:.25s;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
   #toast.show{opacity:1;transform:translate(-50%,0)}
   #tut{left:0;right:0;bottom:18%;text-align:center;color:#fff;font-weight:700;font-size:26px;text-shadow:0 3px 0 #0006;pointer-events:none;display:none}
+  #guideTxt{top:calc(100px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);box-sizing:border-box;background:#fff;color:var(--ink);border:3px solid #ffe14d;border-radius:16px;padding:7px 14px;font-weight:700;font-size:16px;text-align:center;box-shadow:0 4px 0 rgba(0,0,0,.18);pointer-events:none;display:none}
   #tut .hand{font-size:56px;display:inline-block;animation:sw 1.2s ease-in-out infinite}
   @keyframes sw{0%,100%{transform:translateX(-50px)}50%{transform:translateX(50px)}}
   #joy{width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;background:rgba(255,255,255,.25);border:3px solid rgba(255,255,255,.7);display:none;pointer-events:none}
@@ -98,6 +99,14 @@
   .stk-tabs button{border:0;border-radius:11px;min-height:44px;padding:5px 2px;background:#eee4f5;color:var(--ink);font:700 11px 'Fredoka',system-ui;cursor:pointer}
   #btnCfg{left:12px;top:calc(12px + env(safe-area-inset-top))}
   #btnTeam{background:#b8f0e6}
+  #btnHelp{left:12px;bottom:calc(14px + var(--ad, 0px) + env(safe-area-inset-bottom));background:#fff3b0}
+  @media(max-height:620px) and (orientation:landscape){#btnHelp{bottom:auto;top:calc(70px + env(safe-area-inset-top))}}
+  .tip{text-align:left;background:#e9f4ff;border:2px solid #8fc4ff;border-radius:14px;padding:9px 12px;margin:6px 0 10px;font-size:13px;line-height:1.35}
+  .tip b{display:block;font-size:15px;margin-bottom:2px}.tip .row2{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+  .tip button{border:0;border-radius:10px;min-height:36px;padding:4px 12px;font:700 13px 'Fredoka',system-ui;cursor:pointer;background:#4f8ff7;color:#fff}.tip button.ghost{background:none;color:#4f6ea0;text-decoration:underline}
+  #help details{text-align:left;background:#fff;border-radius:14px;margin:7px 0;padding:2px 12px;box-shadow:0 2px 0 rgba(0,0,0,.08)}
+  #help summary{font-weight:700;font-size:16px;min-height:44px;display:flex;align-items:center;cursor:pointer}
+  #help details p,#help details li{font-size:14px;line-height:1.4;margin:4px 0}#help details ul{padding-left:18px;margin:4px 0 10px}
   .stk-tabs.two{grid-template-columns:1fr 1fr}
   .neck{display:flex;flex-direction:column;gap:2px;text-align:left;background:#fff1d6;border:2px solid #ffb648;border-radius:14px;padding:9px 12px;margin:6px 0 10px;font-size:13px}
   .neck b{font-size:15px}.neck small{color:#a0621a;font-weight:700}.neck.ok{background:#e8f8ea;border-color:#7fd28a}
@@ -165,11 +174,11 @@
 <div id="rush" class="ui"></div>
 <div id="toast" class="ui"></div>
 <button id="btnMute" class="ui round" aria-label="Som">🔊</button>
-<button id="btnCfg" class="ui round" aria-label="Configurações">⚙️</button>
+<button id="btnCfg" class="ui round" aria-label="Configurações">⚙️</button><button id="btnHelp" class="ui round" aria-label="Como jogar">❓</button>
 <div class="game-actions"><button id="btnUp" class="round side" aria-label="Melhorias"><span><b>⬆</b>Melhorias</span><i class="badge" id="bUp"></i></button><button id="btnMis" class="round side" aria-label="Missões"><span><b>📋</b>Missões</span><i class="badge" id="bMis"></i></button><button id="btnTeam" class="round side" aria-label="Equipe" style="display:none"><span><b>👥</b>Equipe</span><i class="badge" id="bTeam"></i></button><button id="btnRest" class="round side" aria-label="Mapa"><span><b>🗺️</b>Mapa</span><i class="badge" id="bRest"></i></button><button id="btnBiz" class="round side" aria-label="Negócio"><span><b>🏢</b>Negócio</span><i class="badge" id="bBiz"></i></button><button id="btnStk" class="round side" aria-label="Bolsa de valores"><span><b>📈</b>Bolsa</span><i class="badge" id="bStk"></i></button><button id="btnAd" class="round side" aria-label="Prêmios grátis"><span><b>🎬</b>Grátis</span><i class="badge" id="bAd"></i></button></div>
-<div id="tut" class="ui"><div class="hand">👆</div><div>ARRASTE PARA MOVER</div></div>
+<div id="guideTxt" class="ui" role="status"></div><div id="tut" class="ui"><div class="hand">👆</div><div>ARRASTE PARA MOVER</div></div>
 <div id="joy" class="ui"><div id="knob"></div></div>
-<div id="panel" class="modal"><div class="card"><h2>Melhorias</h2><p id="upSub">Valem só para este restaurante</p><div id="upNeck"></div><div id="ups"></div><div class="up" id="cloudRow"></div><button class="btn big" data-close>Fechar</button><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a><br><button class="link" id="reset">Recomeçar do zero</button></div></div>
+<div id="panel" class="modal"><div class="card"><h2>Melhorias</h2><p id="upSub">Valem só para este restaurante</p><div id="upNeck"></div><button class="btn" data-activities="layout">🛋️ Organizar o salão (mover mesas e máquinas)</button><div id="ups"></div><div class="up" id="cloudRow"></div><button class="btn big" data-close>Fechar</button><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a><br><button class="link" id="reset">Recomeçar do zero</button></div></div>
 <div id="missions" class="modal"><div class="card"><h2>Missões do dia</h2><p id="mSub"></p><button class="btn" data-activities="journey">🏆 Desafios e temporada</button><div id="mList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="rests" class="modal"><div class="card"><h2 id="cityT">🗺️ Mapa da cidade</h2><p id="rSub"></p><div class="map" id="map"></div><div id="rList"></div><div id="cityBox"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="welcome" class="modal"><div class="card"><h2>Bem-vindo de volta!</h2><div id="wRows"></div><div class="big-num">+<span id="offAmt">0</span></div><button class="btn big ad" id="collect2" style="display:none">📺 Coletar 2x</button><br><button class="btn big" id="collect">Coletar</button></div></div>
@@ -177,7 +186,20 @@
 <div id="activities" class="modal" role="dialog" aria-modal="true" aria-labelledby="activitiesTitle"><div class="card"><h2 id="activitiesTitle">🌟 Sua rede</h2><div id="featureSummary" class="feature-summary"></div><div class="feature-tabs" role="tablist" aria-label="Atividades da rede"><button data-activity-tab="enterprise" role="tab">🌱 Produção e negócios</button><button data-activity-tab="journey" role="tab">🏆 Jornada e coleção</button></div><div id="enterpriseRoot" class="feature-root"></div><div id="journeyRoot" class="feature-root" hidden></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="stocks" class="modal"><div class="card"><h2>📈 Economia</h2><p id="stkSub"></p><div class="stk-tabs" id="stkTabs"><button data-stab="market" class="on">📊<br>Mercado</button><button data-stab="production">🌱<br>Produção</button><button data-stab="orders">🎯<br>Ordens</button><button data-stab="ach">🏆<br>Conquistas</button><button data-stab="rank">🥇<br>Ranking</button></div><section id="stk-market" class="stk-pane on"><div id="stkNews"></div><div class="qty" id="stkQty"></div><div id="stkList"></div><div id="stkFund"></div></section><section id="stk-production" class="stk-pane"><div id="prodList"></div></section><section id="stk-orders" class="stk-pane"><div id="orderForm"></div><div id="orderList"></div></section><section id="stk-ach" class="stk-pane"><div id="achList"></div></section><section id="stk-rank" class="stk-pane"><div id="rankList"></div></section><p style="font-size:12px;margin-top:8px">Economia fictícia, sem dinheiro real. Corretagem de 0,5% por operação.</p><button class="btn big" data-close>Fechar</button></div></div>
 <div id="team" class="modal"><div class="card"><h2>👥 Equipe</h2><p id="teamSub"></p><div class="stk-tabs two" id="teamTabs"><button data-ttab="staff" class="on">🧑‍🍳<br>Funcionários</button><button data-ttab="syn">🤝<br>Sinergias</button></div><div id="teamBody"></div><button class="btn big" data-close>Fechar</button></div></div>
-<div id="cfg" class="modal"><div class="card"><h2>⚙️ Configurações</h2><div class="hub-jumps"><button class="btn" data-activities="enterprise">🌱 Produção e delivery</button><button class="btn" data-activities="journey">🏆 Jornada e decoração</button></div><div id="cfgList"></div><button class="btn big" data-close>Fechar</button><p><small>Burger Rush · web 1.5 · save v8</small></p><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a></div></div>
+<div id="cfg" class="modal"><div class="card"><h2>⚙️ Configurações</h2><button class="btn big" data-help>❓ Como jogar</button><div class="hub-jumps"><button class="btn" data-activities="enterprise">🌱 Produção e delivery</button><button class="btn" data-activities="journey">🏆 Jornada e decoração</button></div><div id="cfgList"></div><button class="btn big" data-close>Fechar</button><p><small>Burger Rush · web 1.5.1 · save v8</small></p><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a></div></div>
+<div id="help" class="modal"><div class="card"><h2>❓ Como jogar</h2><p>Toque em um tema para ver a explicação.</p>
+<details open><summary>🍔 O básico</summary><ul><li><b>Andar:</b> arraste o dedo em qualquer lugar da tela (no computador, WASD ou setas).</li><li><b>Cozinhar:</b> pare na <b>chapa 🔥</b> e o chef pega os lanches prontos sozinho (cabem poucos na mão no começo).</li><li><b>Vender:</b> leve até o <b>balcão</b> do mesmo produto. Os clientes pegam lá, comem na mesa e pagam.</li><li><b>Dinheiro:</b> as notas caem na <b>pilha 💵</b>. Passe por cima para recolher.</li><li><b>Comprar:</b> fique parado sobre os <b>círculos com preço</b> para liberar mesas, máquinas e funcionários.</li><li><b>Mesa suja 🧽:</b> passe perto para limpar, senão ninguém senta.</li></ul></details>
+<details><summary>⏳ Clientes, rush e VIP</summary><ul><li>Cada cliente tem paciência: se demorar, ele vai embora sem pagar.</li><li>Atender em sequência forma <b>combo</b> e aumenta o pagamento.</li><li><b>Hora do rush 🔥:</b> de tempos em tempos chegam mais clientes, que pagam em dobro por 25 s.</li><li><b>VIP 👑</b> paga 5×. <b>Críticos</b> avaliam a loja e mudam a reputação ⭐.</li></ul></details>
+<details><summary>⬆ Melhorias</summary><ul><li>Valem só para a loja atual: carregar mais, andar mais rápido, cozinhar mais rápido, preço maior, paciência e propaganda.</li><li>O cartão <b>🎯 Gargalo</b> mostra o que está travando a loja e qual compra resolve.</li><li>Cada melhoria mostra em quanto tempo ela se paga.</li></ul></details>
+<details><summary>👥 Equipe</summary><ul><li><b>Ajudantes</b> levam lanches da chapa ao balcão. <b>Faxineiros</b> limpam mesas.</li><li>Eles ganham experiência trabalhando, sobem de nível e são promovidos (a cor do uniforme muda).</li><li>Cada um tem uma habilidade. Algumas combinações na mesma loja ativam <b>sinergias</b> com bônus extras.</li></ul></details>
+<details><summary>📋 Missões e jornada</summary><ul><li>Missões do dia dão dinheiro ao completar. Novas missões chegam todo dia.</li><li>Em <b>Desafios e temporada</b> há baús diários, desafios rápidos, coleção e decoração da loja.</li></ul></details>
+<details><summary>🛋️ Mover mesas e máquinas</summary><ul><li>Em ⬆ Melhorias, toque em <b>Organizar o salão</b>. Escolha o objeto e mova em passos de meio metro ou gire as máquinas.</li><li>O jogo só aceita posições em que clientes e funcionários conseguem passar.</li><li>Quer mais espaço? Em 🏢 Negócio, <b>amplie o prédio</b> para liberar mais mesas e máquinas.</li></ul></details>
+<details><summary>🗺️ Mapa, novas lojas e cidades</summary><ul><li>Quando a loja fica cheia, abra outra no mapa. Cada loja vende produtos diferentes.</li><li>Com 3 lojas completas você pode levar a marca para uma nova cidade: recomeça com bônus permanente.</li></ul></details>
+<details><summary>🏢 Negócio, produção e delivery</summary><ul><li><b>Negócio:</b> amplie o prédio, reforme a fachada, pesquise pratos e pegue empréstimos.</li><li><b>Produção:</b> fazendas e fábricas produzem ingredientes. O laboratório usa ingredientes para criar receitas que vendem mais caro.</li><li><b>Delivery e contratos:</b> entregue pedidos usando o estoque. Cumpra o prazo para receber o pagamento completo.</li></ul></details>
+<details><summary>📈 Bolsa de valores</summary><ul><li>Use o dinheiro do jogo para comprar ações. Os preços sobem e descem a cada poucos segundos.</li><li>Ações pagam dividendos. Vender acima do preço pago dá lucro, abaixo dá prejuízo.</li><li>É só dinheiro do jogo: nada é real e nada é cobrado.</li></ul></details>
+<details><summary>🌙 Longe do jogo</summary><ul><li>As lojas continuam rendendo enquanto você está fora, até 8 horas (dá para ampliar nas melhorias).</li><li>Ao voltar, toque em <b>Recolher</b> para receber.</li></ul></details>
+<details><summary>🔋 Celular travando?</summary><ul><li>Em ⚙️ Configurações, ative <b>Modo econômico</b> (sem sombras, menos quadros) e <b>Reduzir animações</b>.</li><li>O jogo também liga o modo econômico sozinho se perceber que o aparelho não está dando conta.</li></ul></details>
+<button class="btn big" data-close>Entendi</button></div></div>
 <div id="adShop" class="modal"><div class="card"><h2>🎬 Prêmios grátis</h2><p id="adSub"></p><div id="adList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="cloudPick" class="modal"><div class="card"><h2>☁️ Progresso na nuvem</h2><p>Achamos um progresso maior salvo na sua conta.</p><div class="row" style="flex-direction:column;text-align:left" id="cpTxt"></div><button class="btn big" id="cpLoad">Carregar da nuvem</button><br><button class="link" id="cpKeep">Manter o deste aparelho</button></div></div>
 <div id="ageGate" class="modal"><div class="card"><h2>🎂 Antes de jogar</h2><p>Informe sua data de nascimento. Ela é usada apenas para configurar anúncios adequados à sua idade e não será armazenada.</p><label for="birthDate"><b>Data de nascimento</b></label><br><input id="birthDate" type="date" autocomplete="bday" style="font:700 18px 'Fredoka',system-ui;margin:12px 0;padding:10px;border:2px solid #d8cce2;border-radius:12px;max-width:90%"><p id="ageErr" style="display:none;color:#c83232;font-weight:700">Informe uma data válida.</p><button class="btn big" id="ageGo">Continuar</button></div></div>
@@ -235,6 +257,8 @@ const MIGRATIONS = {
 function migrate(s) { s.v = s.v || 1; while (s.v < SAVE_VERSION) { if (MIGRATIONS[s.v]) MIGRATIONS[s.v](s); s.v++; } return s; }
 const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}, ageBand: '', stk: null, loan: 0, market: null, ach: {}, prod: null, team: {}, pend: 0, offLv: 0, clk: 0, cfg: null}, loadSave() || {}));
 if (AUTO) S.ageBand = 'adult';
+// dificuldade: compras da loja e melhorias custam mais (a primeira mesa do tutorial não muda)
+const HARD = {zone: 1.4, up: 1.3};
 const LV0 = {cap: 0, speed: 0, price: 0, grill: 0, pat: 0, mkt: 0, par: 0, auto: 0};
 const R0 = {ex: 0, fac: 0, menu: 0, obra: null, res: null, served: 0, done: false};
 for (const r of S.r) if (r) { r.lv = Object.assign({}, LV0, r.lv); r.rep = r.rep || 3; r.fr = r.fr || 0; for (const k in R0) if (r[k] === undefined) r[k] = R0[k]; r.ms = r.ms || {}; }
@@ -327,10 +351,15 @@ const MENU = [
 const menuName = i => i < 3 ? (T.rn ? T.rn[i] : PRODUCTS[P[i]].name + ' especial') : PRODUCTS[P[i]].name[0].toUpperCase() + PRODUCTS[P[i]].name.slice(1);
 
 // ---------- cena ----------
-const renderer = new THREE.WebGLRenderer({antialias: true});
+// Celular: sem antialias (o custo é por pixel), densidade até 1,5x e sombra
+// mais leve, atualizada a cada 2 quadros. O monitor de FPS baixa a qualidade sozinho.
+const MOBILE = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches) || /Android|iPhone|iPad/i.test(navigator.userAgent);
+const renderer = new THREE.WebGLRenderer({antialias: !MOBILE && !S.cfg.lo, powerPreference: 'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = MOBILE ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
+renderer.shadowMap.autoUpdate = false;
+let quality = MOBILE ? 1 : 2; // 2 alto, 1 médio, 0 econômico
 document.body.prepend(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(T.sky);
@@ -339,7 +368,7 @@ const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 200);
 const CAM_OFF = new V3(10, 13, 10);
 function resize() {
   const vv = window.visualViewport, w = Math.max(1, vv ? vv.width : innerWidth), h = Math.max(1, vv ? vv.height : innerHeight), a = w / h;
-  renderer.setPixelRatio(S.cfg.lo ? 1 : Math.min(devicePixelRatio, w * h > 1600000 ? 1.5 : 2));
+  renderer.setPixelRatio(S.cfg.lo || quality < 1 ? 1 : Math.min(devicePixelRatio, quality < 2 ? 1.5 : w * h > 1600000 ? 1.5 : 2));
   // Atualiza buffer e tamanho CSS juntos. Sem isso, DPR 2x/3x amplia o canvas
   // além do viewport e desloca câmera e personagem para fora da tela.
   renderer.setSize(w, h, true);
@@ -352,7 +381,7 @@ addEventListener('resize', resize); if (window.visualViewport) visualViewport.ad
 scene.add(new THREE.HemisphereLight(0xffffff, 0xa08c70, 0.6));
 const sun = new THREE.DirectionalLight(0xfff4e0, 0.65);
 sun.position.set(-6, 16, 8); sun.target.position.set(0, 0, 3);
-sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0005;
+sun.castShadow = true; sun.shadow.mapSize.set(MOBILE ? 1024 : 2048, MOBILE ? 1024 : 2048); sun.shadow.bias = -0.0005;
 Object.assign(sun.shadow.camera, {left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 50});
 scene.add(sun, sun.target);
 
@@ -447,7 +476,14 @@ function floatText(t, pos, bg = 'rgba(47,191,74,.95)') {
   const s = label(t, {w: 640, scale: 3.4, bg}); s.position.copy(pos).add(new V3(0, 2.8, 0)); scene.add(s); floats.push({s, t: 0});
 }
 let toastT = 0;
-function toast(t) { const el = $('toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 2600); }
+// Avisos entram em fila (sem repetir o que já está na fila) para dar tempo de ler.
+const toastQ = [];
+function toast(t) { if (toastQ.includes(t) || $('toast').textContent === t && toastT) return; toastQ.push(t); if (toastQ.length > 3) toastQ.splice(1, 1); if (!toastT) nextToast(); }
+function nextToast() {
+  const el = $('toast'), t = toastQ.shift();
+  if (t == null) { toastT = 0; el.classList.remove('show'); return; }
+  el.textContent = t; el.classList.add('show'); toastT = setTimeout(nextToast, Math.min(4500, 2400 + t.length * 25));
+}
 
 // ---------- som (sintetizado, sem arquivos) ----------
 let actx = null;
@@ -1028,7 +1064,7 @@ function makeZone(z) {
   else z.object = addStation(P[+z.kind[1]], z.x, z.z, z.rot || 0);
 }
 function buildZoneUI(z) {
-  z.base = z.price; z.price = Math.round(z.base * T.mult); z.left = z.price; z.step = Math.max(1, Math.ceil(z.price / 25)); z.t = 0;
+  z.base = z.price; z.price = Math.round(z.base * T.mult * (z.id === 't1' ? 1 : HARD.zone)); z.left = z.price; z.step = Math.max(1, Math.ceil(z.price / 25)); z.t = 0;
   z.g = at(new THREE.Group(), z.x, .02, z.z); z.g.visible = false;
   const base = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 1.9), new THREE.MeshBasicMaterial({map: ZTEX, transparent: true})); base.rotation.x = -Math.PI / 2; z.g.add(base);
   z.fill = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 1.7), new THREE.MeshBasicMaterial({color: 0x2fbf4a, transparent: true, opacity: .65})); z.fill.rotation.x = -Math.PI / 2; z.fill.position.y = .01; z.fill.scale.set(.001, .001, 1); z.g.add(z.fill);
@@ -1062,10 +1098,10 @@ function buyZone(z, fx) {
 // ---------- clientes ----------
 // paciência: cada cliente na fila tem um tempo; se acabar, vai embora bravo, a reputação cai e o combo zera
 const queue = [], customers = [];
-let spawnT = 0, combo = 0, comboT = 0, rush = 0, rushNext = 75;
+let spawnT = 0, combo = 0, comboT = 0, rush = 0, rushNext = 180;
 const comboMult = () => 1 + Math.min(combo, 20) * .05;
 const payMult = () => (.7 + .1 * R.rep) * facMult();
-const patience = () => (S.tut ? 28 : 45) * (1 + .15 * R.lv.pat) * (1 + TB.pat) * (rush > 0 ? .8 : 1);
+const patience = () => (S.tut ? 36 : 50) * (1 + .15 * R.lv.pat) * (1 + TB.pat) * (rush > 0 ? .8 : 1);
 function makeOrder(vip) {
   const has = P.filter(k => stations.some(s => s.type === k)), o = {[P[0]]: 1 + (Math.random() * 2 | 0)};
   for (const t of has.slice(1)) if (Math.random() < .6) o[t] = 1 + (Math.random() < .25 ? 1 : 0);
@@ -1178,7 +1214,7 @@ function updateRush(dt) {
   const el = $('rush');
   if (rush > 0) {
     rush -= dt; el.textContent = `🔥 HORA DO RUSH · pagam 2x · ${Math.ceil(rush)}s`;
-    if (rush <= 0) { el.style.display = 'none'; track('rush', 1); toast('Rush encerrado! 💪'); rushNext = 140 + Math.random() * 100; }
+    if (rush <= 0) { el.style.display = 'none'; track('rush', 1); toast('Rush encerrado! 💪'); rushNext = 240 + Math.random() * 120; }
   } else if ((rushNext -= dt) <= 0) startRush();
 }
 function startRush() {
@@ -1225,9 +1261,9 @@ const UPS = [
   {k: 'auto', icon: '🤖', name: 'Esteira automática', desc: l => `Leva lanches da cozinha ao balcão ${l ? `a cada ${Math.round(AUTO_EVERY / l)} s` : '(desligada)'} → a cada ${Math.round(AUTO_EVERY / (l + 1))} s`, base: 6000, max: 3, g: 2.6, ex: 1},
 ];
 const AUTO_EVERY = 12, MS_MAX = 5;
-const upCost = u => Math.round(u.base * T.mult * Math.pow(u.g, R.lv[u.k]) * (1 - TB.upCost));
+const upCost = u => Math.round(u.base * T.mult * HARD.up * Math.pow(u.g, R.lv[u.k]) * (1 - TB.upCost));
 // maestria: depois do nível máximo, cada melhoria pode ganhar até 5 estrelas (+3% no faturamento da loja cada)
-const msCost = u => Math.round(u.base * T.mult * Math.pow(u.g, u.max) * Math.pow(2, (R.ms[u.k] || 0) + 1) * (1 - TB.upCost));
+const msCost = u => Math.round(u.base * T.mult * HARD.up * Math.pow(u.g, u.max) * Math.pow(2, (R.ms[u.k] || 0) + 1) * (1 - TB.upCost));
 const upLocked = u => (u.ex || 0) > R.ex;
 // o nível máximo de cada melhoria cresce com o prédio (fase 1: 1/4 do total ... fase 4: tudo)
 const upMax = u => upLocked(u) ? 0 : Math.min(u.max, Math.ceil(u.max * (R.ex + 1) / EXP.length));
@@ -2128,7 +2164,10 @@ setInterval(() => {
 // a cada segundo: obra/pesquisa, juros, botões novos e patrimônio no topo
 setInterval(() => {
   checkTimers(); loanSync();
-  $('btnBiz').style.display = $('btnStk').style.display = S.tut ? 'grid' : 'none';
+  const vet = S.cur > 0 || S.city > 0 || R.ex > 0, bizOn = S.tut && (vet || bought.size >= 4), stkOn = S.tut && (vet || bought.size >= 7);
+  $('btnBiz').style.display = bizOn ? 'grid' : 'none'; $('btnStk').style.display = stkOn ? 'grid' : 'none';
+  if (bizOn && !S.tips.uBiz) { S.tips.uBiz = true; dirty = true; if (!vet) toast('🏢 Liberado: Negócio — amplie o prédio e pesquise novos pratos'); }
+  if (stkOn && !S.tips.uStk) { S.tips.uStk = true; dirty = true; if (!vet) toast('📈 Liberada: Bolsa — invista o dinheiro do jogo em ações'); }
   $('net').textContent = '🏦 ' + fmtS(netWorth());
   if ($('biz').classList.contains('open') && (R.obra || R.res)) renderBiz();
 }, 1000);
@@ -2148,7 +2187,26 @@ function refreshBadges() {
   const nxt = S.r.length, canFr = S.r.some((r, i) => r && complete(r) && r.fr < FR_MAX && S.money >= frCost(i));
   $('bRest').style.display = (RESTS[nxt] && complete(S.r[nxt - 1]) && S.money >= RESTS[nxt].cost) || canFr || doneCount() >= 3 ? 'block' : 'none';
 }
-const openModal = id => { $(id).classList.add('open'); stopMovement(); };
+const TIPS = {
+  panel: ['⬆ Melhorias', 'Gaste o dinheiro para a loja render mais. O cartão 🎯 mostra o que está travando e qual compra ajuda primeiro.'],
+  missions: ['📋 Missões', 'Complete as tarefas do dia para ganhar prêmios. Novas missões chegam todo dia.'],
+  rests: ['🗺️ Mapa', 'Toque em uma loja para ver o que ela vende. Abrir novas lojas multiplica seus ganhos.'],
+  biz: ['🏢 Negócio', 'Aqui ficam as obras do prédio, pesquisas e empréstimos. Ampliar o prédio libera mais mesas e máquinas.'],
+  stocks: ['📈 Economia', 'Compre ações com o dinheiro do jogo. Os preços mudam a cada poucos segundos e as ações pagam dividendos.'],
+  team: ['👥 Equipe', 'Funcionários ficam melhores trabalhando. Toque em um deles para ver nível, habilidade e próxima promoção.'],
+  activities: ['🌱 Produção e jornada', 'Fazendas e fábricas geram ingredientes para receitas, entregas e contratos. Comece colhendo um cultivo.'],
+};
+function showTip(id) {
+  const t = TIPS[id], card = $(id).querySelector('.card');
+  if (!t || S.tips['h_' + id] || card.querySelector('.tip')) return;
+  const el = document.createElement('div'); el.className = 'tip'; el.setAttribute('role', 'note');
+  el.innerHTML = `<b>${t[0]}</b>${t[1]}<div class="row2"><button class="ghost" data-help>Ver guia</button><button data-tipok>Entendi</button></div>`;
+  const h = card.querySelector('h2'); h ? h.after(el) : card.prepend(el);
+  el.querySelector('[data-tipok]').addEventListener('click', () => { S.tips['h_' + id] = true; dirty = true; el.remove(); });
+}
+const openModal = id => { $(id).classList.add('open'); stopMovement(); showTip(id); };
+function openHelp() { document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open')); openModal('help'); S.tips.help = true; dirty = true; }
+document.addEventListener('click', e => { if (e.target.closest('[data-help]')) { initAudio(); openHelp(); } });
 const closeModal = id => $(id).classList.remove('open');
 $('btnUp').addEventListener('click', () => { initAudio(); renderUps(); openModal('panel'); });
 $('btnMis').addEventListener('click', () => { initAudio(); renderMissions(); openModal('missions'); });
@@ -2275,7 +2333,8 @@ function renderTeam() {
     <p class="feature-note">Troca o bônus de trabalho; não aumenta o nível da habilidade exclusiva. Confira o efeito antes de gastar moedas.</p>
     <div class="specs">${Object.entries(Staff.SPECS).map(([k, sp]) => {
       const preview = Staff.specPreview(e, k, teamOf()), percent = n => Math.round(n * 100), b = preview.before, a = preview.after;
-      const effect = !preview.ok ? (k === e.spec ? 'Bônus equipado' : 'Sem efeito nesta função') : `Agilidade ${percent(b.speed - 1)}% → ${percent(a.speed - 1)}% · Paciência ${percent(b.pat)}% → ${percent(a.pat)}% · Offline ${percent(b.offline - 1)}% → ${percent(a.offline - 1)}%`;
+      const effect = !preview.ok ? (k === e.spec ? 'Bônus equipado' : 'Sem efeito nesta função') : [['Agilidade', b.speed - 1, a.speed - 1], ['Paciência', b.pat, a.pat], ['Offline', b.offline, a.offline]]
+        .filter(x => percent(x[1]) !== percent(x[2])).map(([n, x, y]) => `${n} ${percent(y) > percent(x) ? '⬆' : '⬇'} +${percent(x)}% → +${percent(y)}%`).join(' · ');
       return `<button class="spec${k === e.spec ? ' on' : ''}" data-spec="${k}" ${!preview.ok || S.money < cost ? 'disabled' : ''}><b>${sp.icon} ${sp.name}</b><small>${sp.desc}</small><small>${effect}</small>${k === e.spec ? '<i>Atual</i>' : `<i>${preview.ok ? '$' + fmt(cost) : 'Indisponível'}</i>`}</button>`;
     }).join('')}</div>
     <h3>Histórico</h3>
@@ -2326,6 +2385,8 @@ $('btnTeam').addEventListener('click', () => { initAudio(); S.teamNew = false; t
 function applyCfg() {
   document.body.classList.toggle('rm', !!S.cfg.rm);
   sun.castShadow = !S.cfg.lo;
+  if (!S.cfg.lo && quality === 0) quality = 1; // desligou o econômico na mão: volta ao médio
+  renderer.shadowMap.needsUpdate = true;
   resize();
 }
 function renderCfg() {
@@ -2340,6 +2401,7 @@ $('cfgList').addEventListener('change', e => {
   dirty = true;
 });
 $('btnCfg').addEventListener('click', () => { initAudio(); renderCfg(); openModal('cfg'); });
+$('btnHelp').addEventListener('click', () => { initAudio(); openHelp(); });
 
 // ---------- economia integrada: os novos painéis compartilham caixa e progresso ----------
 function featureContext() {
@@ -2486,12 +2548,19 @@ function autoTarget() {
 // ---------- seta-guia (só na primeira vez) ----------
 const arrow = at(mesh(new THREE.ConeGeometry(.35, .7, 4), 0xffe14d), 0, 0, 0); arrow.rotation.x = Math.PI;
 let guide = 0, everCollected = false;
+const GUIDE_TXT = ['1/4 · Vá até a chapa 🔥 (seta amarela) para pegar lanches', '2/4 · Leve os lanches até o balcão', '3/4 · Espere o cliente pagar e pegue o dinheiro 💵', '4/4 · Pare no círculo com preço para comprar uma mesa'];
+let guideShown = -1;
+function guideHint(on) {
+  const k = on ? (guide === 2 && !moneyPile.count ? 2 : guide) : -1;
+  if (k === guideShown) return; guideShown = k;
+  const el = $('guideTxt'); el.style.display = k < 0 ? 'none' : 'block'; if (k >= 0) el.textContent = GUIDE_TXT[k];
+}
 function guideTarget() {
   if (S.tut) return null;
   if (guide === 0) { if (player.hand.count) guide = 1; else return stations[0].pos; }
   if (guide === 1) { if (counters[P[0]].count) guide = 2; else return new V3(SECTIONS[P[0]], 0, -2.2); }
   if (guide === 2) { if (everCollected) guide = 3; else return moneyPile.count ? PILE : null; }
-  if (guide === 3) { if (bought.size) { S.tut = true; dirty = true; } else return new V3(ZONES[0].x, 0, ZONES[0].z); }
+  if (guide === 3) { if (bought.size) { S.tut = true; dirty = true; guideHint(false); setTimeout(() => toast('🎉 Você aprendeu o básico! Toque em ❓ (canto de baixo) para ver o guia completo'), 1500); } else return new V3(ZONES[0].x, 0, ZONES[0].z); }
   return null;
 }
 
@@ -2565,7 +2634,7 @@ function step(dt) {
   for (const c of cleaners) updateCleaner(c, dt);
   updateRush(dt); updateGift(dt); updateInspection(dt); if (neons.length && !S.cfg.rm) updateNeon();
   if (combo && (comboT -= dt) <= 0) setCombo(0);
-  const interval = Math.max(1, (3.2 - seats.length * .15) * (1.3 - .1 * R.rep) * Math.pow(.95, R.lv.mkt) / (1 + .07 * R.fac)) / (rush > 0 ? 2.5 : 1) * (storeLayout?.variants.spawn.intervalScale || 1) / playBonuses.demand;
+  const interval = Math.max(1.7, (4.4 - seats.length * .15) * (1.3 - .1 * R.rep) * Math.pow(.95, R.lv.mkt) / (1 + .07 * R.fac)) / (rush > 0 ? 2.5 : 1) * (storeLayout?.variants.spawn.intervalScale || 1) / playBonuses.demand;
   if (queue.length < 4 + Math.floor(seats.length / 4) + (rush > 0 ? 3 : 0) && (spawnT -= dt) <= 0) { spawnCustomer(); spawnT = interval; }
   for (const c of customers.slice()) updateCustomer(c, dt);
   if ((passiveT += dt) >= 1) {
@@ -2594,6 +2663,7 @@ function step(dt) {
   updateParts(dt);
   if (!S.cfg.rm) for (const z of ZONES) if (z.g.visible) z.title.position.y = 1.3 + Math.sin(elapsed * 3 + z.x) * .06;
   const gtg = started ? guideTarget() : null;
+  if (!S.tut) guideHint(started);
   arrow.visible = !!gtg;
   if (gtg) { arrow.position.set(gtg.x, 2.3 + (S.cfg.rm ? .25 : Math.abs(Math.sin(elapsed * 4)) * .5), gtg.z); if (!S.cfg.rm) arrow.rotation.y += dt * 2; }
   dropZone.material.opacity = .3 + Math.sin(elapsed * 5) * .15;
@@ -2603,11 +2673,29 @@ function step(dt) {
   cam.position.copy(camTarget).add(CAM_OFF); cam.lookAt(camTarget);
 }
 
-let last = performance.now();
+let last = performance.now(), frameN = 0, fpsT = 0, fpsN = 0, slow = 0;
 function frame(now) {
-  const dt = Math.min(.05, (now - last) / 1000); last = now;
-  step(dt); renderer.render(scene, cam);
   requestAnimationFrame(frame);
+  // modo econômico: ~30 quadros por segundo poupam bateria e esquentam menos
+  if ((S.cfg.lo || quality < 1) && now - last < 30) return;
+  const raw = (now - last) / 1000, dt = Math.min(.05, raw); last = now;
+  step(dt);
+  if (sun.castShadow && frameN++ % (quality < 2 ? 2 : 1) === 0) renderer.shadowMap.needsUpdate = true;
+  renderer.render(scene, cam);
+  watchFps(raw);
+}
+// Mede o FPS em janelas de 4 s (ignorando pausas e modais) e reduz a qualidade
+// em aparelhos que não acompanham: primeiro a resolução, depois as sombras.
+function watchFps(raw) {
+  if (document.hidden || raw > .25 || document.querySelector('.modal.open') || S.cfg.lo) { fpsT = fpsN = 0; return; }
+  fpsT += raw; fpsN++;
+  if (fpsT < 4) return;
+  const fps = fpsN / fpsT; fpsT = fpsN = 0;
+  slow = fps < 40 ? slow + 1 : 0;
+  if (slow < 2 || quality === 0) return;
+  slow = 0; quality--;
+  if (quality === 0) { S.cfg.lo = true; dirty = true; toast('🔋 Modo econômico ativado para o jogo ficar mais leve'); }
+  applyCfg();
 }
 
 // ---------- início ----------
