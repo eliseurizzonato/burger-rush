@@ -139,9 +139,20 @@
   @media(max-height:620px) and (orientation:landscape){.game-actions{left:50%;right:auto;bottom:calc(10px + var(--ad) + env(safe-area-inset-bottom));transform:translateX(-50%);flex-direction:row-reverse;max-width:calc(100vw - 28px);overflow-x:auto;padding:0 4px}.side{width:58px;height:58px;flex:0 0 auto}.side b{font-size:21px}.card{max-height:92vh}}
   @media(max-width:380px){.modal{padding:8px}.card{padding:14px;border-radius:20px}.card h2{font-size:23px}.up{gap:7px;padding:8px}.stk-tabs button{font-size:10px}.qty{gap:4px}.qty button{padding:5px 8px}.stock-card{padding:10px}.stock-mid{grid-template-columns:minmax(0,1fr) 72px}.stock-mid .spark{width:72px}.stock-actions button{font-size:12px}}
 </style>
+<link rel="stylesheet" href="features.css">
 <script src="vendor/capacitor.js"></script>
 <script src="vendor/three.min.js"></script>
 <script src="staff.js"></script>
+<script src="trading.js"></script>
+<script src="sync-core.js"></script>
+<script src="enterprise.js"></script>
+<script src="enterprise-ui.js"></script>
+<script src="journey.js"></script>
+<script src="journey-ui.js"></script>
+<script src="layout.js"></script>
+<script src="placement.js"></script>
+<script src="placement-ui.js"></script>
+<script src="feature-hub.js"></script>
 <script src="vendor/firebase-app-compat.js"></script>
 <script src="vendor/firebase-auth-compat.js"></script>
 <script src="vendor/firebase-firestore-compat.js"></script>
@@ -159,13 +170,14 @@
 <div id="tut" class="ui"><div class="hand">👆</div><div>ARRASTE PARA MOVER</div></div>
 <div id="joy" class="ui"><div id="knob"></div></div>
 <div id="panel" class="modal"><div class="card"><h2>Melhorias</h2><p id="upSub">Valem só para este restaurante</p><div id="upNeck"></div><div id="ups"></div><div class="up" id="cloudRow"></div><button class="btn big" data-close>Fechar</button><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a><br><button class="link" id="reset">Recomeçar do zero</button></div></div>
-<div id="missions" class="modal"><div class="card"><h2>Missões do dia</h2><p id="mSub"></p><div id="mList"></div><button class="btn big" data-close>Fechar</button></div></div>
+<div id="missions" class="modal"><div class="card"><h2>Missões do dia</h2><p id="mSub"></p><button class="btn" data-activities="journey">🏆 Desafios e temporada</button><div id="mList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="rests" class="modal"><div class="card"><h2 id="cityT">🗺️ Mapa da cidade</h2><p id="rSub"></p><div class="map" id="map"></div><div id="rList"></div><div id="cityBox"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="welcome" class="modal"><div class="card"><h2>Bem-vindo de volta!</h2><div id="wRows"></div><div class="big-num">+<span id="offAmt">0</span></div><button class="btn big ad" id="collect2" style="display:none">📺 Coletar 2x</button><br><button class="btn big" id="collect">Coletar</button></div></div>
-<div id="biz" class="modal"><div class="card"><h2>🏢 Meu negócio</h2><p id="bizSub"></p><div id="bizList"></div><button class="btn big" data-close>Fechar</button></div></div>
+<div id="biz" class="modal"><div class="card"><h2>🏢 Meu negócio</h2><p id="bizSub"></p><div class="hub-jumps"><button class="btn" data-activities="enterprise">🌱 Produção e delivery</button><button class="btn" data-activities="journey">🏆 Jornada e decoração</button></div><div id="bizList"></div><button class="btn big" data-close>Fechar</button></div></div>
+<div id="activities" class="modal" role="dialog" aria-modal="true" aria-labelledby="activitiesTitle"><div class="card"><h2 id="activitiesTitle">🌟 Sua rede</h2><div id="featureSummary" class="feature-summary"></div><div class="feature-tabs" role="tablist" aria-label="Atividades da rede"><button data-activity-tab="enterprise" role="tab">🌱 Produção e negócios</button><button data-activity-tab="journey" role="tab">🏆 Jornada e coleção</button></div><div id="enterpriseRoot" class="feature-root"></div><div id="journeyRoot" class="feature-root" hidden></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="stocks" class="modal"><div class="card"><h2>📈 Economia</h2><p id="stkSub"></p><div class="stk-tabs" id="stkTabs"><button data-stab="market" class="on">📊<br>Mercado</button><button data-stab="production">🌱<br>Produção</button><button data-stab="orders">🎯<br>Ordens</button><button data-stab="ach">🏆<br>Conquistas</button><button data-stab="rank">🥇<br>Ranking</button></div><section id="stk-market" class="stk-pane on"><div id="stkNews"></div><div class="qty" id="stkQty"></div><div id="stkList"></div><div id="stkFund"></div></section><section id="stk-production" class="stk-pane"><div id="prodList"></div></section><section id="stk-orders" class="stk-pane"><div id="orderForm"></div><div id="orderList"></div></section><section id="stk-ach" class="stk-pane"><div id="achList"></div></section><section id="stk-rank" class="stk-pane"><div id="rankList"></div></section><p style="font-size:12px;margin-top:8px">Economia fictícia, sem dinheiro real. Corretagem de 0,5% por operação.</p><button class="btn big" data-close>Fechar</button></div></div>
 <div id="team" class="modal"><div class="card"><h2>👥 Equipe</h2><p id="teamSub"></p><div class="stk-tabs two" id="teamTabs"><button data-ttab="staff" class="on">🧑‍🍳<br>Funcionários</button><button data-ttab="syn">🤝<br>Sinergias</button></div><div id="teamBody"></div><button class="btn big" data-close>Fechar</button></div></div>
-<div id="cfg" class="modal"><div class="card"><h2>⚙️ Configurações</h2><div id="cfgList"></div><button class="btn big" data-close>Fechar</button><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a></div></div>
+<div id="cfg" class="modal"><div class="card"><h2>⚙️ Configurações</h2><div class="hub-jumps"><button class="btn" data-activities="enterprise">🌱 Produção e delivery</button><button class="btn" data-activities="journey">🏆 Jornada e decoração</button></div><div id="cfgList"></div><button class="btn big" data-close>Fechar</button><p><small>Burger Rush · web 1.5 · save v8</small></p><br><a class="link" href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a></div></div>
 <div id="adShop" class="modal"><div class="card"><h2>🎬 Prêmios grátis</h2><p id="adSub"></p><div id="adList"></div><button class="btn big" data-close>Fechar</button></div></div>
 <div id="cloudPick" class="modal"><div class="card"><h2>☁️ Progresso na nuvem</h2><p>Achamos um progresso maior salvo na sua conta.</p><div class="row" style="flex-direction:column;text-align:left" id="cpTxt"></div><button class="btn big" id="cpLoad">Carregar da nuvem</button><br><button class="link" id="cpKeep">Manter o deste aparelho</button></div></div>
 <div id="ageGate" class="modal"><div class="card"><h2>🎂 Antes de jogar</h2><p>Informe sua data de nascimento. Ela é usada apenas para configurar anúncios adequados à sua idade e não será armazenada.</p><label for="birthDate"><b>Data de nascimento</b></label><br><input id="birthDate" type="date" autocomplete="bday" style="font:700 18px 'Fredoka',system-ui;margin:12px 0;padding:10px;border:2px solid #d8cce2;border-radius:12px;max-width:90%"><p id="ageErr" style="display:none;color:#c83232;font-weight:700">Informe uma data válida.</p><button class="btn big" id="ageGo">Continuar</button></div></div>
@@ -183,7 +195,7 @@ const fmt = n => { if (n < 10000) return String(Math.floor(n)); const u = ['k', 
 const SAVE_KEY = 'burger-rush-save-v1';
 function loadSave() { if (FRESH) return null; try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) { return null; } }
 // formato do save: ao mudar, suba SAVE_VERSION e acrescente um passo em MIGRATIONS (nunca apague os antigos)
-const SAVE_VERSION = 7;
+const SAVE_VERSION = 8;
 // fase do prédio que cada área antiga exige (usado só na migração 3 -> 4)
 const OLD_ZONE_LV = {t3: 1, s1: 1, t4: 1, g3: 1, c1: 1, t5: 2, t6: 2, h2: 2, f2: 2, s2: 2, h3: 2};
 const OLD_ZONES = ['t1', 't2', 'g2', 'f1', 'h1', 't3', 's1', 't4', 'g3', 't5', 't6', 'c1', 'h2', 'f2', 's2', 'h3'];
@@ -214,6 +226,11 @@ const MIGRATIONS = {
     s.team = {}; s.pend = 0; s.offLv = 0; s.clk = s.last || 0;
     (s.r || []).forEach((r, i) => { if (r) for (const id of r.bought || []) if (/^[hc]\d$/.test(id)) Staff.hire(s.team, i + ':' + id, id[0] === 'h' ? 'helper' : 'cleaner', s.last || Date.now(), 1 + 3 * Math.min(3, r.ex || 0)); });
   },
+  7: s => {
+    // Novos sistemas são aditivos: carteira, equipe, upgrades e estabelecimentos antigos permanecem.
+    s.enterprise = s.enterprise || null; s.journey = s.journey || null;
+    for (const r of s.r || []) if (r) r.layoutSeed = r.layoutSeed ?? null;
+  },
 };
 function migrate(s) { s.v = s.v || 1; while (s.v < SAVE_VERSION) { if (MIGRATIONS[s.v]) MIGRATIONS[s.v](s); s.v++; } return s; }
 const S = migrate(Object.assign({v: SAVE_VERSION, money: 0, muted: false, last: Date.now(), tut: false, cur: 0, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0}], streak: 0, lastLogin: '', daily: null, city: 0, bonus: 0, tips: {}, ageBand: '', stk: null, loan: 0, market: null, ach: {}, prod: null, team: {}, pend: 0, offLv: 0, clk: 0, cfg: null}, loadSave() || {}));
@@ -223,6 +240,8 @@ const R0 = {ex: 0, fac: 0, menu: 0, obra: null, res: null, served: 0, done: fals
 for (const r of S.r) if (r) { r.lv = Object.assign({}, LV0, r.lv); r.rep = r.rep || 3; r.fr = r.fr || 0; for (const k in R0) if (r[k] === undefined) r[k] = R0[k]; r.ms = r.ms || {}; }
 S.loan = S.loan || 0;
 S.team = S.team || {}; S.pend = S.pend || 0; S.offLv = S.offLv || 0;
+for (const key of Object.keys(S.team)) Staff.repairRole(S.team, key);
+S.staffWardrobe = S.staffWardrobe || [...new Set(Object.values(S.team).flatMap(e => e.progress?.uniforms || []))];
 // preferências: movimento reduzido (segue o sistema na 1ª vez) e gráfico econômico
 if (!S.cfg) S.cfg = {rm: !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches), lo: false};
 if (!S.r[S.cur]) S.cur = 0;
@@ -230,6 +249,10 @@ const R = S.r[S.cur];
 // equipe da loja atual e seus bônus (TB é recalculado em refreshTeam quando alguém sobe de nível)
 const teamOf = (k = S.cur) => Object.values(S.team).filter(e => e.r === k);
 let TB = Staff.bonus(teamOf());
+Enterprise.init(S); Journey.init(S);
+let featureHub = null;
+let playBonuses = {price: 0, xp: 0, production: 1, demand: 1};
+let knownRecipes = Object.keys(S.enterprise.book).length;
 const msMult = () => 1 + .03 * Object.values(R.ms).reduce((a, n) => a + n, 0); // maestria das melhorias
 const firstRun = !S.tut;
 let dirty = false, cloudDirty = true, lockSave = false;
@@ -247,6 +270,7 @@ const RESTS = [
   {name: 'Café do Centro', kind: 'Cafeteria', icon: '☕', p: ['coffee', 'cake', 'juice'], x: ['donut', 'sundae'], rn: ['Cappuccino cremoso', 'Bolo de pote', 'Suco de laranja natural'], mult: 7776, val: 1024, cost: 5e9, at: [50, 11], floor: ['#efe4d6', '#e0cdb6'], kitchen: ['#eceff1', '#dadfe3'], wall: 0xece4da, trim: 0x6b3a1e, ground: 0xa9b0ba, sky: 0xd6e4f0, tree: 'round'},
 ];
 const T = RESTS[S.cur];
+const BASE_THEME = {floor: T.floor.slice(), wall: T.wall, trim: T.trim};
 // look = visual da estação de preparo
 const PRODUCTS = {
   burger: {icon: '🍔', name: 'hambúrguer', base: 10, time: 1.1, st: '🔥 CHAPA', look: 'grill'},
@@ -275,8 +299,8 @@ const speed = () => 5.5 * (1 + .1 * R.lv.speed);
 // receita pesquisada: o produto da casa vira versão especial (+50%); os lanches novos já valem bem mais
 const prem = type => { const i = P.indexOf(type); return i < 3 ? (R.menu > i ? 1.5 : 1) : i === 3 ? 2.5 : 4; };
 const facMult = () => 1 + .04 * R.fac; // fachada bonita: clientes pagam um pouco mais
-const value = type => PRODUCTS[type].base * prem(type) * T.val * (1 + .2 * R.lv.price) * cityMult() * (1 + TB.price) * msMult();
-const prepTime = (type, l) => PRODUCTS[type].time * Math.pow(.88, l);
+const value = type => PRODUCTS[type].base * prem(type) * T.val * (1 + .2 * R.lv.price) * cityMult() * (1 + TB.price) * msMult() * (1 + playBonuses.price);
+const prepTime = (type, l) => PRODUCTS[type].time * Math.pow(.88, l) / playBonuses.production;
 
 // ---------- vida de empresário: prédio, fachada e cardápio ----------
 // fases do prédio: W = borda direita, F = frente. Para ampliar: pagar, cumprir as metas e esperar a obra (que anda mesmo com o app fechado)
@@ -658,7 +682,7 @@ function buildShell() {
   plant(-6.4, F - .6, 1, shell); plant(W - .6, F - .6, 1, shell); shellCol(-6.4, F - .6, .4, .4); shellCol(W - .6, F - .6, .4, .4);
   // anexo: balcão 2 para os lanches novos
   if (W > 7) {
-    sAt(box(2.6, .95, 1, T.trim), 8.9, .475, -1); sAt(box(2.8, .1, 1.2, 0xfaf6ee), 8.9, 1, -1); sAt(box(2.62, .12, 1.02, 0x3a2f45), 8.9, .06, -1);
+    sAt(box(2.6, .95, 1, T.counterColor ?? T.trim), 8.9, .475, -1); sAt(box(2.8, .1, 1.2, 0xfaf6ee), 8.9, 1, -1); sAt(box(2.62, .12, 1.02, 0x3a2f45), 8.9, .06, -1);
     shellCol(8.9, -1, 1.4, .6);
     const cv = document.createElement('canvas'); cv.width = 384; cv.height = 64; sign2 = {cv, tex: new THREE.CanvasTexture(cv)};
     sAt(new THREE.Mesh(new THREE.PlaneGeometry(2.6, .44), new THREE.MeshBasicMaterial({map: sign2.tex, transparent: true})), 8.9, .62, -.49);
@@ -752,7 +776,7 @@ function animChar(ch, dt) {
 const COUNTER_MAX = 12;
 // seções 0-2 no balcão principal; 3-4 no balcão 2 do anexo
 const SECTIONS = {[P[0]]: -1.3, [P[1]]: -.15, [P[2]]: 1, [P[3]]: 8.3, [P[4]]: 9.5};
-at(box(4.2, .95, 1, T.trim), 0, .475, -1); at(box(4.4, .1, 1.2, 0xfaf6ee), 0, 1, -1);
+const counterBody = at(box(4.2, .95, 1, T.trim), 0, .475, -1); at(box(4.4, .1, 1.2, 0xfaf6ee), 0, 1, -1);
 at(box(4.22, .12, 1.02, 0x3a2f45), 0, .06, -1);
 const reg = at(new THREE.Group(), 1.85, 1.05, -1.1);
 at(box(.4, .25, .4, 0x4a5568), 0, .12, 0, reg); at(box(.36, .22, .05, 0x7be3ff), 0, .38, -.05, reg).rotation.x = -.4;
@@ -793,7 +817,8 @@ const pileMark = plane(1.6, 1.6, new THREE.MeshBasicMaterial({color: 0x2fbf4a, t
 const stations = [];
 function addStation(type, x, z, rot = 0) {
   const g = at(new THREE.Group(), x, 0, z); g.rotation.y = rot;
-  at(box(1.6, .85, 1.2, 0x9aa7b4), 0, .425, 0, g); at(box(1.62, .1, 1.22, 0x5d6672), 0, .05, 0, g);
+  const palette = Journey.palette(S, S.cur);
+  g.userData.paint = at(box(1.6, .85, 1.2, palette.equipment ?? 0x9aa7b4), 0, .425, 0, g); at(box(1.62, .1, 1.22, 0x5d6672), 0, .05, 0, g);
   at(box(1.5, .06, 1.1, 0x2b2f36), 0, .88, 0, g);
   let slot = i => new V3((i % 2) * .6 - .3, .92 + Math.floor(i / 2) * .38, 0);
   const D = PRODUCTS[type], look = D.look;
@@ -823,23 +848,25 @@ function addStation(type, x, z, rot = 0) {
   const max = label('MAX', {bg: 'rgba(230,50,50,.95)', scale: 1.1}); max.position.set(0, 2.5, 0); max.visible = false; g.add(max);
   const sideways = Math.abs(Math.sin(rot)) > .5;
   addCollider(x, z, sideways ? .6 : .8, sideways ? .8 : .6); popIn(g);
-  stations.push({type, g, stack, t: 0, smokeT: Math.random(), max, pos: new V3(x, 0, z), front: new V3(x + Math.sin(rot) * 1.25, 0, z + Math.cos(rot) * 1.25)});
+  stations.push({type, g, stack, t: 0, smokeT: Math.random(), max, collider: colliders[colliders.length - 1], pos: new V3(x, 0, z), front: new V3(x + Math.sin(rot) * 1.25, 0, z + Math.cos(rot) * 1.25)});
   stations[stations.length - 1].smoky = look !== 'machine' && look !== 'freezer';
   drawSign();
+  return stations[stations.length - 1];
 }
-addStation(P[0], -3, -4.5);
+const mainStation = addStation(P[0], -3, -4.5);
 
 const seats = [];
 function addTable(x, z) {
   const g = at(new THREE.Group(), x, 0, z);
-  at(box(1.5, .1, 1.05, 0xc98a4b), 0, .76, 0, g); at(box(1.4, .02, .95, 0xd9a066), 0, .82, 0, g);
+  const palette = Journey.palette(S, S.cur);
+  g.userData.paint = at(box(1.5, .1, 1.05, palette.table ?? 0xc98a4b), 0, .76, 0, g); g.userData.top = at(box(1.4, .02, .95, palette.table ?? 0xd9a066), 0, .82, 0, g);
   at(cyl(.07, .7, 0x6b4a2a), 0, .36, 0, g); at(cyl(.35, .05, 0x6b4a2a), 0, .03, 0, g);
-  at(cyl(.1, .14, 0xff6b6b, 12), .45, .89, .3, g); at(ball(.09, 0xfff1a8), .45, 1.0, .3, g);
+  at(cyl(.1, .14, 0xff6b6b, 12), .45, .89, .3, g); g.userData.flower = at(ball(.09, palette.decor ?? 0xfff1a8), .45, 1.0, .3, g);
   for (const side of [-1, 1]) {
     at(cyl(.3, .12, T.trim), side * .98, .45, 0, g); at(cyl(.06, .4, 0x6b4a2a), side * .98, .2, 0, g);
     seats.push({x: x + side * .98, z, side, table: g, taken: false, dirty: false, trash: null, tb: {x, z}});
   }
-  addCollider(x, z, 1.3, .55); popIn(g);
+  addCollider(x, z, 1.3, .55); g.userData.collider = colliders[colliders.length - 1]; popIn(g); return g;
 }
 // mesa suja: o cliente deixa a bandeja; ela só volta a ser usada depois de limpa
 function soil(seat) {
@@ -859,7 +886,9 @@ const shadowBlob = new THREE.Mesh(new THREE.CircleGeometry(.45, 20), new THREE.M
 shadowBlob.rotation.x = -Math.PI / 2; shadowBlob.position.y = .01; player.g.add(shadowBlob);
 
 function addMoney(d, quiet) {
-  S.money = Math.max(0, S.money + d); dirty = true;
+  if (!Number.isFinite(d) || !Number.isFinite(S.money)) return false;
+  S.money = Math.min(Number.MAX_SAFE_INTEGER, Math.max(0, S.money + d)); dirty = true;
+  if (d) recordPlay(d > 0 ? 'earn' : 'spend', Math.abs(d));
   $('money').textContent = fmt(S.money);
   if (d > 0 && !quiet) { const c = $('cash'); c.classList.remove('pulse'); void c.offsetWidth; c.classList.add('pulse'); }
   refreshBadges();
@@ -870,20 +899,26 @@ const canDrop = st => st.ready && counters[st.top.type].count < COUNTER_MAX;
 const helpers = [];
 const crew = () => helpers.concat(cleaners);
 function hireChar(ch, id, role) {
-  const e = ch.emp = Staff.hire(S.team, S.cur + ':' + id, role);
+  ch.empKey = S.cur + ':' + id;
+  const e = ch.emp = Staff.hire(S.team, ch.empKey, role);
   setShirt(ch, Staff.rankOf(e).shirt); dirty = true; return e;
 }
 function refreshTeam() {
   TB = Staff.bonus(teamOf());
-  for (const c of crew()) if (c.emp) setShirt(c, Staff.rankOf(c.emp).shirt);
+  const palette = Journey.palette ? Journey.palette(S, S.cur) : {};
+  for (const c of crew()) if (c.emp) {
+    const outfit = c.emp.uniform && (c.emp.progress?.uniforms.includes(c.emp.uniform) || S.staffWardrobe.includes(c.emp.uniform)) && Staff.UNIFORMS[c.emp.uniform];
+    setShirt(c, outfit ? outfit.shirt : Number.isFinite(palette.uniform) ? palette.uniform : Staff.rankOf(c.emp).shirt);
+  }
 }
 // XP do trabalho; subir de nível e ser promovido aparece na tela
 function empXP(e, amount, quiet) {
   if (!e) return [];
-  const k = e.r === S.cur ? TB : Staff.bonus(teamOf(e.r)), ev = Staff.gainXP(e, amount * (1 + k.xp));
+  const k = e.r === S.cur ? TB : Staff.bonus(teamOf(e.r)), ev = Staff.gainXP(e, amount * (1 + k.xp + playBonuses.xp));
   dirty = true;
   if (ev.length) {
     if (ev.some(x => x.promo)) S.teamNew = true;
+    for (const x of ev) if (x.promo) recordPlay('promotion', 1);
     refreshTeam(); if (!quiet && e.r === S.cur) ev.forEach(celebrate); refreshBadges();
   }
   return ev;
@@ -891,8 +926,8 @@ function empXP(e, amount, quiet) {
 function celebrate(x) {
   const ch = crew().find(c => c.emp === x.e), pos = ch ? ch.g.position : player.g.position;
   if (x.promo) {
-    floatText(`🎉 ${x.e.n}: ${x.rank}!`, pos, 'rgba(224,154,0,.95)'); sfx.done();
-    burst(pos.clone().add(new V3(0, 1.2, 0)), 30, CONFETTI, {speed: 3, up: 6}); toast(`🎉 Promoção! ${x.e.n} agora é ${x.rank}`);
+    floatText(`🎉 ${x.e.n}: ${Staff.jobTitle({...x.e, lv: x.lv})}!`, pos, 'rgba(224,154,0,.95)'); sfx.done();
+    burst(pos.clone().add(new V3(0, 1.2, 0)), 30, CONFETTI, {speed: 3, up: 6}); toast(`🎉 Promoção! ${x.e.n} agora é ${Staff.jobTitle({...x.e, lv: x.lv})}`);
   } else floatText(`⬆️ ${x.e.n} · nível ${x.lv}`, pos, 'rgba(79,143,247,.95)');
 }
 function addHelper(x, z, id) {
@@ -909,7 +944,7 @@ function updateHelper(h, dt) {
   if (deliver) moveTo(h, SECTIONS[top.type], -2.2, sp, dt);
   else if (best) { if (moveTo(h, best.front.x + (h.n ? .3 : -.3), best.front.z, sp, dt)) turn(h, Math.atan2(best.pos.x - p.x, best.pos.z - p.z), dt); }
   else h.moving = false;
-  if (inDrop(p) && canDrop(h.hand) && (h.dropT -= dt) <= 0 && transfer(h.hand, counters[top.type])) { h.dropT = .1; empXP(e, 1); }
+  if (inDrop(p) && canDrop(h.hand) && (h.dropT -= dt) <= 0 && transfer(h.hand, counters[top.type])) { h.dropT = .1; if (e) Staff.recordWork(e); empXP(e, 1); }
   h.pickT -= dt;
   for (const s of stations) if (p.distanceTo(s.pos) < 1.9 && h.hand.count < hc && counters[s.type].count < COUNTER_MAX && h.pickT <= 0 && transfer(s.stack, h.hand)) h.pickT = .15;
   animChar(h, dt);
@@ -924,7 +959,7 @@ function updateCleaner(c, dt) {
   const d = dirtyTables(), p = c.g.position;
   if (d.length) {
     const [tbl, tb] = d.reduce((a, b) => (Math.hypot(b[1].x - p.x, b[1].z - p.z) < Math.hypot(a[1].x - p.x, a[1].z - p.z) ? b : a));
-    if (moveTo(c, tb.x, tb.z + .95, 3.2 * (1 + .1 * R.lv.speed) * (c.emp ? Staff.agility(c.emp, TB, true) : 1), dt)) { turn(c, Math.PI, dt); if ((c.t += dt) > .7) { c.t = 0; for (const s of seats) if (s.table === tbl && s.dirty) { cleanSeat(s); empXP(c.emp, 3); } } }
+    if (moveTo(c, tb.x, tb.z + .95, 3.2 * (1 + .1 * R.lv.speed) * (c.emp ? Staff.agility(c.emp, TB, true) : 1), dt)) { turn(c, Math.PI, dt); if ((c.t += dt) > .7) { c.t = 0; for (const s of seats) if (s.table === tbl && s.dirty) { cleanSeat(s); if (c.emp) Staff.recordWork(c.emp); empXP(c.emp, 3); } } }
   } else moveTo(c, c.home.x, c.home.z, 3, dt);
   animChar(c, dt);
 }
@@ -965,13 +1000,32 @@ const ZONES = [
   {id: 'h4', kind: 'helper', price: 600000, x: 8.2, z: 1.4, req: ['x1'], lv: 3},
   {id: 't9', kind: 'table', price: 800000, x: 9.3, z: 10.8, req: ['t8'], lv: 3},
 ];
+// Mesma semente por loja/cidade: recarregar ou ampliar não embaralha mesas já abertas.
+if (R.layoutSeed == null) { R.layoutSeed = `burger-rush:${S.city}:${S.cur}`; R.layoutVersion = Layout.version; dirty = true; }
+const allLayout = Layout.generate({seed: R.layoutSeed, phase: 3, lot: S.cur, city: S.city});
+const layoutSafe = Layout.validate(allLayout).ok;
+if (layoutSafe) for (const z of ZONES) if (z.kind === 'table') Object.assign(z, {x: allLayout.tables[z.id].x, z: allLayout.tables[z.id].z});
+let storeLayout = null;
+const layoutDecor = at(new THREE.Group(), 0, 0, 0);
+function refreshLayout() {
+  const next = Layout.generate({seed: R.layoutSeed, phase: R.ex, lot: S.cur, city: S.city});
+  if (!layoutSafe || !Layout.validate(next).ok) { console.warn('Layout inválido: coordenadas de segurança mantidas'); return; }
+  storeLayout = next;
+  for (let i = colliders.length - 1; i >= 0; i--) if (colliders[i].procedural) colliders.splice(i, 1);
+  while (layoutDecor.children.length) drop(layoutDecor.children[0]);
+  for (const d of next.decorations) {
+    if (d.kind === 'plant') plant(d.x, d.z, .4, layoutDecor);
+    else at(box(d.hw * 2, .45, d.hd * 2, d.kind === 'crate' ? 0xbb874e : 0x70bd9b), d.x, .225, d.z, layoutDecor);
+    if (d.solid) { addCollider(d.x, d.z, d.hw, d.hd); colliders[colliders.length - 1].procedural = true; }
+  }
+}
 const bought = new Set(R.bought);
 const complete = r => !!r && (!!r.done || ZONES.every(z => r.bought.includes(z.id)));
 function makeZone(z) {
-  if (z.kind === 'table') addTable(z.x, z.z);
+  if (z.kind === 'table') z.object = addTable(z.x, z.z);
   else if (z.kind === 'helper') addHelper(z.x, z.z, z.id);
   else if (z.kind === 'cleaner') addCleaner(z.x, z.z, z.id);
-  else addStation(P[+z.kind[1]], z.x, z.z, z.rot || 0);
+  else z.object = addStation(P[+z.kind[1]], z.x, z.z, z.rot || 0);
 }
 function buildZoneUI(z) {
   z.base = z.price; z.price = Math.round(z.base * T.mult); z.left = z.price; z.step = Math.max(1, Math.ceil(z.price / 25)); z.t = 0;
@@ -1017,14 +1071,24 @@ function makeOrder(vip) {
   for (const t of has.slice(1)) if (Math.random() < .6) o[t] = 1 + (Math.random() < .25 ? 1 : 0);
   if (o[P[1]] && Math.random() < .3) delete o[P[0]]; // às vezes só acompanhamentos
   if (vip) for (const t of has) o[t] = (o[t] || 0) + 1 + (Math.random() * 2 | 0);
+  if (storeLayout && (R.served || 0) % 4 === 0) {
+    const sequence = storeLayout.variants.order.sequence, selected = P[sequence[(R.served || 0) % sequence.length]];
+    if (has.includes(selected)) o[selected] = Math.min(3, (o[selected] || 0) + 1);
+  }
   return o;
 }
 function spawnCustomer() {
-  const vip = S.tut && bought.size >= 4 && Math.random() < .07 + .01 * R.lv.mkt + .015 * R.fac;
+  const visit = R.visitors = (R.visitors || 0) + 1;
+  const critic = S.tut && bought.size >= 6 && visit % 23 === 0;
+  const regular = !critic && S.tut && visit % 5 === 0;
+  const vip = !critic && S.tut && bought.size >= 4 && Math.random() < .07 + .01 * R.lv.mkt + .015 * R.fac;
   const c = makeChar({shirt: vip ? 0xffc928 : pick(SHIRTS), skin: pick(SKINS), pants: vip ? 0x2b2140 : pick([0x2d3142, 0x3c5a99, 0x6b4a2a])});
   if (vip) { at(mesh(new THREE.CylinderGeometry(.2, .24, .16, 5), 0xffd23f), 0, 1.5, 0, c.body); }
   c.g.position.set((Math.random() - .5) * 2, 0, 15); c.vip = vip; c.order = makeOrder(vip); c.got = {}; c.state = 'queue'; c.t = 0; c.pay = 0; c.payT = 0;
-  c.pat = c.patMax = patience() * (vip ? .65 : 1);
+  c.critic = critic; c.regular = regular; c.regularId = visit % 4;
+  c.customerName = critic ? 'Crítico gastronômico' : regular ? ['Lia', 'Beto', 'Nina', 'Rui'][c.regularId] : '';
+  if (regular || critic) { const available = P.filter(k => stations.some(s => s.type === k)); c.favorite = available[visit % available.length]; c.order[c.favorite] = (c.order[c.favorite] || 0) + 1; }
+  c.pat = c.patMax = patience() * (vip ? .65 : critic ? .8 : regular ? 1.2 : 1);
   for (const k in c.order) c.got[k] = 0;
   c.bubble = label('', {w: 384, scale: 1.9, bg: 'rgba(255,255,255,.97)', fg: '#2b2140'}); c.bubble.position.y = 2.05; c.bubble.visible = false; c.g.add(c.bubble);
   queue.push(c); customers.push(c);
@@ -1057,7 +1121,7 @@ function updateCustomer(c, dt) {
     if (there || i > 0) c.pat -= dt;
     if (c.pat <= 0) return angry(c, '😡 Demorou!', -.3);
     if (i === 0 && there) {
-      c.bubble.visible = true; c.bubble.set((c.vip ? '👑' : '') + (orderText(c) || '👍'), moodBg(c));
+      c.bubble.visible = true; c.bubble.set((c.critic ? '📝' : c.regular ? '💚' : c.vip ? '👑' : '') + (orderText(c) || '👍'), moodBg(c));
       if ((c.t -= dt) <= 0) for (const [k, n] of Object.entries(c.order)) if (c.got[k] < n && transfer(counters[k], c.hand)) { c.got[k]++; c.t = .28; break; }
       if (Object.entries(c.order).every(([k, n]) => c.got[k] >= n) && c.hand.ready) {
         queue.shift(); c.bubble.visible = false;
@@ -1066,6 +1130,20 @@ function updateCustomer(c, dt) {
         let total = 0, items = 0;
         for (const [k, n] of Object.entries(c.order)) { total += n * value(k); items += n; track('item', n); }
         total *= payMult() * comboMult() * (rush > 0 ? 2 : 1) * (c.vip ? 5 : 1) * boostMult();
+        const serving = Enterprise.serve(S, {count: 1, items, fast, vip: c.vip, critic: c.critic, products: c.order}, featureContext());
+        total *= serving && Number.isFinite(serving.mult) ? Math.max(.5, Math.min(2, serving.mult)) : 1;
+        if (!R.guests) R.guests = {loyalty: {}, ratings: [], tips: 0};
+        if (c.regular) {
+          const loyalty = R.guests.loyalty[c.regularId] || 0;
+          const tip = fast ? total * Math.min(.12, .03 + .01 * loyalty) : 0;
+          total += tip; R.guests.tips += tip;
+          R.guests.loyalty[c.regularId] = Math.min(10, loyalty + 1); recordPlay('regular', 1);
+        }
+        if (c.critic) {
+          const rating = fast && seats.some(s => !s.dirty) ? 5 : fast ? 4 : 3;
+          R.guests.ratings.unshift({at: Date.now(), stars: rating}); R.guests.ratings.length = Math.min(10, R.guests.ratings.length);
+          addRep(rating >= 4 ? .2 : -.05); recordPlay('critic', 1); toast(`📝 Crítico avaliou ${rating} estrelas: ${rating >= 4 ? 'ótimo atendimento!' : 'melhore o tempo de espera'}`);
+        }
         track('serve', 1); if (c.vip) { track('vip', 1); floatText(`👑 VIP +$${fmt(total)}`, c.g.position, 'rgba(224,154,0,.95)'); burst(c.g.position.clone().add(new V3(0, 1.5, 0)), 24, COINS, {speed: 3, up: 6, size: .14}); }
         c.pay = Math.min(15, items * 3); c.billVal = total / c.pay;
         if (Math.hypot(player.g.position.x - c.g.position.x, player.g.position.z - c.g.position.z) < 9) sfx.pay();
@@ -1248,6 +1326,7 @@ function ensureDaily() {
   S.daily = {day: today, list}; dirty = true; return true;
 }
 function track(k, a, isMax) {
+  if (a > 0 && !isMax && k !== 'earn') recordPlay(k, a);
   if (k === 'earn' && a > 0 && !isMax) { const w = marketState().weekly; if (w) w.rest += a; }
   if (!S.daily) return;
   for (const m of S.daily.list) if (m.k === k && !m.claimed && m.p < m.n) {
@@ -1320,6 +1399,7 @@ function renderRests() {
   let html = `<div class="up"><div class="ic">${t.icon}</div><div class="tx"><b>${t.name}</b><small>${t.kind} · ${prods}</small><span>${sub}</span></div>${right}</div>`;
   if (r) {
     const done = complete(r), max = r.fr >= FR_MAX;
+    html += `<div class="feature-stats"><div><small>Renda estimada por minuto</small><b>$${fmt(lotRate(sel, true))}</b></div><div><small>Equipe nesta loja</small><b>${teamOf(sel).length} pessoas</b></div><div><small>Bônus estimado da equipe</small><b>+${Math.round((Staff.rateMult(teamOf(sel)) - 1) * 100)}%</b></div><div><small>Clientes atendidos</small><b>${fmt(r.served || 0)}</b></div><div><small>Reputação da unidade</small><b>⭐ ${repOf(r).toFixed(1)}</b></div><div><small>Gorjetas geradas</small><b>$${fmt(r.guests?.tips || 0)}</b></div></div>`;
     html += `<div class="up"><div class="ic">🏪</div><div class="tx"><b>Franquias ${r.fr}/${FR_MAX}</b><span>${done ? `Cada unidade rende +$${fmt(frUnit(sel))}/min, mesmo com o app fechado` : 'Complete este estabelecimento para franquear'}</span></div>`
       + (done ? `<button class="btn gold" data-fr="${sel}" ${!max && S.money >= frCost(sel) ? '' : 'disabled'}>${max ? 'MAX' : '$' + fmt(frCost(sel))}</button>` : '') + '</div>';
   }
@@ -1342,14 +1422,18 @@ $('rests').addEventListener('click', e => {
   }
   if (fr && !fr.disabled) {
     const i = +fr.dataset.fr, c = frCost(i); if (S.money < c || S.r[i].fr >= FR_MAX) return;
-    addMoney(-c); S.r[i].fr++; dirty = true; sfx.buy(); track('upgrade', 1); toast(`🏪 Nova franquia de ${RESTS[i].name}!`);
+    addMoney(-c); S.r[i].fr++; dirty = true; sfx.buy(); track('upgrade', 1); recordPlay('franchise', 1); toast(`🏪 Nova franquia de ${RESTS[i].name}!`);
     burst(player.g.position.clone().add(new V3(0, 1.2, 0)), 30, CONFETTI, {speed: 3.5, up: 7}); renderRests();
   }
   if (e.target.id === 'newCity' && !e.target.disabled) {
     const g = cityGain();
-    if (!confirm(`Levar a marca para a Cidade ${S.city + 2}?\n\nVocê recomeça do zero (dinheiro, estabelecimentos e franquias), mas ganha +${Math.round(g * 100)}% permanente em tudo que vender. Missões e sequência continuam.`)) return;
+    if (!confirm(`Levar a marca para a Cidade ${S.city + 2}?\n\nReinicia: caixa, estabelecimentos, franquias, ações, dívidas, equipe e instalações de produção.\n\nPreserva: receitas descobertas, coleções, conquistas, cosméticos, temporada, missões e sequência.\n\nBônus permanente: +${Math.round(g * 100)}% nas vendas.`)) return;
+    recordPlay('prestige', 1);
+    const resetProduction = Enterprise.prestige(S); if (!resetProduction.ok) return toast(resetProduction.messages.join(' '));
+    if (Journey.prestige) Journey.prestige(S);
     if (S.stk) for (const c of S.stk.c) { c.own = 0; c.paid = 0; }
-    S.bonus = (S.bonus || 0) + g; S.city++; S.money = 0; S.loan = 0; S.cur = 0; S.r = [{bought: [], lv: Object.assign({}, LV0), rate: 0, rep: 3, fr: 0}];
+    S.bonus = (S.bonus || 0) + g; S.city++; S.money = 0; S.loan = 0; S.cur = 0; S.r = [{bought: [], lv: Object.assign({}, LV0), rate: 0, rep: 3, fr: 0}]; S.team = {}; S.pend = 0;
+    if (S.market) { S.market.orders = []; S.market.fund.on = false; }
     persist(); Cloud.push(true);
     $('fade').textContent = `✈️ Cidade ${S.city + 1} · bônus x${cityMult().toFixed(2)}`; $('fade').classList.add('on');
     setTimeout(() => location.reload(), 900);
@@ -1397,10 +1481,26 @@ const Cloud = (() => {
     if (native) await ND.setDocument({reference: `users/${st.uid}`, data: env, merge: false}); else await WD.doc(`users/${st.uid}`).set(env);
   }
   async function commit(expected, overwrite) {
-    const remote = await readRemote(), rev = remote && remote.revision || 0;
-    if (!overwrite && rev !== expected) return conflict(remote);
-    S.last = Date.now(); const env = {save: JSON.stringify(S), schemaVersion: SAVE_VERSION, revision: rev + 1, updatedAt: Date.now(), updatedByDevice: deviceId, progress: progressOf(S), summary: describe(S)};
-    await writeRemote(env); meta.uid = st.uid; meta.baseRev = env.revision; meta.hash = hash(S); saveMeta(); st.lastPush = env.updatedAt; cloudDirty = false; st.pending = null; return true;
+    // Snapshot imutável: retries da transação não modificam o jogo nem consomem recompensas.
+    const uid = st.uid, snapshot = JSON.parse(JSON.stringify(S)), options = {schema: SAVE_VERSION, overwrite,
+      now: Date.now(), deviceId, progress: progressOf(snapshot), summary: describe(snapshot)};
+    let result;
+    if (!native) {
+      const ref = WD.doc(`users/${uid}`);
+      result = await WD.runTransaction(async tx => {
+        const doc = await tx.get(ref), remote = doc.exists ? doc.data() : null;
+        const next = SaveSync.plan(snapshot, remote, expected, options);
+        if (next.status === 'ready') tx.set(ref, next.env);
+        return next;
+      });
+    } else {
+      const remote = await readRemote(); result = SaveSync.plan(snapshot, remote, expected, options);
+      if (result.status === 'ready') await writeRemote(result.env);
+    }
+    if (st.uid !== uid) return false;
+    if (result.status === 'conflict') return conflict(result.remote);
+    if (result.status !== 'ready') { st.error = result.status === 'newer' ? 'Atualize o jogo: save da nuvem é mais novo' : 'Save não enviado: confira o progresso antes de substituir'; return false; }
+    const env = result.env; meta.uid = uid; meta.baseRev = env.revision; meta.hash = hash(snapshot); saveMeta(); st.lastPush = env.updatedAt; cloudDirty = hash(S) !== meta.hash; st.pending = null; return true;
   }
   function remoteSave(env) { try { return env && (typeof env.save === 'string' ? JSON.parse(env.save) : env.save); } catch (e) { return null; } }
   function conflict(env) {
@@ -1408,21 +1508,30 @@ const Cloud = (() => {
     st.pending = env; const at = env.updatedAt ? new Date(env.updatedAt).toLocaleString('pt-BR') : 'data desconhecida';
     $('cpTxt').innerHTML = `<span><b>Nuvem (${at}):</b> ${describe(remote)}</span><span><b>Este aparelho:</b> ${describe(S)}</span><small>Nada será combinado ou apagado sem sua escolha.</small>`; openModal('cloudPick'); return false;
   }
-  async function push(force, overwrite = false) {
+  async function push(force, overwrite = false, expectedRevision = null) {
     if (!st.signedIn || st.busy || FRESH || (!force && (!cloudDirty || Date.now() - st.lastPush < 60000))) return;
     st.busy = true; st.error = '';
-    try { await commit(meta.uid === st.uid ? (meta.baseRev || 0) : 0, overwrite); } catch (e) { st.error = navigator.onLine ? 'Falha ao sincronizar' : 'Offline · save pendente'; }
+    try { await commit(expectedRevision === null ? (meta.uid === st.uid ? (meta.baseRev || 0) : 0) : expectedRevision, overwrite); } catch (e) { st.error = navigator.onLine ? 'Falha ao sincronizar' : 'Offline · save pendente'; }
     st.busy = false; renderCloud();
   }
   async function reconcile() {
     let env = null;
     try { env = await readRemote(); } catch (e) { st.error = 'Offline · jogando com save local'; return renderCloud(); }
-    if (!env) return commit(0, false);
-    const remote = remoteSave(env); if (!remote || !remote.r) return commit(env.revision || 0, true);
-    if ((remote.v || 1) > SAVE_VERSION) { st.error = 'Save da nuvem exige uma versão mais nova'; return renderCloud(); }
+    if (!env) {
+      if (meta.uid && meta.uid !== st.uid && progressOf(S) >= 5 && !confirm('Vincular o progresso deste aparelho a esta conta Google? O progresso local pode ter vindo de outra conta.')) return;
+      return commit(0, false);
+    }
+    const remote = remoteSave(env); if (!remote || !remote.r) {
+      st.error = 'O save da nuvem não pôde ser lido. Seu jogo local foi preservado.'; return renderCloud();
+    }
+    if ((remote.v || 1) > SAVE_VERSION) { st.error = 'Save da nuvem exige uma versão mais nova'; cloudDirty = false; return renderCloud(); }
     const localHash = hash(S), sameUser = meta.uid === st.uid, localChanged = !sameUser || meta.hash !== localHash, remoteChanged = !sameUser || meta.baseRev !== env.revision;
     if (!localChanged && remoteChanged) return adopt(env);
-    if (localChanged && remoteChanged) { if (progressOf(S) < 5) return adopt(env); return conflict(env); }
+    if (localChanged && remoteChanged) {
+      const untouched = progressOf(S) < 5 && S.money < 1 && S.pend < 1 && !Object.keys(S.team).length
+        && !S.enterprise.stats.harvests && !Object.keys(S.enterprise.book).length && !S.journey.stats.claims && !S.journey.stats.spent;
+      if (untouched) return adopt(env); return conflict(env);
+    }
     if (localChanged) return commit(env.revision || 0, false);
     st.lastPush = env.updatedAt || Date.now(); renderCloud();
   }
@@ -1463,7 +1572,7 @@ const Cloud = (() => {
   }
   async function signOut() { try { if (native) await NA.signOut(); else await WA.signOut(); } catch (e) {} userFrom(null); renderCloud(); }
   async function wipe() { if (!st.signedIn) return; const empty = {v: SAVE_VERSION, money: 0, city: 0, bonus: 0, loan: 0, stk: null, prod: null, r: [{bought: [], lv: {}, rate: 0, rep: 3, fr: 0, ex: 0, fac: 0, menu: 0, served: 0}]}; try { await writeRemote({save: JSON.stringify(empty), schemaVersion: SAVE_VERSION, revision: (meta.baseRev || 0) + 1, updatedAt: Date.now(), updatedByDevice: deviceId, progress: 0, summary: 'Novo jogo'}); } catch (e) {} }
-  return {st, start, push, wipe, adopt, signOut, mountGoogle, keepLocal: () => push(true, true), signInAndSync: async () => { if (await signIn(true)) await reconcile(); }};
+  return {st, start, push, wipe, adopt, signOut, mountGoogle, keepLocal: () => push(true, true, st.pending?.revision ?? meta.baseRev ?? 0), signInAndSync: async () => { if (await signIn(true)) await reconcile(); }};
 })();
 function renderCloud() {
   const st = Cloud.st; let sub, btn = '';
@@ -1491,7 +1600,7 @@ const AD_TEST = false, AD_DAY_MAX = 20;
 const Ads = (() => {
   const C = window.Capacitor;
   const P = C && C.isNativePlatform && C.isNativePlatform() && C.registerPlugin ? C.registerPlugin('AdMob') : null;
-  const fake = !P && Q.has('fakeads'); // simula os anúncios no navegador (testes)
+  const fake = !P && Q.has('fakeads') && ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname); // somente QA local
   const st = {available: !!P || fake, ready: fake, banner: false, busy: false};
   let earned = false, done = null;
   async function load() {
@@ -1507,9 +1616,10 @@ const Ads = (() => {
     // UMP do Google: antes de pedir qualquer anúncio, mostra o formulário certificado
     // somente nas regiões/contas em que o consentimento for obrigatório.
     try {
-      const consent = await P.requestConsentInfo({tagForUnderAgeOfConsent: teen});
-      if (consent && consent.isConsentFormAvailable && consent.status === 'REQUIRED') await P.showConsentForm();
-    } catch (e) { console.warn('AdMob consent:', e); }
+      let consent = await P.requestConsentInfo({tagForUnderAgeOfConsent: teen});
+      if (consent && consent.isConsentFormAvailable && consent.status === 'REQUIRED') consent = await P.showConsentForm();
+      if (!consent || !['OBTAINED', 'NOT_REQUIRED'].includes(consent.status)) { st.available = false; return; }
+    } catch (e) { console.warn('AdMob consent:', e); st.available = false; return; }
     P.addListener('bannerAdSizeChanged', s => document.documentElement.style.setProperty('--ad', ((s && s.height) || 0) + 'px'));
     P.addListener('onRewardedVideoAdReward', () => { earned = true; });
     P.addListener('onRewardedVideoAdDismissed', () => { finish(earned); load(); });
@@ -1534,7 +1644,7 @@ const Ads = (() => {
 })();
 const boostMult = () => (S.boostUntil || 0) > Date.now() ? 2 : 1;
 const clock = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-function adDay() { const d = dayKey(); if (!S.ads || S.ads.day !== d) S.ads = {day: d, n: 0, cd: {}}; return S.ads; }
+function adDay() { const d = dayKey(); if (!S.ads || S.ads.day < d) S.ads = {day: d, n: 0, cd: {}}; return S.ads; }
 const adCash = () => Math.round(Math.max(50 * RESTS[S.cur].val * (1 + S.city), 3 * (currentRate() + passiveRate(false))));
 // prêmios por anúncio; cd = espera em minutos até poder pegar o mesmo prêmio de novo
 const AD_REWARDS = [
@@ -1545,6 +1655,29 @@ const AD_REWARDS = [
   {k: 'rush', icon: '🔥', name: 'Hora do rush agora', desc: () => 'Fila cheia pagando 2x por 25s', cd: 8, off: () => rush > 0 || bought.size < 2, go: startRush},
   {k: 'rep', icon: '⭐', name: 'Fama máxima', desc: () => 'Reputação sobe para 5 estrelas', cd: 6, off: () => R.rep >= 5, go: () => addRep(5)},
 ];
+const earnedReceipt = () => ({id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, earned: true, at: Date.now()});
+const activeDelivery = () => S.enterprise.deliveries.find(d => d.status === 'travelling' && !d.boosted);
+const activeCrop = () => Object.entries(S.enterprise.producers).find(([, p]) => p.job && !p.job.boosted);
+const finishAdJob = result => { if (!result.ok) addMoney(30 * T.val); featureChanged(); };
+AD_REWARDS.push(
+  {k: 'staffxp', icon: '🎓', name: 'Treino extra da equipe', desc: () => '+120 XP por funcionário desta loja · 1 vez por pessoa/dia', cd: 60,
+    off: () => !teamOf().some(e => e.lv < Staff.LV_MAX && (e.progress?.ads?.day !== Math.floor(Date.now() / 86400000) || !e.progress?.ads?.count)),
+    go: () => { const receipt = earnedReceipt(); for (const e of teamOf()) { const out = Staff.rewardXP(e, 120, receipt); if (out.ok) out.events.forEach(celebrate); } featureChanged(); }},
+  {k: 'lab', icon: '🧪', name: 'Acelerar pesquisa', desc: () => 'Reduz até 1 minuto, uma vez por pesquisa. Se já concluir, recebe moedas.', cd: 10,
+    off: () => !(S.enterprise.research && !S.enterprise.research.boosted) && !(R.res && !R.res.boosted),
+    go: () => {
+      if (S.enterprise.research && !S.enterprise.research.boosted) finishAdJob(Enterprise.act(S, 'boost-research', 'research', featureContext()));
+      else if (R.res && !R.res.boosted) { R.res.end -= Math.min(60000, Math.max(0, R.res.end - Date.now()) / 2); R.res.boosted = true; checkTimers(); }
+      else addMoney(30 * T.val);
+    }},
+  {k: 'delivery', icon: '🛵', name: 'Rota expressa', desc: () => 'Reduz até 1 minuto de uma entrega em viagem', cd: 8, off: () => !activeDelivery(),
+    go: () => { const d = activeDelivery(); finishAdJob(d ? Enterprise.act(S, 'boost-delivery', d.id, featureContext()) : {ok: false}); }},
+  {k: 'crop', icon: '🌱', name: 'Produção acelerada', desc: () => 'Reduz até 1 minuto de um cultivo ou fábrica em andamento', cd: 8, off: () => !activeCrop(),
+    go: () => { const c = activeCrop(); finishAdJob(c ? Enterprise.act(S, 'boost-production', c[0], featureContext()) : {ok: false}); }},
+  {k: 'spin', icon: '🎡', name: 'Giro extra', desc: () => 'Mais uma rodada opcional · limite de 1 por dia', cd: 60,
+    off: () => (S.journey.ads?.spin || 0) >= 1 || S.journey.spin.extra >= 1,
+    go: () => { Journey.extraSpin(S, earnedReceipt(), featureContext()); featureChanged(); }}
+);
 const adWait = r => Math.max(0, Math.ceil(((adDay().cd[r.k] || 0) - Date.now()) / 1000));
 const adOk = r => adDay().n < AD_DAY_MAX && !adWait(r) && !(r.off && r.off());
 function renderAds() {
@@ -1557,7 +1690,8 @@ function claimAd(r) { const a = adDay(); a.n++; if (r) a.cd[r.k] = Date.now() + 
 $('adList').addEventListener('click', e => {
   const b = e.target.closest('[data-ad]'); if (!b || b.disabled) return;
   const r = AD_REWARDS.find(x => x.k === b.dataset.ad);
-  Ads.show(() => { claimAd(r); closeModal('adShop'); r.go(); sfx.buy(); toast(`${r.icon} ${r.name}!`); });
+  if (!r || !adOk(r)) return;
+  Ads.show(() => { if (adDay().n >= AD_DAY_MAX || adWait(r)) return; claimAd(r); closeModal('adShop'); r.go(); recordPlay('ad', 1); persist(); sfx.buy(); toast(`${r.icon} ${r.name}!`); });
 });
 // a cada segundo: botão, aviso, contagem do turbo e banner
 setInterval(() => {
@@ -1625,12 +1759,13 @@ function research() {
 function checkTimers() {
   if (R.obra && Date.now() >= R.obra.end) {
     R.ex = R.obra.lv; R.obra = null; B.W = EXP[R.ex].W; B.F = EXP[R.ex].F; dirty = true;
-    buildShell(); refreshZones(true); refreshProgress(); sfx.done();
+    buildShell(); refreshLayout(); refreshZones(true); refreshProgress(); sfx.done();
     burst(new V3(0, 1, B.F - 1), 60, CONFETTI, {speed: 5, up: 8, life: 1.4});
     floatText(`🏗️ ${EXP[R.ex].name}!`, player.g.position, 'rgba(43,33,64,.9)'); toast(`🏗️ Obra pronta: ${EXP[R.ex].name}! Novas áreas liberadas`);
   }
   if (R.res && Date.now() >= R.res.end) {
     R.menu = R.res.n; R.res = null; dirty = true; refreshZones(true); sfx.done();
+    recordPlay('recipe', 1);
     toast(`📖 Receita nova no cardápio: ${menuName(R.menu - 1)}!`); floatText(`📖 ${menuName(R.menu - 1)}`, player.g.position, 'rgba(224,154,0,.95)');
   }
   if (obraLbl && R.obra) obraLbl.set(`🚧 OBRA ${hms(secsTo(R.obra.end))}`);
@@ -1792,7 +1927,7 @@ function collectProduction(id) {
 }
 function renderProduction() {
   syncProduction(); const p = productionState(), now = Date.now();
-  $('prodList').innerHTML = `<div class="market-news"><b>🌱 Produza, espere e venda na hora certa</b><br>As cotações influenciam a venda em até ±25%. Produção pronta não expira.</div>` + PRODUCTION_LINES.map(d => {
+  $('prodList').innerHTML = `<div class="neck"><b>🌱 Produção da rede</b><span>Fazendas, fábricas, operadores automáticos e especialistas +25% usam o estoque das receitas e entregas.</span><button class="btn" data-activities="enterprise">Abrir fazendas e fábricas</button></div><h3>Lotes clássicos em andamento</h3><div class="market-news"><b>🌱 Termine os lotes anteriores</b><br>As cotações influenciam a venda em até ±25%. Produção pronta não expira.</div>` + PRODUCTION_LINES.filter(d => p.lines[d.id].end || p.lines[d.id].ready).map(d => {
     const x = p.lines[d.id], unlocked = prodUnlocked(d), cost = d.cost * bestVal(), total = d.sec * 1000, left = Math.max(0, x.end - now), pc = x.end ? Math.max(0, Math.min(100, (1 - left / total) * 100)) : x.ready ? 100 : 0;
     const ratio = Math.max(.75, Math.min(1.25, mkt().c[d.stock].p / STOCKS[d.stock].p0)), sale = Math.round(d.qty * d.unit * bestVal() * ratio);
     let action = `<button class="btn" data-prod-start="${d.id}" ${S.money >= cost && unlocked ? '' : 'disabled'}>Iniciar<br><small>$${fmt(cost)}</small></button>`;
@@ -1834,7 +1969,7 @@ function ensureEvent(ms = S.market || {}) {
 }
 function scheduleEvent(ms, now = Date.now()) { const test = AUTO; ms.events = {kind: Math.floor(Math.random() * ECON_EVENTS.length), start: now + (test ? 4000 : 180000 + Math.random() * 180000), end: 0, revealed: test, started: false}; ms.events.end = ms.events.start + (test ? 20000 : 90000); }
 const activeEvent = () => { const e = ensureEvent(marketState()), n = Date.now(); return e && n >= e.start && n < e.end ? e : null; };
-const stockUnlocked = i => !STOCKS[i].unlock || !!S.r[STOCKS[i].unlock];
+const stockUnlocked = i => Number.isSafeInteger(i) && i >= 0 && i < STOCKS.length && (!STOCKS[i].unlock || !!S.r[STOCKS[i].unlock]);
 function mkt() {
   if (!S.stk || !S.stk.c || S.stk.c.length !== STOCKS.length) S.stk = {tm: 0, dv: 0, n: 0, at: Date.now(), c: STOCKS.map(d => ({p: d.p0, tr: 0, own: 0, paid: 0, h: [d.p0]}))};
   return S.stk;
@@ -1849,7 +1984,7 @@ function mktStep(dtMin, quiet) {
     const lx = Math.log(c.p); let x = lx + (c.tr + .03 * (fair - lx)) * dtMin + d.v * Math.sqrt(dtMin) * gauss();
     if (ev && ECON_EVENTS[ev.kind].hit.includes(i)) x += ECON_EVENTS[ev.kind].drift * dtMin;
     if (!quiet && Math.random() < dtMin * .02) { const j = (Math.random() < .5 ? -1 : 1) * (.06 + Math.random() * .08); x += j; toast(`📰 ${d.n} ${j > 0 ? 'dispara 🚀' : 'despenca 📉'} ${j > 0 ? '+' : ''}${Math.round(j * 100)}%`); }
-    c.p = Math.max(.5, Math.exp(x));
+    c.p = Math.min(1e9, Math.max(.5, Math.exp(x)));
   });
   if (++m.n % 3 === 0) for (const c of m.c) { c.h.push(c.p); if (c.h.length > 40) c.h.shift(); }
   let paid = 0; m.dv += dtMin;
@@ -1858,7 +1993,7 @@ function mktStep(dtMin, quiet) {
 }
 // chamado a cada STK_DT s; depois de uma ausência simula no máximo 2h, com variação limitada a ±20%. Devolve os dividendos da ausência
 function mktSync() {
-  const m = mkt(), now = Date.now(), gap = (now - (m.at || now)) / 60000; m.at = now;
+  const m = mkt(), now = Date.now(), gap = (now - (m.at || now)) / 60000; m.at = Math.max(m.at || 0, now);
   if (gap <= 0) return 0;
   if (gap < 1) {
     const d = mktStep(gap);
@@ -1887,16 +2022,16 @@ function stkQty(i, sell) {
 }
 function doTrade(i, sell, amount, quiet) {
   if (!stockUnlocked(i)) return false;
-  const d = STOCKS[i], c = mkt().c[i], n = sell ? Math.min(amount, c.own) : amount; if (n <= 0) return false;
-  const ms = marketState();
+  mkt(); const ms = marketState(), q = Trading.execute(S, i, amount, !!sell, FEE);
+  if (!q) { if (!quiet) toast('💸 Confira saldo e quantidade de ações'); return false; }
+  const d = STOCKS[i], {n, total, gain} = q;
+  addMoney(0); recordPlay('trade', 1); recordPlay(sell ? 'earn' : 'spend', total);
   if (sell) {
-    const got = n * c.p * (1 - FEE), basis = c.paid * n / c.own, gain = got - basis;
-    c.paid -= basis; c.own -= n; addMoney(got); sfx.pay();
+    const got = total; sfx.pay();
     ms.stats.realized += gain; ms.weekly.stock += gain;
     if (!quiet) toast(`📈 Vendeu ${fmt(n)} ${d.s} por $${fmt(got)} (${gain >= 0 ? 'lucro' : 'prejuízo'} $${fmt(Math.abs(gain))})`);
   } else {
-    const cost = n * c.p * (1 + FEE); if (S.money < cost) { if (!quiet) toast('💸 Dinheiro insuficiente'); return false; }
-    addMoney(-cost); c.own += n; c.paid += cost; sfx.buy(); if (!quiet) toast(`📈 Comprou ${fmt(n)} ${d.s} por $${fmt(cost)}`);
+    sfx.buy(); if (!quiet) toast(`📈 Comprou ${fmt(n)} ${d.s} por $${fmt(total)}`);
   }
   ms.stats.trades++; dirty = true; checkAchievements(); return true;
 }
@@ -1905,7 +2040,7 @@ function trade(i, sell) {
 }
 function createOrder() {
   const ms = marketState(), i = +$('ordStock').value, side = $('ordSide').value, qty = Math.max(1, Math.floor(+$('ordQty').value)), limit = +String($('ordPrice').value).replace(',', '.');
-  if (!stockUnlocked(i) || !Number.isFinite(limit) || limit <= 0 || qty <= 0) return toast('⚠️ Confira empresa, quantidade e preço');
+  if (!stockUnlocked(i) || !Number.isFinite(limit) || limit <= 0 || limit > 1e9 || !Number.isSafeInteger(qty) || qty <= 0 || !['buy', 'sell'].includes(side)) return toast('⚠️ Confira empresa, quantidade e preço');
   if (ms.orders.length >= 12) return toast('🎯 Limite de 12 ordens abertas');
   ms.orders.push({id: Date.now() + Math.random(), i, side, qty, limit, at: Date.now(), exp: Date.now() + 86400000}); dirty = true; sfx.buy(); toast('🎯 Ordem criada por 24 horas'); renderOrders();
 }
@@ -1919,13 +2054,14 @@ function processOrders(quiet) {
   if (changed) dirty = true;
 }
 function checkAchievements() {
-  for (const a of ACHIEVEMENTS) if (!S.ach[a.id] && a.ok()) { S.ach[a.id] = Date.now(); S.money += a.reward * bestVal(); dirty = true; toast(`🏆 Conquista: ${a.name}! +$${fmt(a.reward * bestVal())}`); sfx.done(); }
+  for (const a of ACHIEVEMENTS) if (!S.ach[a.id] && a.ok()) { S.ach[a.id] = Date.now(); addMoney(a.reward * bestVal()); dirty = true; toast(`🏆 Conquista: ${a.name}! +$${fmt(a.reward * bestVal())}`); sfx.done(); }
 }
 function fundRun(force) {
   const ms = marketState(), f = ms.fund, now = Date.now(); if (!f.on || (!force && now - f.last < 60000)) return;
-  f.last = now; const ids = STOCKS.map((_, i) => i).filter(stockUnlocked), reserve = 200 * bestVal(); let budget = Math.max(0, (S.money - reserve) * f.pct / 100), spent = 0;
-  for (const i of ids) { const c = mkt().c[i], part = budget / ids.length, n = Math.floor(part / (c.p * (1 + FEE))); if (n > 0) { const cost = n * c.p * (1 + FEE); S.money -= cost; c.own += n; c.paid += cost; spent += cost; } }
-  if (spent > 0) { f.invested += spent; ms.stats.trades++; dirty = true; checkAchievements(); if (force) toast(`🤖 Fundo investiu $${fmt(spent)} em ${ids.length} empresas`); }
+  f.last = Math.max(f.last || 0, now); const ids = STOCKS.map((_, i) => i).filter(stockUnlocked), reserve = 200 * bestVal(), pctBudget = [5, 10, 20].includes(f.pct) ? f.pct : 10;
+  const budget = Math.max(0, (S.money - reserve) * pctBudget / 100); let spent = 0;
+  for (const i of ids) { const c = mkt().c[i], part = budget / ids.length, n = Math.floor(part / (c.p * (1 + FEE))), before = S.money; if (n > 0 && doTrade(i, false, n, true)) spent += before - S.money; }
+  if (spent > 0) { f.invested += spent; dirty = true; if (force) toast(`🤖 Fundo investiu $${fmt(spent)} em ${ids.length} empresas`); }
 }
 function renderStocks() {
   const m = mkt(), val = stockValue(), paid = m.c.reduce((a, c) => a + c.paid, 0);
@@ -1952,10 +2088,10 @@ function renderMarketExtras() {
   $('stkFund').innerHTML = `<h3>🤖 Fundo automático</h3><div class="up"><div class="ic">🤖</div><div class="tx"><b>${f.on ? 'Investimento automático ativo' : 'Invista sem operar manualmente'}</b><span>A cada minuto aplica ${f.pct}% do caixa disponível, mantendo uma reserva.</span><small>Total aplicado: $${fmt(f.invested || 0)}</small><div class="qty">${[5, 10, 20].map(p => `<button data-fpct="${p}" class="${p === f.pct ? 'on' : ''}">${p}%</button>`).join('')}</div></div><button class="btn ${f.on ? 'red' : ''}" data-fund>${f.on ? 'Pausar' : 'Ativar'}</button></div>`;
 }
 let orderStock = 0;
-function renderOrders() {
+function renderOrders(reset = false) {
   const ms = marketState(), unlocked = STOCKS.map((d, i) => ({d, i})).filter(x => stockUnlocked(x.i)); if (!stockUnlocked(orderStock)) orderStock = unlocked[0].i;
   const c = mkt().c[orderStock];
-  $('orderForm').innerHTML = `<div class="order-form"><b>Nova ordem limitada</b><label>Empresa</label><select id="ordStock">${unlocked.map(x => `<option value="${x.i}" ${x.i === orderStock ? 'selected' : ''}>${x.d.ic} ${x.d.s} · $${fmtP(mkt().c[x.i].p)}</option>`).join('')}</select><label>Operação</label><select id="ordSide"><option value="buy">Comprar quando cair até</option><option value="sell">Vender quando subir até</option></select><label>Quantidade</label><select id="ordQty">${QTY.filter(Boolean).map(q => `<option value="${q}" ${q === (stkQ || 1) ? 'selected' : ''}>${qtyLabel(q)}</option>`).join('')}</select><label>Preço-alvo</label><input id="ordPrice" inputmode="decimal" value="${c.p.toFixed(2)}"><button class="btn big" id="ordCreate">Criar ordem</button></div>`;
+  if (reset || !$('ordStock')) $('orderForm').innerHTML = `<div class="order-form"><b>Nova ordem limitada</b><label>Empresa</label><select id="ordStock">${unlocked.map(x => `<option value="${x.i}" ${x.i === orderStock ? 'selected' : ''}>${x.d.ic} ${x.d.s} · $${fmtP(mkt().c[x.i].p)}</option>`).join('')}</select><label>Operação</label><select id="ordSide"><option value="buy">Comprar quando cair até</option><option value="sell">Vender quando subir até</option></select><label>Quantidade</label><select id="ordQty">${QTY.filter(Boolean).map(q => `<option value="${q}" ${q === (stkQ || 1) ? 'selected' : ''}>${qtyLabel(q)}</option>`).join('')}</select><label>Preço-alvo</label><input id="ordPrice" inputmode="decimal" value="${c.p.toFixed(2)}"><small>Preço preservado enquanto você preenche a ordem.</small><button class="link" id="ordQuote">Usar cotação atual</button><button class="btn big" id="ordCreate">Criar ordem</button></div>`;
   $('orderList').innerHTML = `<h3>Ordens abertas (${ms.orders.length}/12)</h3>` + (ms.orders.length ? ms.orders.map(o => `<div class="up"><div class="ic">${o.side === 'buy' ? '🟢' : '🔴'}</div><div class="tx"><b>${o.side === 'buy' ? 'Comprar' : 'Vender'} ${fmt(o.qty)} ${STOCKS[o.i].s}</b><span>Preço-alvo $${fmtP(o.limit)} · atual $${fmtP(mkt().c[o.i].p)}</span><small>Expira em ${hms(Math.ceil((o.exp - Date.now()) / 1000))}</small></div><button class="btn red" data-cancel="${o.id}">×</button></div>`).join('') : '<p>Nenhuma ordem aberta. Elas ficam ativas por 24 horas.</p>');
 }
 function renderAchievements() {
@@ -1966,9 +2102,10 @@ function renderRanking() {
   $('rankList').innerHTML = `<div class="market-news"><b>🏁 Liga simulada semanal</b><br>Você está em ${pos}º. Pontos combinam patrimônio, restaurantes e resultado da bolsa. Reinicia na segunda-feira.</div>` + rows.map((x, i) => `<div class="row rank-row ${x.me ? 'me' : ''}"><span><b>${i + 1}º ${x.icon} ${x.name}</b><br><small>🏦 $${fmt(x.worth)} · 🍔 $${fmt(x.rest)} · 📈 ${x.stock >= 0 ? '+' : '-'}$${fmt(Math.abs(x.stock))}</small></span><b>${fmt(x.score)} pts</b></div>`).join('');
 }
 function setStockTab(tab) {
+  const enteringOrders = tab === 'orders' && !$('stk-orders').classList.contains('on');
   document.querySelectorAll('#stkTabs button').forEach(b => b.classList.toggle('on', b.dataset.stab === tab));
   document.querySelectorAll('#stocks .stk-pane').forEach(p => p.classList.toggle('on', p.id === 'stk-' + tab));
-  if (tab === 'production') renderProduction(); else if (tab === 'orders') renderOrders(); else if (tab === 'ach') renderAchievements(); else if (tab === 'rank') renderRanking(); else renderStocks();
+  if (tab === 'production') renderProduction(); else if (tab === 'orders') renderOrders(enteringOrders); else if (tab === 'ach') renderAchievements(); else if (tab === 'rank') renderRanking(); else if (tab === 'history') renderTradeHistory(); else renderStocks();
 }
 $('prodList').addEventListener('click', e => { const a = e.target.closest('[data-prod-start]'), b = e.target.closest('[data-prod-collect]'); if (a) startProduction(a.dataset.prodStart); if (b) collectProduction(b.dataset.prodCollect); });
 $('stkQty').addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (b) { stkQ = +b.dataset.q; renderStocks(); } });
@@ -1978,8 +2115,8 @@ $('stkList').addEventListener('click', e => {
 });
 $('stkTabs').addEventListener('click', e => { const b = e.target.closest('[data-stab]'); if (b) setStockTab(b.dataset.stab); });
 $('stkFund').addEventListener('click', e => { const ms = marketState(), p = e.target.closest('[data-fpct]'); if (p) { ms.fund.pct = +p.dataset.fpct; dirty = true; renderMarketExtras(); } if (e.target.closest('[data-fund]')) { ms.fund.on = !ms.fund.on; dirty = true; if (ms.fund.on) fundRun(true); renderMarketExtras(); } });
-$('orderForm').addEventListener('change', e => { if (e.target.id === 'ordStock') { orderStock = +e.target.value; renderOrders(); } });
-$('orderForm').addEventListener('click', e => { if (e.target.closest('#ordCreate')) createOrder(); });
+$('orderForm').addEventListener('change', e => { if (e.target.id === 'ordStock') { orderStock = +e.target.value; $('ordPrice').value = mkt().c[orderStock].p.toFixed(2); } });
+$('orderForm').addEventListener('click', e => { if (e.target.closest('#ordCreate')) createOrder(); else if (e.target.closest('#ordQuote')) $('ordPrice').value = mkt().c[orderStock].p.toFixed(2); });
 $('orderList').addEventListener('click', e => { const b = e.target.closest('[data-cancel]'); if (!b) return; const ms = marketState(); ms.orders = ms.orders.filter(o => String(o.id) !== b.dataset.cancel); dirty = true; renderOrders(); });
 $('btnStk').addEventListener('click', () => { initAudio(); mktSync(); setStockTab('market'); openModal('stocks'); });
 setInterval(() => {
@@ -2011,7 +2148,7 @@ function refreshBadges() {
   const nxt = S.r.length, canFr = S.r.some((r, i) => r && complete(r) && r.fr < FR_MAX && S.money >= frCost(i));
   $('bRest').style.display = (RESTS[nxt] && complete(S.r[nxt - 1]) && S.money >= RESTS[nxt].cost) || canFr || doneCount() >= 3 ? 'block' : 'none';
 }
-const openModal = id => { $(id).classList.add('open'); release(); };
+const openModal = id => { $(id).classList.add('open'); stopMovement(); };
 const closeModal = id => $(id).classList.remove('open');
 $('btnUp').addEventListener('click', () => { initAudio(); renderUps(); openModal('panel'); });
 $('btnMis').addEventListener('click', () => { initAudio(); renderMissions(); openModal('missions'); });
@@ -2031,10 +2168,12 @@ $('reset').addEventListener('click', async () => {
 function offlineEarn(ms) {
   R.rate = currentRate();
   const capH = Staff.offCapH(S.offLv), m = Staff.offMinutes(ms, capH);
-  const money = Math.floor(m.eff * (passiveRate(true) + R.rate * TB.offline));
+  // Cada unidade entra uma vez; a especialização/skill offline vale na loja de quem a possui.
+  const offlineRate = S.r.reduce((total, r, i) => total + (r ? r.rate * Staff.bonus(teamOf(i)).offline + frIncome(i) : 0), 0);
+  const money = Math.floor(m.eff * offlineRate);
   const ev = []; let xp = 0;
   for (const e of Object.values(S.team)) {
-    const k = e.r === S.cur ? TB : Staff.bonus(teamOf(e.r)), g = m.real * Staff.XP_ONLINE_MIN * Staff.XP_OFF_K * (1 + k.xp);
+      const k = e.r === S.cur ? TB : Staff.bonus(teamOf(e.r)), g = m.real * Staff.XP_ONLINE_MIN * Staff.XP_OFF_K * (1 + k.xp + playBonuses.xp);
     if (e.lv < Staff.LV_MAX) xp += g; ev.push(...Staff.gainXP(e, g));
   }
   if (ev.length) { if (ev.some(x => x.promo)) S.teamNew = true; refreshTeam(); }
@@ -2060,7 +2199,14 @@ function showWelcome(off, bonus, div = 0) {
   $('collect').textContent = S.pend >= 1 ? 'Coletar' : 'Continuar';
   openModal('welcome');
 }
-$('collect2').addEventListener('click', () => { initAudio(); Ads.show(() => { claimAd(); S.pend *= 2; $('collect').click(); toast('📺 Ganhos dobrados!'); }); });
+$('collect2').addEventListener('click', () => {
+  initAudio(); const pending = S.pend;
+  if (pending < 1 || adDay().n >= AD_DAY_MAX) return;
+  Ads.show(() => {
+    if (S.pend !== pending || adDay().n >= AD_DAY_MAX) return;
+    claimAd(); S.pend += pending; recordPlay('ad', 1); $('collect').click(); toast('📺 Ganhos dobrados!');
+  });
+});
 $('collect').addEventListener('click', () => {
   initAudio(); closeModal('welcome'); const g = S.pend; S.pend = 0; addMoney(g); persist(); if (g >= 1) sfx.buy();
   if (g >= 1) burst(player.g.position.clone().add(new V3(0, 1.2, 0)), 30, COINS, {speed: 3.5, up: 7, size: .16});
@@ -2069,6 +2215,8 @@ $('collect').addEventListener('click', () => {
 function awayGains() {
   const g = Staff.clockGuard(S);
   if (g.back) { toast('⏰ Relógio voltou: sem ganhos offline'); return null; }
+  // Consome a janela mesmo sem moedas suficientes para abrir o painel (XP não pode ser repetido).
+  S.last = Math.max(S.last || 0, Date.now()); dirty = true;
   return FRESH || g.away < 60000 ? null : offlineEarn(g.away);
 }
 let hiddenAt = 0;
@@ -2088,7 +2236,7 @@ let teamTab = 'staff', teamSel = null;
 const avatar = (e, big) => `<div class="av${big ? ' big' : ''}" style="--sk:${hex(SKINS[e.av])};--hr:${hex(HAIRS[e.hair])};--sh:${hex(Staff.rankOf(e).shirt)}"><i></i></div>`;
 const xpBar = e => e.lv >= Staff.LV_MAX ? '<div class="xpbar"><i style="width:100%"></i></div><small>Nível máximo</small>'
   : `<div class="xpbar"><i style="width:${Math.min(100, e.xp / Staff.xpNeed(e.lv) * 100).toFixed(1)}%"></i></div><small>${fmt(e.xp)} / ${fmt(Staff.xpNeed(e.lv))} XP</small>`;
-const roleName = e => e.role === 'helper' ? 'Ajudante' : 'Faxineiro';
+const roleName = e => Staff.jobTitle(e);
 function renderTeam() {
   const t = teamOf(), syn = TB.syn;
   $('teamSub').textContent = `${T.icon} ${T.name} · ${t.length} funcionário${t.length === 1 ? '' : 's'} · ${syn.length}/${Staff.MAX_SYN} combos ativos`;
@@ -2104,7 +2252,7 @@ function renderTeam() {
   }
   const e = teamSel && S.team[teamSel];
   if (!e) {
-    body.innerHTML = t.length ? t.sort((a, b) => b.lv - a.lv).map(e => `<button class="up emp" data-emp="${e.id}">${avatar(e)}<div class="tx"><b>${e.n} · ${Staff.rankOf(e).name}</b><small>${roleName(e)} · Nível ${e.lv} · ${Staff.SKILLS[e.sk].icon} ${Staff.SKILLS[e.sk].name}</small>${xpBar(e)}</div><span class="go">›</span></button>`).join('')
+    body.innerHTML = t.length ? t.sort((a, b) => b.lv - a.lv).map(e => `<button class="up emp" data-emp="${e.id}">${avatar(e)}<div class="tx"><b>${e.n} · ${roleName(e)}</b><small>Nível ${e.lv} · ${Staff.SKILLS[e.sk].icon} ${Staff.SKILLS[e.sk].name}</small>${xpBar(e)}</div><span class="go">›</span></button>`).join('')
       : '<p>Compre a área de 🧑‍🍳 AJUDANTE no salão para contratar o primeiro funcionário.</p>';
     const others = Object.values(S.team).length - t.length;
     if (others > 0) body.innerHTML += `<p><small>+${others} em outras lojas, treinando no ritmo do offline.</small></p>`;
@@ -2114,9 +2262,9 @@ function renderTeam() {
   const sk = Staff.SKILLS[e.sk], sl = Staff.skillLv(e), nr = Staff.nextRank(e), cost = Staff.specCost(e, SPEC_BASE * RESTS[e.r].mult);
   const ag = Math.round((Staff.agility(e, TB, e.role === 'cleaner') - 1) * 100);
   body.innerHTML = `<button class="link back" data-back>‹ Equipe</button>
-    <div class="ficha">${avatar(e, true)}<div><h3>${e.n}</h3><b>${Staff.rankOf(e).name}</b><small>${roleName(e)} · Nível ${e.lv}</small></div></div>
+    <div class="ficha">${avatar(e, true)}<div><h3>${e.n}</h3><b>${roleName(e)}</b><small>Nível ${e.lv} · ${e.role === 'helper' ? 'Trabalha no balcão' : 'Trabalha na limpeza'}</small></div></div>
     ${xpBar(e)}
-    <div class="row"><span>🎖️ Próxima promoção</span><b>${nr ? `Nível ${nr.lv}: ${nr.name}` : 'Cargo máximo'}</b></div>${nr ? `<small class="perk">${nr.perk}</small>` : ''}
+    <div class="row"><span>🎖️ Próxima promoção</span><b>${nr ? `Nível ${nr.lv}: ${Staff.jobTitle({...e, lv: nr.lv})}` : 'Cargo máximo'}</b></div>${nr ? `<small class="perk">${nr.perk}</small>` : ''}
     <h3>Atributos</h3>
     <div class="row"><span>🏃 Agilidade</span><b>+${ag}%</b></div>
     ${e.role === 'helper' ? `<div class="row"><span>🧺 Carga extra</span><b>+${Staff.carryBonus(e)} ${Staff.carryBonus(e) === 1 ? 'item' : 'itens'}</b></div>` : ''}
@@ -2124,18 +2272,53 @@ function renderTeam() {
     <h3>Habilidade exclusiva</h3>
     <div class="up"><div class="ic">${sk.icon}</div><div class="tx"><b>${sk.name} · Nv ${sl}</b><span>${sk.desc(sl)}</span><small>Sobe de nível nas promoções e nunca é perdida</small></div></div>
     <h3>Especialização</h3>
-    <div class="specs">${Object.entries(Staff.SPECS).map(([k, sp]) => `<button class="spec${k === e.spec ? ' on' : ''}" data-spec="${k}" ${k === e.spec || S.money < cost ? 'disabled' : ''}><b>${sp.icon} ${sp.name}</b><small>${sp.desc}</small>${k === e.spec ? '<i>Atual</i>' : `<i>$${fmt(cost)}</i>`}</button>`).join('')}</div>
+    <p class="feature-note">Troca o bônus de trabalho; não aumenta o nível da habilidade exclusiva. Confira o efeito antes de gastar moedas.</p>
+    <div class="specs">${Object.entries(Staff.SPECS).map(([k, sp]) => {
+      const preview = Staff.specPreview(e, k, teamOf()), percent = n => Math.round(n * 100), b = preview.before, a = preview.after;
+      const effect = !preview.ok ? (k === e.spec ? 'Bônus equipado' : 'Sem efeito nesta função') : `Agilidade ${percent(b.speed - 1)}% → ${percent(a.speed - 1)}% · Paciência ${percent(b.pat)}% → ${percent(a.pat)}% · Offline ${percent(b.offline - 1)}% → ${percent(a.offline - 1)}%`;
+      return `<button class="spec${k === e.spec ? ' on' : ''}" data-spec="${k}" ${!preview.ok || S.money < cost ? 'disabled' : ''}><b>${sp.icon} ${sp.name}</b><small>${sp.desc}</small><small>${effect}</small>${k === e.spec ? '<i>Atual</i>' : `<i>${preview.ok ? '$' + fmt(cost) : 'Indisponível'}</i>`}</button>`;
+    }).join('')}</div>
     <h3>Histórico</h3>
     <div class="hist">${e.hist.map(h => `<div><small>${new Date(h.t).toLocaleDateString('pt-BR')}</small> ${h.txt}</div>`).join('')}</div>`;
+  const profile = Staff.profile(e), targets = Object.values(S.team).filter(x => x.r !== e.r && x.role === e.role && S.r[x.r]?.bought.includes(x.id.split(':')[1]));
+  const goals = Staff.objectives(e), transferPrice = Staff.transferCost(e, T.val);
+  const wardrobe = [...new Set([...(e.progress?.uniforms || []), ...S.staffWardrobe])].filter(id => Staff.UNIFORMS[id]);
+  body.insertAdjacentHTML('beforeend', `<h3>💬 Quem trabalha com você</h3><div class="feature-note">${profile.story}<br><b>Talento:</b> ${profile.talent}<br><b>Prefere:</b> ${profile.preference}<br><b>Objetivo:</b> ${profile.objective}</div>
+    <h3>🎯 Objetivos pessoais</h3>${goals.map(g => `<div class="up"><div class="tx"><b>${g.name}</b><span>${fmt(g.progress)} / ${fmt(g.target)} ${g.metric === 'xp' ? 'XP' : 'tarefas'}</span><small>${g.uniform ? Staff.UNIFORMS[g.uniform].name + ' · ' : ''}+${(g.bonus * 100).toFixed(1)}% de qualidade</small></div><button class="btn" data-staff-goal="${g.id}" ${g.ready ? '' : 'disabled'}>${g.claimed ? '✓' : 'Resgatar'}</button></div>`).join('')}
+    ${wardrobe.length ? `<h3>👕 Uniforme individual</h3><div class="feature-actions"><button class="btn" data-uniform="" ${!e.uniform ? 'disabled' : ''}>Do cargo</button>${wardrobe.map(id => `<button class="btn" data-uniform="${id}" ${e.uniform === id ? 'disabled' : ''}>${Staff.UNIFORMS[id].name}</button>`).join('')}</div>` : ''}
+    <h3>🏪 Transferir entre lojas</h3><div class="feature-note">Troca de posto com alguém do mesmo cargo. Nível, XP, habilidades e objetivos acompanham a pessoa.</div>${targets.length ? `<div class="transfer-box"><label for="staffDestination">Destino e colega</label><select id="staffDestination">${targets.map(x => `<option value="${x.id}">${RESTS[x.r].name} · ${x.n}</option>`).join('')}</select><button class="btn big" data-transfer ${S.money >= transferPrice ? '' : 'disabled'}>Transferir · $${fmt(transferPrice)}</button></div>` : '<p>Abra outra loja e contrate alguém do mesmo cargo para transferir.</p>'}`);
 }
 $('teamTabs').addEventListener('click', e => { const b = e.target.closest('[data-ttab]'); if (!b) return; teamTab = b.dataset.ttab; teamSel = null; renderTeam(); });
 $('teamBody').addEventListener('click', ev => {
   const em = ev.target.closest('[data-emp]'); if (em) { teamSel = em.dataset.emp; renderTeam(); $('team').querySelector('.card').scrollTop = 0; return; }
   if (ev.target.closest('[data-back]')) { teamSel = null; return renderTeam(); }
+  const employee = S.team[teamSel], goalButton = ev.target.closest('[data-staff-goal]'), uniformButton = ev.target.closest('[data-uniform]');
+  if (employee && goalButton && !goalButton.disabled) {
+    const result = Staff.claimObjective(employee, goalButton.dataset.staffGoal);
+    if (result.ok) { if (result.uniform && !S.staffWardrobe.includes(result.uniform)) S.staffWardrobe.push(result.uniform); recordPlay('staffGoal', 1); featureChanged(); sfx.done(); toast('🎯 Objetivo pessoal concluído!'); }
+    return renderTeam();
+  }
+  if (employee && uniformButton) {
+    const id = uniformButton.dataset.uniform;
+    if (id && !employee.progress?.uniforms.includes(id) && !S.staffWardrobe.includes(id)) return;
+    employee.uniform = id; refreshTeam(); dirty = true; persist(); return renderTeam();
+  }
+  if (employee && ev.target.closest('[data-transfer]')) {
+    const target = $('staffDestination')?.value, cost = Staff.transferCost(employee, T.val);
+    if (!target || S.money < cost || !S.r[S.team[target]?.r]) return;
+    const stores = [employee.r, S.team[target].r], oldRates = stores.map(k => Staff.rateMult(teamOf(k)));
+    const result = Staff.transfer(S.team, teamSel, target);
+    if (!result.ok) return toast('Esse posto não está disponível para transferência');
+    addMoney(-cost);
+    stores.forEach((k, i) => { S.r[k].rate *= Staff.rateMult(teamOf(k)) / oldRates[i]; });
+    for (const ch of crew()) if (ch.empKey) ch.emp = S.team[ch.empKey];
+    teamSel = null; featureChanged(); toast('🏪 Transferência concluída, com todo o histórico preservado'); return renderTeam();
+  }
   const sp = ev.target.closest('[data-spec]'); if (!sp || sp.disabled) return;
-  const e = S.team[teamSel], cost = Staff.specCost(e, SPEC_BASE * RESTS[e.r].mult); if (!e || S.money < cost) return;
-  addMoney(-cost); e.spec = sp.dataset.spec; e.specN = (e.specN || 0) + 1; Staff.log(e, Date.now(), `Nova especialização: ${Staff.SPECS[e.spec].name}`);
-  refreshTeam(); sfx.buy(); dirty = true; renderTeam();
+  const e = S.team[teamSel]; if (!e) return;
+  const result = Staff.specialize(e, sp.dataset.spec, S.money, SPEC_BASE * RESTS[e.r].mult);
+  if (!result.ok) return toast('Esta troca não tem efeito ou o saldo é insuficiente');
+  addMoney(-result.cost); refreshTeam(); R.rate = currentRate(); persist(); sfx.buy(); toast('Especialização aplicada: confira os atributos atualizados'); renderTeam();
 });
 $('btnTeam').addEventListener('click', () => { initAudio(); S.teamNew = false; teamSel = null; refreshBadges(); renderTeam(); openModal('team'); });
 
@@ -2158,19 +2341,118 @@ $('cfgList').addEventListener('change', e => {
 });
 $('btnCfg').addEventListener('click', () => { initAudio(); renderCfg(); openModal('cfg'); });
 
+// ---------- economia integrada: os novos painéis compartilham caixa e progresso ----------
+function featureContext() {
+  const people = teamOf();
+  return {cur: S.cur, scale: T.val, owned: S.r.filter(Boolean).length, rate: currentRate(), rep: R.rep,
+    staffCount: people.length, specialists: people.map(e => e.spec), served: R.served || 0,
+    netWorth: netWorth(), franchises: S.r.reduce((n, r) => n + (r?.fr || 0), 0),
+    recipes: S.r.reduce((n, r) => n + (r?.menu || 0), 0) + Object.keys(S.enterprise?.book || {}).length, layout: storeLayout?.variants,
+    promotions: Object.values(S.team).reduce((n, e) => n + Staff.rankIdx(e.lv), 0)};
+}
+function recordPlay(event, amount = 1) {
+  if (!S.journey || !Number.isFinite(amount) || amount <= 0) return;
+  Journey.record(S, event, amount, featureContext()); dirty = true;
+}
+function featureChanged(result) {
+  if (result?.source === 'enterprise' && result.moneyDelta) recordPlay(result.moneyDelta > 0 ? 'earn' : 'spend', Math.abs(result.moneyDelta));
+  syncSeasonRecipes();
+  if (result?.ok) { if (result.reward) sfx.done(); else sfx.buy(); }
+  dirty = true; R.rate = currentRate(); addMoney(0); refreshTeam(); applyDecor(); persist();
+}
+function syncSeasonRecipes() {
+  const gifts = {'recipe-season-house': 'horta', 'recipe-season-festival': 'queijudo'};
+  for (const id of S.journey.collectibles) if (gifts[id]) S.enterprise.book[gifts[id]] = true;
+}
+function syncFeatures() {
+  const ctx = featureContext();
+  syncSeasonRecipes();
+  const result = Enterprise.sync(S, ctx);
+  if (result.moneyDelta) recordPlay(result.moneyDelta > 0 ? 'earn' : 'spend', Math.abs(result.moneyDelta));
+  Journey.sync(S, ctx);
+  const j = Journey.bonuses(S, ctx), e = Enterprise.bonuses(S, ctx);
+  playBonuses = {price: j.price || 0, xp: j.xp || 0, production: Math.max(.7, Math.min(1.5, e.production || 1)), demand: Math.max(.7, Math.min(1.5, e.demand || 1))};
+  const learned = Object.keys(S.enterprise.book).length - knownRecipes; if (learned > 0) recordPlay('recipe', learned);
+  knownRecipes = Object.keys(S.enterprise.book).length;
+  if (result && result.messages && result.messages.length) toast(result.messages[0]);
+  dirty = true;
+  if (featureHub && $('activities').classList.contains('open') && !document.activeElement?.matches('input,select,textarea')) featureHub.render();
+}
+function renderTradeHistory() { if (featureHub) featureHub.history(); }
+function placementWorld() {
+  const objects = [{id: 'cash', name: '💵 Coleta de dinheiro', kind: 'cash', x: PILE.x, z: PILE.z, hw: 0, hd: 0, rot: 0},
+    {id: 'main', name: '🔥 Chapa principal', kind: 'station', x: mainStation.pos.x, z: mainStation.pos.z, hw: .8, hd: .6, rot: mainStation.g.rotation.y, ref: mainStation}];
+  for (const z of ZONES) if (z.object) {
+    const table = z.kind === 'table', ref = z.object, p = table ? ref.position : ref.pos;
+    objects.push({id: z.id, name: table ? `🪑 Mesa ${z.id.slice(1)}` : PRODUCTS[ref.type].st, kind: table ? 'table' : 'station',
+      x: p.x, z: p.z, hw: table ? 1.3 : .8, hd: table ? .55 : .6, rot: table ? 0 : ref.g.rotation.y,
+      locked: table && seats.some(s => s.table === ref && s.taken), ref});
+  }
+  const own = new Set(objects.filter(o => o.ref).map(o => o.kind === 'table' ? o.ref.userData.collider : o.ref.collider));
+  return {bounds: {left: -6.6, right: B.W - .4, back: -6.6, front: B.F - .4}, spawn: {x: 2, z: -3.2}, objects,
+    obstacles: colliders.filter(c => !own.has(c)).map(c => ({x: (c.x0 + c.x1) / 2, z: (c.z0 + c.z1) / 2, hw: (c.x1 - c.x0) / 2, hd: (c.z1 - c.z0) / 2})),
+    reserved: ZONES.filter(z => !bought.has(z.id)).map(z => ({id: z.id, x: z.x, z: z.z, hw: .8, hd: .8}))
+      .concat(allLayout.decorations.map(d => ({id: 'decor:' + d.id, x: d.x, z: d.z, hw: d.hw, hd: d.hd}))),
+    points: [{x: -.15, z: -2.2}]};
+}
+function applyPlacement(change, restoring = false, validated = false) {
+  const world = placementWorld(), out = validated ? {ok: true} : Placement.validate(world, change);
+  if (!out.ok) return out;
+  const object = world.objects.find(o => o.id === change.id), {x, z} = change, rot = change.rot ?? object.rot;
+  if (object.kind === 'cash') { PILE.set(x, 0, z); moneyPile.group.position.copy(PILE); pileMark.position.set(x, .01, z); }
+  else {
+    const ref = object.ref, collision = object.kind === 'table' ? ref.userData.collider : ref.collider;
+    const sideways = object.kind === 'station' && Math.abs(Math.sin(rot)) > .5, hw = sideways ? object.hd : object.hw, hd = sideways ? object.hw : object.hd;
+    Object.assign(collision, {x0: x - hw, x1: x + hw, z0: z - hd, z1: z + hd});
+    if (object.kind === 'station') { ref.pos.set(x, 0, z); ref.g.position.copy(ref.pos); ref.g.rotation.y = rot; ref.front.set(x + Math.sin(rot) * 1.25, 0, z + Math.cos(rot) * 1.25); }
+    else { ref.position.set(x, 0, z); for (const seat of seats) if (seat.table === ref) { seat.x = x + seat.side * .98; seat.z = z; seat.tb = {x, z}; } }
+    const zone = ZONES.find(z => z.id === change.id); if (zone) { zone.x = x; zone.z = z; zone.rot = rot; }
+  }
+  if (!restoring) { if (!R.placements) R.placements = {}; R.placements[change.id] = {id: change.id, x, z, rot}; dirty = true; persist(); }
+  return {ok: true, message: 'Posição salva nesta loja.'};
+}
+function restorePlacements() {
+  const saved = Object.values(R.placements || {}); if (!saved.length) return;
+  const world = placementWorld(), planned = {...world, objects: world.objects.map(o => ({...o, ...(R.placements[o.id] || {})}))};
+  for (const change of saved) {
+    const check = Placement.validate(planned, change);
+    if (!check.ok) { console.warn('Layout personalizado preservado para revisão, sem aplicar posição inválida:', change.id, check.reason); return; }
+  }
+  // Validar o conjunto antes de mover evita perder trocas A↔B ao restaurar uma por uma.
+  for (const change of saved) applyPlacement(change, true, true);
+}
+let decorKey = '';
+function applyDecor() {
+  // A paleta só é reaplicada quando muda; o cenário não é reconstruído a cada frame.
+  if (!Journey.palette) return;
+  const palette = Journey.palette(S, S.cur), key = JSON.stringify(palette);
+  if (key === decorKey) return; decorKey = key;
+  T.floor = palette.floor ? palette.floor.slice() : BASE_THEME.floor.slice();
+  T.wall = Number.isFinite(palette.wall) ? palette.wall : BASE_THEME.wall;
+  T.trim = Number.isFinite(palette.facade) ? palette.facade : BASE_THEME.trim;
+  T.counterColor = Number.isFinite(palette.counter) ? palette.counter : BASE_THEME.trim; counterBody.material = mat(T.counterColor);
+  for (const station of stations) if (station.g.userData.paint) station.g.userData.paint.material = mat(palette.equipment ?? 0x9aa7b4);
+  for (const table of new Set(seats.map(s => s.table))) {
+    table.userData.paint.material = mat(palette.table ?? 0xc98a4b); table.userData.top.material = mat(palette.table ?? 0xd9a066);
+    table.userData.flower.material = mat(palette.decor ?? 0xfff1a8);
+  }
+  buildShell();
+  refreshTeam();
+}
+
 // ---------- entrada (joystick + teclado) ----------
 const input = {x: 0, y: 0}; let drag = null, started = !firstRun;
 const keys = {}, MOVE_KEYS = new Set(['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright']);
 addEventListener('keydown', e => {
-  const k = e.key.toLowerCase(), typing = e.target && e.target.matches('input, textarea, select, [contenteditable="true"]');
-  if (typing || !MOVE_KEYS.has(k)) return;
+  const k = e.key.toLowerCase(), typing = e.target?.matches?.('input, textarea, select, [contenteditable="true"]');
+  if (typing || document.querySelector('.modal.open') || !MOVE_KEYS.has(k)) return;
   e.preventDefault(); keys[k] = true; firstTouch();
 });
 addEventListener('keyup', e => { const k = e.key.toLowerCase(); if (MOVE_KEYS.has(k)) { e.preventDefault(); keys[k] = false; } });
 function firstTouch() { initAudio(); if (!started) { started = true; $('tut').style.display = 'none'; } }
 if (!started && !AUTO) $('tut').style.display = 'block';
 addEventListener('pointerdown', e => {
-  if (e.target.closest('button, .modal')) return;
+  if (e.target.closest('button, .modal, .game-actions, a, input, select, textarea, summary')) return;
   firstTouch(); drag = {x: e.clientX, y: e.clientY};
   Object.assign($('joy').style, {display: 'block', left: e.clientX + 'px', top: e.clientY + 'px'}); $('knob').style.transform = '';
 });
@@ -2181,7 +2463,10 @@ addEventListener('pointermove', e => {
   input.x = dx / Rj; input.y = dy / Rj; $('knob').style.transform = `translate(${dx}px,${dy}px)`;
 });
 function release() { drag = null; input.x = input.y = 0; $('joy').style.display = 'none'; }
+function stopMovement() { release(); for (const k in keys) keys[k] = false; }
 addEventListener('pointerup', release); addEventListener('pointercancel', release);
+addEventListener('blur', stopMovement);
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopMovement(); });
 
 // modo demonstração (?auto=1): um robô joga sozinho, útil para testar o ciclo inteiro
 function autoTarget() {
@@ -2243,7 +2528,7 @@ function step(dt) {
     if (R.lv.auto && (s.at = (s.at || 0) + dt) > AUTO_EVERY / R.lv.auto && s.stack.ready && counters[s.type].count < COUNTER_MAX && transfer(s.stack, counters[s.type])) s.at = 0;
     if (s.smoky && (s.smokeT -= dt) <= 0) { s.smokeT = .5 + Math.random() * .4; puff(s.pos.clone().add(new V3((Math.random() - .5) * 1, 1.1, (Math.random() - .5) * .6))); }
     s.max.visible = s.stack.count >= 6;
-    if (p.distanceTo(s.pos) < 1.9 && player.hand.count < cap() && (pickT -= dt) <= 0 && transfer(s.stack, player.hand)) { pickT = .12; sfx.pick(); }
+    if (Math.hypot(p.x - PILE.x, p.z - PILE.z) > 1.35 && p.distanceTo(s.pos) < 1.9 && player.hand.count < cap() && (pickT -= dt) <= 0 && transfer(s.stack, player.hand)) { pickT = .12; sfx.pick(); }
   }
   pMax.visible = player.hand.count >= cap();
   for (const t in counters) cMax[t].visible = counters[t].count >= COUNTER_MAX;
@@ -2280,7 +2565,7 @@ function step(dt) {
   for (const c of cleaners) updateCleaner(c, dt);
   updateRush(dt); updateGift(dt); updateInspection(dt); if (neons.length && !S.cfg.rm) updateNeon();
   if (combo && (comboT -= dt) <= 0) setCombo(0);
-  const interval = Math.max(1, (3.2 - seats.length * .15) * (1.3 - .1 * R.rep) * Math.pow(.95, R.lv.mkt) / (1 + .07 * R.fac)) / (rush > 0 ? 2.5 : 1);
+  const interval = Math.max(1, (3.2 - seats.length * .15) * (1.3 - .1 * R.rep) * Math.pow(.95, R.lv.mkt) / (1 + .07 * R.fac)) / (rush > 0 ? 2.5 : 1) * (storeLayout?.variants.spawn.intervalScale || 1) / playBonuses.demand;
   if (queue.length < 4 + Math.floor(seats.length / 4) + (rush > 0 ? 3 : 0) && (spawnT -= dt) <= 0) { spawnCustomer(); spawnT = interval; }
   for (const c of customers.slice()) updateCustomer(c, dt);
   if ((passiveT += dt) >= 1) {
@@ -2327,11 +2612,17 @@ function frame(now) {
 
 // ---------- início ----------
 buildShell();
+refreshLayout();
 for (const z of ZONES) buildZoneUI(z);
 for (const z of ZONES) if (bought.has(z.id)) { bought.delete(z.id); buyZone(z, false); }
+restorePlacements();
 refreshZones(false); refreshProgress(); refreshHud();
 ensureDaily();
 refreshTeam(); applyCfg();
+featureHub = FeatureHub.mount({S, context: featureContext, changed: featureChanged, notify: toast, open: openModal, close: closeModal,
+  fmt, fmtP, stocks: STOCKS, market: marketState, stockValue, storeName: T.name,
+  placement: {world: placementWorld, apply: applyPlacement, seed: () => R.layoutSeed, notify: toast, reset: () => { R.placements = {}; persist(); location.reload(); }}});
+syncFeatures(); applyDecor();
 loanSync(); const awayDiv = mktSync(); syncProduction(); checkTimers();
 if (firstRun) { Staff.clockGuard(S); loginBonus(); addMoney(0); } else { addMoney(0); showWelcome(awayGains(), loginBonus(), awayDiv); }
 $('net').textContent = '🏦 ' + fmtS(netWorth());
@@ -2339,7 +2630,16 @@ setInterval(() => { if (ensureDaily()) { toast('📋 Novas missões do dia!'); r
 requestAnimationFrame(frame);
 Cloud.start();
 startAgeFlow();
+setInterval(() => { if (!document.hidden) syncFeatures(); }, 2000);
 window.__game = {S, R, P, Cloud, Ads, teamOf, empXP, refreshTeam, offlineEarn, awayGains, neck, bottleneck, renderUps, renderTeam, renderCfg, applyCfg, UPS, upState, get TB() { return TB; }, renderAds, adDay, seats, cleaners, queue, get rush() { return rush; }, set rush(v) { rush = v; }, get combo() { return combo; }, renderRests, progressOf, migrate, bought, ZONES, stations, customers, helpers, counters, moneyPile, player, get elapsed() { return elapsed; },
+  Enterprise, Journey, Layout, featureContext, featureChanged, applyDecor, syncFeatures, recordPlay, featureHub, openModal, closeModal, refreshLayout, placementWorld, applyPlacement, restorePlacements,
+  get layout() { return storeLayout; },
+  get view() {
+    const rect = renderer.domElement.getBoundingClientRect(), projected = player.g.position.clone().add(new V3(0, .8, 0)).project(cam);
+    return {width: innerWidth, height: innerHeight, css: {x: rect.x, y: rect.y, width: rect.width, height: rect.height},
+      buffer: {width: renderer.domElement.width, height: renderer.domElement.height}, dpr: devicePixelRatio, effectiveDpr: renderer.getPixelRatio(),
+      player: {x: (projected.x + 1) / 2 * rect.width, y: (1 - projected.y) / 2 * rect.height, visible: player.g.visible}};
+  },
   tick(n) { for (let i = 0; i < n; i++) step(1 / 30); renderer.render(scene, cam); }, // usado nos testes
   B, EXP, FAC, MENU, STOCKS, ECON_EVENTS, ACHIEVEMENTS, PRODUCTION_LINES, mkt, mktStep, trade, doTrade, createOrder, processOrders, fundRun, marketState, rankRows, renderBiz, renderStocks, renderOrders, renderAchievements, renderRanking, renderProduction, startProduction, collectProduction, syncProduction, setStockTab, buyExpand, buyFacade, research, takeLoan, payLoan, netWorth, bizValue, stockValue, loanLimit, expReqs, currentRate, passiveRate, addMoney, buildShell, checkTimers,
   set stkQ(v) { stkQ = v; }, get inspT() { return inspT; }, set inspT(v) { inspT = v; },

@@ -2,7 +2,23 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      function owner() { return request.auth != null && request.auth.uid == userId; }
+      function validSave() {
+        return request.resource.data.keys().hasAll(['save', 'schemaVersion', 'revision', 'updatedAt', 'updatedByDevice', 'progress', 'summary'])
+          && request.resource.data.keys().hasOnly(['save', 'schemaVersion', 'revision', 'updatedAt', 'updatedByDevice', 'progress', 'summary'])
+          && request.resource.data.save is string && request.resource.data.save.size() < 750000
+          && request.resource.data.schemaVersion is int && request.resource.data.schemaVersion >= 1
+          && request.resource.data.revision is int && request.resource.data.revision >= 1
+          && request.resource.data.updatedAt is number
+          && request.resource.data.updatedByDevice is string && request.resource.data.updatedByDevice.size() <= 128
+          && request.resource.data.progress is number && request.resource.data.progress >= 0
+          && request.resource.data.summary is string && request.resource.data.summary.size() <= 1000;
+      }
+      allow read, delete: if owner();
+      allow create: if owner() && validSave() && request.resource.data.revision == 1;
+      allow update: if owner() && validSave()
+        && request.resource.data.revision == resource.data.get('revision', 0) + 1
+        && request.resource.data.schemaVersion >= resource.data.get('schemaVersion', 1);
     }
   }
 }

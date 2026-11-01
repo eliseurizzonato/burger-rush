@@ -1,0 +1,131 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Burger Rush · verificação local</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;font:14px system-ui;background:#fff8ec}iframe{display:block;border:0;width:100%;height:100dvh}#result{position:fixed;z-index:50;left:4px;bottom:4px;max-width:calc(100vw - 24px);font-size:11px;color:#fff;background:#23492ce8;padding:5px;border-radius:7px;pointer-events:none}#result.fail{background:#8d1825}details{position:fixed;right:0;bottom:32px;max-width:90vw;max-height:50vh;overflow:auto;background:#fff8ec;padding:5px;opacity:.85;font-size:10px}pre{white-space:pre-wrap;overflow-wrap:anywhere}</style>
+<script src="../www/staff.js"></script><iframe id="game" title="Jogo com save de teste isolado"></iframe><output id="result">Carregando verificação…</output><details><summary>Resultados detalhados</summary><pre id="report"></pre></details>
+<script>
+(async () => {
+ 'use strict';
+ const q = new URLSearchParams(location.search), results = [], errors = [];
+ const dpr = Number(q.get('dpr') || 1), now = Date.now();
+ const r = {bought:['t1','t2','g2','f1','h1','t3','s1','t4','c1'],lv:{cap:1,speed:1,price:1,grill:1},rate:80,rep:4,fr:0,ex:1,fac:0,menu:1,served:200};
+ const fixture = {v:7,money:500000,ageBand:'adult',last:now,tut:true,cur:0,r:[r,{...r,bought:r.bought.slice(),lv:{...r.lv}}],city:0,bonus:0,team:{},pend:0,offLv:0,clk:now,cfg:{rm:true,lo:false},lastLogin:new Date().toLocaleDateString('sv-SE')};
+ for(const slot of ['0:h1','0:c1','1:h1','1:c1']) Staff.hire(fixture.team,slot,slot.endsWith('c1')?'cleaner':'helper',now,5);
+ // Origem/porta exclusivas de QA. Não executar esta página no domínio público ou com conta real.
+ if(!['127.0.0.1','localhost'].includes(location.hostname)) throw Error('Harness permitido somente em localhost');
+ localStorage.setItem('burger-rush-save-v1',JSON.stringify(fixture));
+ let html = await (await fetch('../www/index.html',{cache:'no-store'})).text();
+ const boot = `<base href="${new URL('../www/',location.href).href}"><script>Object.defineProperty(window,'devicePixelRatio',{value:${JSON.stringify(dpr)},configurable:true});window.addEventListener('error',e=>parent.postMessage({qaError:e.message},parent.location.origin));<\/script>`;
+ html = html.replace(/((?:src|href)=")([^"]+\.(?:js|css))"/g, (_,prefix,url)=>prefix+url+'?qa='+now+'"');
+ html = html.replace('<head>','<head>'+boot).replace('<script src="https://accounts.google.com/gsi/client"><\/script>','');
+ // A integração de conta não é parte deste harness; o fluxo usa só o save local sintético.
+ html = html.replace('Cloud.start();','/* Cloud.start omitido apenas no harness isolado */');
+ const frame = document.getElementById('game');
+ const loaded = new Promise(resolve=>frame.addEventListener('load',resolve,{once:true}));
+ window.addEventListener('message',e=>{if(e.source===frame.contentWindow&&e.data.qaError)errors.push(e.data.qaError)});
+ frame.srcdoc=html; await loaded;
+ const w=frame.contentWindow, doc=w.document, g=w.__game;
+ function check(name,fn){try{fn();results.push({name,ok:true})}catch(e){results.push({name,ok:false,error:e.message})}}
+ const assert=(ok,msg)=>{if(!ok)throw Error(msg)};
+ if(!g) throw Error('Jogo não inicializou: '+errors.join('; '));
+ for(const modal of doc.querySelectorAll('.modal.open')) g.closeModal(modal.id);
+ check('Migração v7→v8 preserva dinheiro, lojas, equipe e instala sistemas',()=>{
+  assert(g.S.v===8,'schema');assert(g.S.money===500000,'caixa');assert(g.S.r.length===2,'lojas');assert(Object.keys(g.S.team).length===4,'equipe');assert(g.S.enterprise&&g.S.journey,'sistemas');
+ });
+ g.tick(30);
+ check('Canvas CSS, drawing buffer e jogador têm enquadramento consistente',()=>{
+  const v=g.view; assert(Math.abs(v.css.width-v.width)<2&&Math.abs(v.css.height-v.height)<2,'canvas CSS cortado');
+  assert(Math.abs(v.buffer.width-v.css.width*v.effectiveDpr)<2,'buffer largura');assert(Math.abs(v.buffer.height-v.css.height*v.effectiveDpr)<2,'buffer altura');
+  assert(v.player.visible&&v.player.x>0&&v.player.x<v.width&&v.player.y>0&&v.player.y<v.height,'personagem fora do quadro');
+ });
+ check('Movimento manual por teclado e parada ao abrir painel',()=>{
+  const old=g.player.g.position.clone();doc.body.dispatchEvent(new w.KeyboardEvent('keydown',{key:'d',bubbles:true}));g.tick(10);doc.body.dispatchEvent(new w.KeyboardEvent('keyup',{key:'d',bubbles:true}));
+  assert(old.distanceTo(g.player.g.position)>.1,'não moveu');g.openModal('activities');const at=g.player.g.position.clone();g.tick(10);assert(at.distanceTo(g.player.g.position)<.001,'entrada ficou presa');g.closeModal('activities');
+ });
+ check('Arraste de toque move e pointercancel encerra a entrada',()=>{
+  const before=g.player.g.position.clone();doc.body.dispatchEvent(new w.PointerEvent('pointerdown',{clientX:100,clientY:300,bubbles:true}));
+  w.dispatchEvent(new w.PointerEvent('pointermove',{clientX:100,clientY:350}));g.tick(6);assert(before.distanceTo(g.player.g.position)>.1,'arraste não moveu');
+  w.dispatchEvent(new w.PointerEvent('pointercancel'));const stopped=g.player.g.position.clone();g.tick(8);assert(stopped.distanceTo(g.player.g.position)<.001,'movimento preso após cancelar');
+ });
+ check('Compra e venda de 5k integram caixa, custo médio e histórico',()=>{
+  assert(g.doTrade(0,false,5000,true),'compra rejeitada');assert(g.mkt().c[0].own===5000,'quantidade');assert(g.marketState().history.length===1,'histórico compra');
+  assert(g.doTrade(0,true,5000,true),'venda rejeitada');assert(g.mkt().c[0].own===0&&g.mkt().c[0].paid===0,'posição residual');
+  const before=g.S.money;assert(!g.doTrade(0,false,NaN,true)&&g.S.money===before,'NaN alterou caixa');
+ });
+ check('Cotação não apaga preço, quantidade nem operação ao preencher uma ordem',()=>{
+  g.setStockTab('orders');const price=doc.getElementById('ordPrice'),qty=doc.getElementById('ordQty'),side=doc.getElementById('ordSide');
+  price.value='123.45';qty.value='5000';side.value='sell';g.mktStep(.05,true);g.setStockTab('orders');
+  assert(doc.getElementById('ordPrice')===price&&price.value==='123.45'&&qty.value==='5000'&&side.value==='sell','formulário foi refeito pelo tick');
+  doc.getElementById('ordStock').value='1';doc.getElementById('ordStock').dispatchEvent(new w.Event('change',{bubbles:true}));
+  assert(doc.getElementById('ordPrice').value===g.mkt().c[1].p.toFixed(2),'escolha não capturou a cotação');g.setStockTab('market');
+ });
+ check('Recolher dinheiro não enche a mão com refri da estação próxima',()=>{
+  const old=g.player.g.position.clone();g.player.g.position.set(4.3,0,-1.65);const count=g.player.hand.count;
+  g.tick(35);assert(g.player.hand.count===count,'pegou produto na área do caixa');g.player.g.position.copy(old);
+ });
+ check('Offline não repete XP ao consumir duas vezes a mesma ausência',()=>{
+  g.S.last=Date.now()-3600000;g.S.clk=0;const off=g.awayGains();assert(off&&off.xp>0,'XP ausente');
+  const xp=Object.values(g.S.team).reduce((n,e)=>n+(e.progress?.xp||0),0);assert(g.awayGains()===null,'mesma janela repetida');
+  assert(Object.values(g.S.team).reduce((n,e)=>n+(e.progress?.xp||0),0)===xp,'XP duplicou');
+ });
+ check('Layouts mantêm posições e acessibilidade após recarga lógica',()=>{
+  const a=g.layout,b=g.Layout.generate({seed:g.R.layoutSeed,phase:g.R.ex,lot:0,city:0});assert(JSON.stringify(a.tables)===JSON.stringify(b.tables),'layout mudou');assert(g.Layout.validate(a).ok,'sem acesso');
+ });
+ check('Pesquisa concluída por atendimento registra receita e XP uma vez',()=>{
+  const ctx=g.featureContext(), total=g.S.journey.totals.recipe||0;g.S.enterprise.inventory.alface=10;g.S.enterprise.inventory.trigo=10;
+  assert(g.Enterprise.act(g.S,'research','horta',ctx).ok,'pesquisa rejeitada');g.S.enterprise.research.finish=g.S.enterprise.time;
+  const finishAt=Math.max(Date.now(),g.S.enterprise.highwater+1);
+  g.Enterprise.serve(g.S,{count:1},{...ctx,now:finishAt},finishAt);assert(g.S.enterprise.book.horta,'não concluiu no atendimento');g.syncFeatures();
+  assert(g.S.journey.totals.recipe===total+1,'receita não registrada');g.syncFeatures();assert(g.S.journey.totals.recipe===total+1,'evento duplicado');
+ });
+ check('Decoração altera só as superfícies escolhidas na cena e pode voltar ao padrão',()=>{
+  const ctx=g.featureContext(), table=g.seats[0].table, original=table.userData.paint.material.color.getHex();
+  assert(g.Journey.act(g.S,'buy','table-mint',ctx).ok,'compra decoração');assert(g.Journey.act(g.S,'equip','table-mint',ctx).ok,'equipar decoração');
+  g.featureChanged();assert(table.userData.paint.material.color.getHex()===0x78bfa1,'cor da mesa não aplicada');
+  assert(g.Journey.act(g.S,'equip','table-original',ctx).ok,'restaurar decoração');g.featureChanged();assert(table.userData.paint.material.color.getHex()===original,'cor padrão perdida');
+ });
+ check('Transferência pela ficha reconecta funcionário à loja e conserva identidade',()=>{
+  g.renderTeam();const old=g.S.team['0:h1'].uid,destination=g.S.team['1:h1'].uid;
+  doc.querySelector('[data-emp="0:h1"]').click();doc.getElementById('staffDestination').value='1:h1';doc.querySelector('[data-transfer]').click();
+  assert(g.S.team['1:h1'].uid===old&&g.helpers[0].emp.uid===destination,'personagem não reconectado');
+ });
+ check('Especialização exibe troca de atributos e aplica o bônus sem subir a habilidade',()=>{
+  g.renderTeam();doc.querySelector('[data-emp="0:h1"]').click();const e=g.S.team['0:h1'],lv=w.Staff.skillLv(e),oldBonus=g.TB.offline,oldMoney=g.S.money,cost=w.Staff.specCost(e,2000);
+  const button=doc.querySelector('[data-spec="gestao"]');assert(!button.disabled&&button.textContent.includes('→'),'prévia ausente');button.click();
+  assert(e.spec==='gestao'&&Math.abs(g.TB.offline-oldBonus-.05)<.001,'bônus offline não aplicado');assert(w.Staff.skillLv(e)===lv,'troca elevou a habilidade');assert(Math.abs(g.S.money-(oldMoney-cost))<.001,'cobrança incorreta');
+  assert(doc.querySelector('[data-spec="limpeza"]').disabled,'ajudante pode pagar por limpeza sem efeito');
+ });
+ check('Mover dinheiro atualiza a posição real e rejeita sobreposição',()=>{
+  const moved=g.applyPlacement({id:'cash',x:2.7,z:-1});assert(moved.ok,'posição segura rejeitada: '+moved.reason);
+  assert(g.moneyPile.group.position.x===2.7,'pilha não acompanhou');g.applyPlacement({id:'cash',x:3.2,z:-1},true);g.restorePlacements();assert(g.moneyPile.group.position.x===2.7,'posição salva não restaurada');const bad=g.applyPlacement({id:'cash',x:0,z:-1});assert(!bad.ok&&g.moneyPile.group.position.x===2.7,'caixa entrou no balcão');
+  assert(g.applyPlacement({id:'cash',x:3.2,z:-1}).ok,'restauração segura falhou');
+ });
+ check('Máquina movida e girada mantém modelo, colisão e ponto de coleta alinhados',()=>{
+  const machine=g.stations[0],before={x:machine.pos.x,z:machine.pos.z,rot:machine.g.rotation.y};
+  const moved=g.applyPlacement({id:'main',x:-3,z:-5,rot:Math.PI/2});assert(moved.ok,'máquina rejeitada: '+moved.reason);
+  assert(machine.g.position.z===-5&&Math.abs(machine.front.x+1.75)<.001&&Math.abs(machine.front.z+5)<.001,'modelo/frente desalinhados');
+  assert(Math.abs(machine.collider.x0+3.6)<.001&&Math.abs(machine.collider.z0+5.8)<.001,'colisão não girou');
+  assert(g.applyPlacement({id:'main',...before}).ok,'máquina não voltou');
+ });
+ check('Operador e especialista contratados pela UI usam a mesma economia',()=>{
+  const before=g.S.money,hire=g.featureHub.enterprise.act('hire-worker','alface');assert(hire.ok&&g.S.money<before,'contratação não cobrou moedas');
+  assert(g.S.enterprise.producers.alface.worker,'operador não foi salvo');const upgrade=g.featureHub.enterprise.act('specialist','alface');
+  assert(upgrade.ok&&g.S.enterprise.producers.alface.worker.specialist,'especialista não aplicado');const cash=g.S.money;
+  assert(!g.featureHub.enterprise.act('specialist','alface').ok&&g.S.money===cash,'especialista cobrou duas vezes');
+ });
+ for(const tab of ['enterprise','journey']){
+  g.featureHub.open(tab);
+  check('Painel '+tab+' cabe na viewport móvel',()=>{
+   const card=doc.querySelector('#activities .card');assert(card.scrollWidth<=card.clientWidth+2,'overflow horizontal');
+   const r=card.getBoundingClientRect();assert(r.left>=-1&&r.right<=w.innerWidth+1&&r.top>=-1&&r.bottom<=w.innerHeight+1,'painel cortado');
+   assert(card.querySelectorAll('button').length>5,'ações não renderizadas');
+  });
+ }
+ g.closeModal('activities');doc.getElementById('btnTeam').click();
+ check('Ficha de funcionários continua renderizando',()=>assert(doc.getElementById('teamBody').querySelector('[data-emp]'),'equipe vazia'));
+ g.featureHub.open(q.get('panel')||'enterprise');
+ check('Nenhum erro de runtime capturado',()=>assert(!errors.length,errors.join('; ')));
+ const build=await (await fetch('../www/build-info.json',{cache:'no-store'})).json();
+ const report={at:new Date().toISOString(),build,viewport:{width:w.innerWidth,height:w.innerHeight},simulatedDpr:dpr,actualBrowserDpr:devicePixelRatio,view:g.view,placement:g.placementWorld().objects.map(({ref,...o})=>o),placementObstacles:g.placementWorld().obstacles,results,errors};
+ document.getElementById('report').textContent=JSON.stringify(report,null,2);window.qaReport=report;
+ const failed=results.filter(x=>!x.ok);document.getElementById('result').textContent=`${failed.length?'FALHOU':'PASSOU'} · ${results.length-failed.length}/${results.length} · ${w.innerWidth}×${w.innerHeight} · DPR informado ${dpr}${failed.length?' · '+failed.map(x=>x.name+': '+x.error).join('; '):''}`;document.getElementById('result').classList.toggle('fail',!!failed.length);
+})().catch(e=>{document.getElementById('result').className='fail';document.getElementById('result').textContent='FALHOU · '+e.message;document.getElementById('report').textContent=e.stack});
+</script></html>

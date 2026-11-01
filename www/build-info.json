@@ -1,0 +1,14 @@
+{
+  "version": "1.5.0",
+  "schema": 8,
+  "channel": "web-candidate",
+  "baseCommit": "a4e22c3738094e825807e05e161f36f23d7c6a90",
+  "sourceHash": "f6f08ad586f98f4123936fb5c1dc25cfd4ad9f8aca21f1ea426c79448e84377f",
+  "preparedAt": "2026-10-30",
+  "publication": "pending",
+  "android": {
+    "publishedByThisChange": false,
+    "previousVersionCode": 9,
+    "previousVersionName": "1.4"
+  }
+}

@@ -1,0 +1,260 @@
+{
+  "at": "2026-10-30T02:59:15.899Z",
+  "build": {
+    "version": "1.5.0",
+    "schema": 8,
+    "channel": "web-candidate",
+    "baseCommit": "a4e22c3738094e825807e05e161f36f23d7c6a90",
+    "sourceHash": "38a2aba5c438e8fa97c40e0049a7f4b30ac62e6992ef0f3b6502baf956fb4e02",
+    "preparedAt": "2026-10-29",
+    "publication": "pending",
+    "android": {
+      "publishedByThisChange": false,
+      "previousVersionCode": 9,
+      "previousVersionName": "1.4"
+    }
+  },
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "simulatedDpr": 1,
+  "actualBrowserDpr": 1,
+  "view": {
+    "width": 1366,
+    "height": 768,
+    "css": {
+      "x": 0,
+      "y": 0,
+      "width": 1366,
+      "height": 768
+    },
+    "buffer": {
+      "width": 1366,
+      "height": 768
+    },
+    "dpr": 1,
+    "effectiveDpr": 1,
+    "player": {
+      "x": 737.5430355350368,
+      "y": 302.95156788769515,
+      "visible": true
+    }
+  },
+  "placement": [
+    {
+      "id": "cash",
+      "name": "💵 Coleta de dinheiro",
+      "kind": "cash",
+      "x": 3.2,
+      "z": -1,
+      "hw": 0,
+      "hd": 0,
+      "rot": 0
+    },
+    {
+      "id": "main",
+      "name": "🔥 Chapa principal",
+      "kind": "station",
+      "x": -3,
+      "z": -4.5,
+      "hw": 0.8,
+      "hd": 0.6,
+      "rot": 0
+    },
+    {
+      "id": "t1",
+      "name": "🪑 Mesa 1",
+      "kind": "table",
+      "x": -3.8,
+      "z": 4,
+      "hw": 1.3,
+      "hd": 0.55,
+      "rot": 0,
+      "locked": false
+    },
+    {
+      "id": "t2",
+      "name": "🪑 Mesa 2",
+      "kind": "table",
+      "x": 3.8,
+      "z": 4,
+      "hw": 1.3,
+      "hd": 0.55,
+      "rot": 0,
+      "locked": false
+    },
+    {
+      "id": "g2",
+      "name": "🔥 CHAPA",
+      "kind": "station",
+      "x": -5.6,
+      "z": -4.5,
+      "hw": 0.8,
+      "hd": 0.6,
+      "rot": 0,
+      "locked": false
+    },
+    {
+      "id": "f1",
+      "name": "🍟 FRITADEIRA",
+      "kind": "station",
+      "x": -5.9,
+      "z": -2.3,
+      "hw": 0.8,
+      "hd": 0.6,
+      "rot": 1.5707963267948966,
+      "locked": false
+    },
+    {
+      "id": "t3",
+      "name": "🪑 Mesa 3",
+      "kind": "table",
+      "x": 3.8,
+      "z": 7.3,
+      "hw": 1.3,
+      "hd": 0.55,
+      "rot": 0,
+      "locked": false
+    },
+    {
+      "id": "s1",
+      "name": "🥤 REFRI",
+      "kind": "station",
+      "x": 5.9,
+      "z": -2.6,
+      "hw": 0.8,
+      "hd": 0.6,
+      "rot": -1.5707963267948966,
+      "locked": false
+    },
+    {
+      "id": "t4",
+      "name": "🪑 Mesa 4",
+      "kind": "table",
+      "x": -3.8,
+      "z": 7.3,
+      "hw": 1.3,
+      "hd": 0.55,
+      "rot": 0,
+      "locked": false
+    }
+  ],
+  "placementObstacles": [
+    {
+      "x": 6.1,
+      "z": -6.3,
+      "hw": 0.6500000000000004,
+      "hd": 0.5
+    },
+    {
+      "x": -6.4,
+      "z": -0.4,
+      "hw": 0.34999999999999964,
+      "hd": 0.35
+    },
+    {
+      "x": 0,
+      "z": -1,
+      "hw": 2.2,
+      "hd": 0.6000000000000001
+    },
+    {
+      "x": 6.15,
+      "z": 4.65,
+      "hw": 0.21999999999999975,
+      "hd": 0.21999999999999975
+    },
+    {
+      "x": -6.4,
+      "z": 9.1,
+      "hw": 0.40000000000000036,
+      "hd": 0.40000000000000036
+    },
+    {
+      "x": 6.4,
+      "z": 9.1,
+      "hw": 0.40000000000000036,
+      "hd": 0.40000000000000036
+    }
+  ],
+  "results": [
+    {
+      "name": "Migração v7→v8 preserva dinheiro, lojas, equipe e instala sistemas",
+      "ok": true
+    },
+    {
+      "name": "Canvas CSS, drawing buffer e jogador têm enquadramento consistente",
+      "ok": true
+    },
+    {
+      "name": "Movimento manual por teclado e parada ao abrir painel",
+      "ok": true
+    },
+    {
+      "name": "Arraste de toque move e pointercancel encerra a entrada",
+      "ok": true
+    },
+    {
+      "name": "Compra e venda de 5k integram caixa, custo médio e histórico",
+      "ok": true
+    },
+    {
+      "name": "Cotação não apaga preço, quantidade nem operação ao preencher uma ordem",
+      "ok": true
+    },
+    {
+      "name": "Recolher dinheiro não enche a mão com refri da estação próxima",
+      "ok": true
+    },
+    {
+      "name": "Offline não repete XP ao consumir duas vezes a mesma ausência",
+      "ok": true
+    },
+    {
+      "name": "Layouts mantêm posições e acessibilidade após recarga lógica",
+      "ok": true
+    },
+    {
+      "name": "Pesquisa concluída por atendimento registra receita e XP uma vez",
+      "ok": true
+    },
+    {
+      "name": "Decoração altera só as superfícies escolhidas na cena e pode voltar ao padrão",
+      "ok": true
+    },
+    {
+      "name": "Transferência pela ficha reconecta funcionário à loja e conserva identidade",
+      "ok": true
+    },
+    {
+      "name": "Especialização exibe troca de atributos e aplica o bônus sem subir a habilidade",
+      "ok": true
+    },
+    {
+      "name": "Mover dinheiro atualiza a posição real e rejeita sobreposição",
+      "ok": true
+    },
+    {
+      "name": "Operador e especialista contratados pela UI usam a mesma economia",
+      "ok": true
+    },
+    {
+      "name": "Painel enterprise cabe na viewport móvel",
+      "ok": true
+    },
+    {
+      "name": "Painel journey cabe na viewport móvel",
+      "ok": true
+    },
+    {
+      "name": "Ficha de funcionários continua renderizando",
+      "ok": true
+    },
+    {
+      "name": "Nenhum erro de runtime capturado",
+      "ok": true
+    }
+  ],
+  "errors": []
+}

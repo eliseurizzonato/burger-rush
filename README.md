@@ -2,6 +2,14 @@
 
 Jogo casual de lanchonete em 3D (Three.js), feito para jogar um pouco todo dia no celular ou no navegador.
 
+## Versão web 1.5 — candidata
+
+Produção de ingredientes, laboratório, delivery, contratos, eventos, desafios, baús e temporada compartilham a economia da rede. A equipe ganhou personalidade, objetivos, uniformes e transferências. Há personalização por loja e histórico da bolsa. As abas novas ficam em **Configurações → Produção e delivery / Jornada e decoração**, também acessíveis em Negócio e Missões.
+
+Implementação e critérios de validação: [entrega 1.5](docs/entrega-1.5.md). O save migra de v7 para v8. O candidato web é identificado em `www/build-info.json`; a versão Android anterior continua 9 (1.4). Publicação web e envio do próximo AAB são etapas distintas.
+
+Testes de regras: `npm test`. O teste integrado fica em `tests/browser.html`, executado apenas numa cópia web isolada em localhost, com save sintético. Ele não autentica conta Google nem valida o SDK nativo de anúncios. **Sirva somente `www` para jogar; não sirva a raiz do repositório, que pode conter material de assinatura Android.**
+
 ## Como jogar
 
 Arraste na tela (ou use WASD / setas) para mover o chef:

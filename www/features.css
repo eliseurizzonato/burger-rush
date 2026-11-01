@@ -1,0 +1,41 @@
+/* Extensões seguem os cartões e cores do jogo. Tamanhos são CSS, sem afetar o canvas WebGL. */
+html{overscroll-behavior:none}
+button,input,select{font-family:inherit}
+.modal{box-sizing:border-box;padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));touch-action:pan-y}
+.card{max-width:100%;max-height:calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;overflow-x:hidden;scrollbar-width:thin}
+.card input,.card select{user-select:text;-webkit-user-select:text;font-size:16px}
+.card button{min-height:44px}
+.card .btn.big{max-width:100%;box-sizing:border-box;padding-left:20px;padding-right:20px}
+.card .row>span,.card .row>b{min-width:0;overflow-wrap:anywhere}
+.feature-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;background:#fff8ec;padding:5px 0}
+.feature-tabs button{flex:1 1 72px;min-width:0;min-height:44px;background:#eee4f5;color:var(--ink);border:0;border-radius:12px;font-weight:700;padding:8px 7px;cursor:pointer;font-size:13px}
+.feature-tabs button.on,.feature-tabs button[aria-selected=true]{background:var(--ink);color:#fff}
+.feature-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.feature-card{background:#fff;border:1px solid #eee4f5;border-radius:18px;padding:12px;text-align:left;min-width:0;overflow-wrap:anywhere}
+.feature-card h3{margin-top:0}.feature-card p,.feature-card small{overflow-wrap:anywhere}
+.feature-card .up{box-shadow:none;padding:6px 0;flex-wrap:wrap}.feature-card .up .tx{flex-basis:100px}
+.feature-actions{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:8px}
+.feature-actions .btn{flex:1 1 100px;white-space:normal;min-width:0;font-size:14px;min-height:46px}
+.feature-note{padding:10px 12px;background:#eaf5ff;border-radius:14px;color:var(--ink);font-size:13px;text-align:left;line-height:1.4;margin:8px 0}
+.feature-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:8px 0}
+.feature-stats>div{padding:9px;border-radius:12px;background:#f0eafa;min-width:0}.feature-stats b,.feature-stats small{display:block;overflow-wrap:anywhere}
+.feature-summary{display:flex;align-items:center;gap:8px;padding:10px;background:#fff;border-radius:14px;font-size:13px;text-align:left}
+.hub-jumps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.hub-jumps .btn{font-size:14px;min-width:0;padding:9px}
+.feature-root:empty{display:none}#activities .card{width:min(520px,100%)}
+.feature-close{position:sticky;top:0;float:right;z-index:4;width:44px;height:44px;margin:-5px -5px 0 0;border:0;border-radius:14px;color:var(--ink);background:#eee4f5;font-size:30px;cursor:pointer;box-shadow:0 2px 0 #2b21401c}
+#enterpriseRoot section>nav+.feature-stats,#journeyRoot .j-head{display:none}
+#stkTabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.feature-root .btn{white-space:normal}.feature-root ul{padding-left:20px;text-align:left}.feature-root progress{width:100%;max-width:100%}
+.transfer-box label{display:block;text-align:left;font-size:13px}.transfer-box select{width:100%;min-height:46px;border:2px solid #ddd1e8;border-radius:12px;background:white;padding:7px;box-sizing:border-box;color:var(--ink)}
+.game-actions{max-height:calc(100dvh - 158px - env(safe-area-inset-top) - env(safe-area-inset-bottom) - var(--ad));overflow:auto;overscroll-behavior:contain;padding:5px 4px 7px;scrollbar-width:none;touch-action:pan-y}
+.game-actions .side{flex-shrink:0}
+@media(max-width:699px){
+ .game-actions{left:12px;right:12px;bottom:calc(10px + var(--ad) + env(safe-area-inset-bottom));display:flex;flex-direction:row-reverse;gap:8px;max-height:88px;overflow-x:auto;overflow-y:hidden;justify-content:flex-start;touch-action:pan-x}
+ .side{width:58px;height:58px;border-radius:17px;font-size:10px}.side b{font-size:22px}
+ .up{flex-wrap:wrap}.up .tx{flex-basis:105px}.up>.btn,.up>.btns{margin-left:auto}.card{padding:15px}
+ #stat{max-width:calc(100vw - 16px);flex-wrap:wrap;justify-content:center;gap:4px}.chip{font-size:11px;padding:3px 7px}
+ #prog{width:min(300px,calc(100vw - 30px));overflow:hidden;text-overflow:ellipsis}
+ .stock-metric b{font-size:12px}.stock-name b{font-size:16px}
+}
+@media(min-width:700px){#activities .card{width:min(850px,calc(100vw - 64px))}.feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.feature-stats{grid-template-columns:repeat(3,minmax(0,1fr))}#stkTabs{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-height:620px) and (orientation:landscape){.game-actions{left:50%;right:auto;transform:translateX(-50%);max-width:calc(100vw - 30px);max-height:78px;flex-direction:row-reverse;overflow-x:auto;overflow-y:hidden;touch-action:pan-x}.card{max-height:calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}}
