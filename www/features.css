@@ -44,3 +44,17 @@ button,input,select{font-family:inherit}
 }
 @media(min-width:700px){#activities .card{width:min(850px,calc(100vw - 64px))}.feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.feature-stats{grid-template-columns:repeat(3,minmax(0,1fr))}#stkTabs{grid-template-columns:repeat(6,minmax(0,1fr))}}
 @media(max-height:620px) and (orientation:landscape){.game-actions{left:50%;right:auto;transform:translateX(-50%);max-width:calc(100vw - 30px);max-height:78px;flex-direction:row-reverse;overflow-x:auto;overflow-y:hidden;touch-action:pan-x}.card{max-height:calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}}
+/* navegação em 3 grupos: botões grandes embaixo e abas no topo de cada tela */
+.game-actions .nav-g{height:62px}
+.game-actions .nav-g b{font-size:24px}
+@media(max-width:699px){.game-actions .nav-g{max-width:118px;font-size:12px}}
+.nav-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:-18px -18px 10px;padding:12px 12px 8px;position:sticky;top:-18px;z-index:3;background:#fff8ec;box-shadow:0 6px 8px -8px rgba(0,0,0,.25)}
+@media(max-width:699px){.nav-tabs{margin:-15px -15px 10px;top:-15px}}
+.nav-tabs .nav-x{flex:0 0 38px;justify-content:center;font-size:16px;background:#ffe3e3;color:#c83232;position:sticky;right:0;box-shadow:-8px 0 8px #fff8ec}
+#activities .card:has(.nav-tabs) .feature-close{display:none}
+.nav-tabs button{position:relative;border:0;border-radius:12px;padding:6px 2px 7px;font:700 12px 'Fredoka',system-ui;flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;display:flex;flex-direction:column;align-items:center;gap:2px;background:#efe6f5;color:var(--ink);cursor:pointer;white-space:nowrap}
+.nav-tabs button.on{background:var(--ink);color:#fff}
+.nav-tabs button.dot::after{content:'';position:absolute;top:3px;right:3px;width:9px;height:9px;border-radius:50%;background:#ff3b3b}
+/* atalhos antigos entre telas: as abas substituem */
+.hub-jumps,#panel>.card>[data-activities],#missions>.card>[data-activities],#activities .feature-tabs{display:none!important}
+.nav-tabs button b{font-size:19px;line-height:1}

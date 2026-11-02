@@ -1,9 +1,9 @@
 {
-  "version": "1.5.3",
+  "version": "1.6.0",
   "schema": 8,
   "channel": "web-candidate",
-  "baseCommit": "2fafaa26c16b6eaae18d49399351b426514babe0",
-  "sourceHash": "4099915555738fb7c25954f316ed6a082058c1554b1bba9004b487492631712a",
+  "baseCommit": "c9939b0aa0e6bfee586024fc42da5b3f9e3eab86",
+  "sourceHash": "777cd296529069752e7d598879ff070de171b2b12c22fdd19da229162fa2da4a",
   "preparedAt": "2026-11-02",
   "publication": "pending",
   "android": {
