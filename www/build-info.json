@@ -1,10 +1,10 @@
 {
-  "version": "1.5.2",
+  "version": "1.5.3",
   "schema": 8,
   "channel": "web-candidate",
-  "baseCommit": "a93a8a70c4aa02572f715f866136d98d41da503f",
-  "sourceHash": "8d3a1e112c3f9861f709ca3c89744abdc42d04291e457be1e4e6c99e39bd01f7",
-  "preparedAt": "2026-11-01",
+  "baseCommit": "2fafaa26c16b6eaae18d49399351b426514babe0",
+  "sourceHash": "4099915555738fb7c25954f316ed6a082058c1554b1bba9004b487492631712a",
+  "preparedAt": "2026-11-02",
   "publication": "pending",
   "android": {
     "publishedByThisChange": false,

@@ -32,6 +32,11 @@ button,input,select{font-family:inherit}
 @media(max-width:699px){
  .game-actions{left:12px;right:12px;bottom:calc(10px + var(--ad) + env(safe-area-inset-bottom));display:flex;flex-direction:row-reverse;gap:8px;max-height:88px;overflow-x:auto;overflow-y:hidden;justify-content:flex-start;touch-action:pan-x}
  .side{width:58px;height:58px;border-radius:17px;font-size:10px}.side b{font-size:22px}
+ /* celular: todos os botões cabem na barra sem rolar; o ❓ sobe para o lado da ⚙️ */
+ .game-actions{justify-content:center;overflow:visible;padding:8px 0 0}
+ .game-actions .side{flex:1 1 0;min-width:0;max-width:66px;width:auto;white-space:nowrap}
+ .game-actions .side span{display:block;max-width:100%;overflow:hidden;text-overflow:clip}
+ #btnHelp{left:70px;top:calc(12px + env(safe-area-inset-top));bottom:auto;width:42px;height:42px;font-size:19px}
  .up{flex-wrap:wrap}.up .tx{flex-basis:105px}.up>.btn,.up>.btns{margin-left:auto}.card{padding:15px}
  #stat{max-width:calc(100vw - 16px);flex-wrap:wrap;justify-content:center;gap:4px}.chip{font-size:11px;padding:3px 7px}
  #prog{width:min(300px,calc(100vw - 30px));overflow:hidden;text-overflow:ellipsis}
